@@ -409,6 +409,205 @@ PENDING = [f for f in FAMILIES if f['code'] in PENDING_APPROVAL]
 FAMILIES = [f for f in FAMILIES if f['code'] not in PENDING_APPROVAL]
 
 
+# ---------- Nuts and washers ----------
+# Dimensions are what McMaster-Carr lists for its 18-8 stainless stock (checked 2026-11-16), cross-checked with
+# the standard or a maker data sheet; `notes` records where they differ. Catalog units (mm or in):
+#   nuts: s across flats, m height (overall height for nylon-insert), flange: dc diameter, c flange thickness
+#   washers: d1 inside, d2 outside, t thickness (middle of McMaster's range where it gives a range)
+# Black oxide (SS-BO) is offered only on the sizes McMaster lists in black-oxide 18-8 stainless. No alloy.
+MCMP = 'https://www.mcmaster.com/products/'
+SRC.update({
+    'mcm_hexnut_m': MCMP + 'hex-nuts/material~18-8-stainless-steel/system-of-measurement~metric/hex-nuts-3~~/ (McMaster 18-8 metric hex nuts, DIN 934: width, height)',
+    'mcm_hexnut_i': MCMP + 'hex-nuts/material~18-8-stainless-steel/hex-nuts-3~~/ (McMaster 18-8 inch hex nuts, ASME B18.2.2 / ASTM F594: width, height)',
+    'mcm_hexnut_bo': MCMP + 'hex-nuts/finish~black-oxide/material~18-8-stainless-steel/hex-nuts-3~~/ (McMaster black-oxide 18-8 hex nuts: inch threads stocked, metric M3 to M6)',
+    'mcm_thin_bo': MCMP + 'hex-nuts/finish~black-oxide/material~18-8-stainless-steel/thin-profile-hex-nuts-2~~/ (McMaster black-oxide 18-8 thin-profile hex nuts, DIN 439 B: width, height)',
+    'mcm_nylon_m': MCMP + 'locknuts/material~18-8-stainless-steel/system-of-measurement~metric/nylon-insert-locknuts-2~~/ (McMaster 18-8 and black-oxide 18-8 metric nylon-insert locknuts: width, height)',
+    'mcm_nylon_bo': MCMP + 'locknuts/finish~black-oxide/material~18-8-stainless-steel/nylon-insert-locknuts-2~~/ (McMaster black-oxide 18-8 nylon-insert locknuts, inch: width, height)',
+    'mcm_flange_m': MCMP + 'flange-nuts/material~18-8-stainless-steel/system-of-measurement~metric/flange-nuts-1~~/ (McMaster 18-8 metric flange nuts: width, height, flange dia, flange thk)',
+    'mcm_serr': MCMP + 'flange-nuts/material~18-8-stainless-steel/serrated-flange-nuts-1~~/ (McMaster 18-8 serrated flange nuts: width, height, flange dia, flange thk)',
+    'mcm_gp_bo': MCMP + 'washers/finish~black-oxide/material~18-8-stainless-steel/general-purpose-washers-3~~/ (McMaster black-oxide 18-8 general purpose washers, metric M3 to M8: ID, OD, thk)',
+    'mcm_sae_bo': MCMP + 'washers/finish~black-oxide/material~18-8-stainless-steel/sae-washers-1~~/ (McMaster black-oxide 18-8 SAE washers: ID, OD, thk)',
+    'mcm_uss_bo': MCMP + 'washers/finish~black-oxide/material~18-8-stainless-steel/uss-washers-2~~/ (McMaster black-oxide 18-8 USS washers: ID, OD, thk)',
+    'mcm_over_m': MCMP + 'oversized-washers/material~18-8-stainless-steel/system-of-measurement~metric/ (McMaster 18-8 metric oversized washers: ID, OD, thk)',
+    'mcm_split': MCMP + 'lock-washers/material~18-8-stainless-steel/split-lock-washers-2~~/ (McMaster 18-8 split lock washers: ID, OD, thk)',
+    'mcm_split_bo': MCMP + 'split-lock-washers/finish~black-oxide/material~18-8-stainless-steel/ (McMaster black-oxide 18-8 split lock washers: inch #2 to 1/2, metric M3 and M5 to M20)',
+    'mcm_tooth_m': MCMP + 'lock-washers/material~18-8-stainless-steel/system-of-measurement~metric/tooth-lock-washers-2~~/ (McMaster 18-8 metric tooth lock washers, DIN 6797 A and J: ID, OD, thk)',
+    'iso4161': ITEH + '61523/6933d05d5928493fa0aaa091527bed78/ISO-4161-2012.pdf (ISO 4161:2012 Table 1: s, m max, dc max, c min)',
+    'iso4032': ITEH + '26382/0f8d850e82f741f5b13e5ed78b236426/ISO-4032-1999.pdf (ISO 4032:1999 Table 1, for comparison with DIN 934)',
+    'iso4035': ITEH + '61671/80e6085c74a64e5bb25f5198a1356852/ISO-4035-2012.pdf (ISO 4035:2012 Table 1: s, m max)',
+    'iso7089': ITEH + '13666/bd926567c06846afbe5fef5c514ba406/ISO-7089-2000.pdf (ISO 7089:2000 Table 1: d1, d2, h)',
+    'iso7093': ITEH + '13677/a0dc4c7265a048bcb627747f4d7cadf2/ISO-7093-1-2000.pdf (ISO 7093-1:2000 Table 1: d1, d2, h)',
+    'bbi_985': 'https://www.brightonbest.com/download/pds/PDS_Metric_DIN_985_Nylon_Insert_Lock_Nuts.pdf (Brighton-Best DIN 985: s, h max)',
+    'bbi_6923': 'https://www.brightonbest.com/download/pds/PDS_Metric_Serrated_Hex_Flange_Nuts.pdf (Brighton-Best DIN 6923 serrated flange nuts: s, m, dc)',
+    'bbi_127': 'https://www.brightonbest.com/download/pds/PDS_Metric_Type_B_Spring_Lock_Washers_With_Square_Ends_DIN_127.pdf (Brighton-Best DIN 127 B: d1, d2, s)',
+    'bbi_6797a': 'https://www.brightonbest.com/download/pds/PDS_Metric_External_Tooth_Lock_Washers_DIN_6797.pdf (Brighton-Best DIN 6797 A: d1, d2, s1)',
+    'bbi_6797j': 'https://www.brightonbest.com/download/pds/PDS_Metric_Internal_Tooth_Lock_Washers_DIN_6797.pdf (Brighton-Best DIN 6797 J: d1, d2, s1)',
+    'bbi_hexnut': 'https://www.brightonbest.com/download/pds/Hex_Nut_2019.pdf (Brighton-Best finished hex nuts, ASME B18.2.2: F, H)',
+    'bbi_sae': 'https://www.brightonbest.com/download/pds/SAE_Flat_Washers.pdf (Brighton-Best SAE washers, ASME B18.21.1 narrow: ID, OD, thk)',
+    'bbi_uss': 'https://www.brightonbest.com/download/pds/USS_Flat_Washers.pdf (Brighton-Best USS washers: ID, OD, thk)',
+    'bbi_split': 'https://www.brightonbest.com/download/pds/Regular_Spring_Lock_Washers_2019.pdf (Brighton-Best regular split lock washers, ASME B18.21.1: A, B, T)',
+})
+
+
+def _fins(bo, key):
+    return ['SS', 'SS-BO'] if key in bo else ['SS']
+
+
+def part_mm(rows, bo=()):
+    """rows: [(size, dims)]. bo: sizes McMaster sells in black-oxide 18-8."""
+    return [dict(size=size, d=float(size[1:]), pitch=PITCH[size], dims=dims, finishes=_fins(bo, size))
+            for size, dims in rows]
+
+
+def washer_mm(rows, bo=()):
+    return [dict(size=size, d=float(size[1:]), dims=dims, finishes=_fins(bo, size)) for size, dims in rows]
+
+
+def part_in(rows, unf=(), bo=(), bo_unf=None):
+    """Inch nuts: one row per thread (UNC, and UNF for sizes in `unf`)."""
+    bo_unf = bo if bo_unf is None else bo_unf
+    out = []
+    for series in ('UNC', 'UNF'):
+        for size, dims in rows:
+            if series == 'UNF' and size not in unf:
+                continue
+            d, tpi = UNC[size]
+            row = dict(size=size, nominal=size, d=d, series=series, tpi=tpi, dims=dims, finishes=_fins(bo, size))
+            if series == 'UNF':
+                row.update(size='%s-%d' % (size, UNF[size]), tpi=UNF[size], finishes=_fins(bo_unf, size))
+            out.append(row)
+    return out
+
+
+def washer_in(rows, bo=()):
+    return [dict(size=size, nominal=size, d=UNC[size][0], dims=dims, finishes=_fins(bo, size)) for size, dims in rows]
+
+
+def nut(s, m, **kw):
+    return dict(s=s, m=m, **kw)
+
+
+def wash(d1, d2, t):
+    return {'d1': d1, 'd2': d2, 't': t}
+
+
+def fr(a, b):
+    return round(a / b, 4)
+
+
+ALL_IN = ['#2', '#4', '#6', '#8', '#10', '1/4', '5/16', '3/8', '1/2']
+ISO4161 = [('M5', nut(8.0, 5.0, dc=11.8, c=1.0)), ('M6', nut(10.0, 6.0, dc=14.2, c=1.1)),
+           ('M8', nut(13.0, 8.0, dc=17.9, c=1.2)), ('M10', nut(15.0, 10.0, dc=21.8, c=1.5)),
+           ('M12', nut(18.0, 12.0, dc=26.0, c=1.8))]
+TOOTH_M = [('M3', wash(3.2, 6.0, 0.4)), ('M4', wash(4.3, 8.0, 0.5)), ('M5', wash(5.3, 10.0, 0.6)),
+           ('M6', wash(6.4, 11.0, 0.7)), ('M8', wash(8.4, 15.0, 0.8)), ('M10', wash(10.5, 18.0, 0.9)),
+           ('M12', wash(13.0, 20.5, 1.05)), ('M16', wash(17.0, 26.0, 1.2)), ('M20', wash(21.0, 33.0, 1.4))]
+
+
+def part(code, kind, shape, name, standard, system, sizes, dims, finish_src, notes=''):
+    fins = ['SS'] + (['SS-BO'] if any('SS-BO' in r['finishes'] for r in sizes) else [])
+    return dict(code=code, kind=kind, shape=shape, name=name, standard=standard, system=system, sizes=sizes,
+                finishes=fins, source=SRC[dims[0]], sources={'dims': dims, 'finish': finish_src}, notes=notes)
+
+
+PARTS = [
+    part('NHX-M', 'nut', 'hex', 'Hex nut', 'DIN 934', 'metric',
+         part_mm([('M3', nut(5.5, 2.4)), ('M4', nut(7.0, 3.2)), ('M5', nut(8.0, 4.0)), ('M6', nut(10.0, 5.0)),
+                  ('M8', nut(13.0, 6.5)), ('M10', nut(17.0, 8.0)), ('M12', nut(19.0, 10.0)),
+                  ('M16', nut(24.0, 13.0)), ('M20', nut(30.0, 16.0))], bo=('M3', 'M4', 'M5', 'M6')),
+         ['mcm_hexnut_m'], ['mcm_hexnut_bo'],
+         'McMaster stocks DIN 934. ISO 4032 is taller from M5 (M5 m 4.7, M6 5.2, M8 6.8, M10 8.4, M12 10.8, '
+         'M16 14.8, M20 18.0) and narrower at M10 (s 16) and M12 (s 18).'),
+    part('NTH-M', 'nut', 'hex', 'Thin-profile hex nut', 'DIN 439 B', 'metric',
+         part_mm([('M3', nut(5.5, 1.8)), ('M4', nut(7.0, 2.2)), ('M5', nut(8.0, 2.7)), ('M6', nut(10.0, 3.2)),
+                  ('M8', nut(13.0, 4.0)), ('M10', nut(17.0, 5.0)), ('M12', nut(19.0, 6.0)), ('M16', nut(24.0, 8.0))],
+                 bo=('M3', 'M4', 'M5', 'M6', 'M8', 'M10', 'M12', 'M16')),
+         ['mcm_thin_bo', 'iso4035'], ['mcm_thin_bo'],
+         'Heights match ISO 4035; McMaster widths at M10 (17) and M12 (19) are DIN 439 B, ISO 4035 says 16 and 18.'),
+    part('NNL-M', 'nut', 'nylon', 'Nylon-insert locknut', 'DIN 985', 'metric',
+         part_mm([('M3', nut(5.5, 4.0)), ('M4', nut(7.0, 5.0)), ('M5', nut(8.0, 5.0)), ('M6', nut(10.0, 6.0)),
+                  ('M8', nut(13.0, 8.0)), ('M10', nut(17.0, 10.0)), ('M12', nut(19.0, 12.0)),
+                  ('M16', nut(24.0, 16.0)), ('M20', nut(30.0, 20.0))],
+                 bo=('M3', 'M4', 'M5', 'M6', 'M8', 'M10', 'M12')),
+         ['mcm_nylon_m', 'bbi_985'], ['mcm_nylon_m'],
+         'DIN 985 (McMaster and Brighton-Best agree). ISO 10511 is lower and narrower at M10/M12.'),
+    part('NFL-M', 'nut', 'flange', 'Flange nut', 'ISO 4161 (DIN 6923)', 'metric',
+         part_mm([('M3', nut(5.5, 4.0, dc=8.0, c=1.0)), ('M4', nut(7.0, 4.0, dc=10.0, c=0.9))] + ISO4161),
+         ['mcm_flange_m', 'iso4161'], [],
+         'M5 to M12 are ISO 4161 (c = flange thickness min); M3 and M4 are not in ISO 4161 and come from McMaster.'),
+    part('NSF-M', 'nut', 'flange', 'Serrated flange nut', 'ISO 4161 (DIN 6923)', 'metric',
+         part_mm([('M3', nut(5.5, 4.0, dc=8.0, c=0.7)), ('M4', nut(7.0, 4.65, dc=10.0, c=1.0))] + ISO4161),
+         ['mcm_serr', 'iso4161', 'bbi_6923'], [],
+         'Serrations are not modelled. McMaster lists M5 flange dia 11 mm; ISO 4161 and Brighton-Best give 11.8 max.'),
+    part('WGP-M', 'washer', 'flat', 'General purpose washer', 'ISO 7089', 'metric',
+         washer_mm([('M3', wash(3.2, 7.0, 0.5)), ('M4', wash(4.3, 9.0, 0.8)), ('M5', wash(5.3, 10.0, 1.0)),
+                    ('M6', wash(6.4, 12.0, 1.6)), ('M8', wash(8.4, 16.0, 1.6)), ('M10', wash(10.5, 20.0, 2.0)),
+                    ('M12', wash(13.0, 24.0, 2.5)), ('M16', wash(17.0, 30.0, 3.0)), ('M20', wash(21.0, 37.0, 3.0))],
+                   bo=('M3', 'M4', 'M5', 'M6', 'M8')),
+         ['iso7089', 'mcm_gp_bo'], ['mcm_gp_bo'], 'McMaster rows read for M3 to M8; M10 to M20 from ISO 7089.'),
+    part('WOV-M', 'washer', 'flat', 'Oversized washer', 'ISO 7093-1', 'metric',
+         washer_mm([('M3', wash(3.2, 9.0, 0.8)), ('M4', wash(4.3, 12.0, 1.0)), ('M5', wash(5.3, 15.0, 1.0)),
+                    ('M6', wash(6.4, 18.0, 1.6)), ('M8', wash(8.4, 24.0, 2.0)), ('M10', wash(10.5, 30.0, 2.5)),
+                    ('M12', wash(13.0, 37.0, 3.0)), ('M16', wash(17.0, 50.0, 3.0)), ('M20', wash(21.0, 60.0, 4.0))]),
+         ['iso7093', 'mcm_over_m'], [],
+         'ISO 7093-1 values. McMaster lists M5 thk 1.0-1.4 and M20 ID 22.'),
+    part('WSL-M', 'washer', 'split', 'Split lock washer', 'DIN 127 B', 'metric',
+         washer_mm([('M3', wash(3.4, 6.2, 0.8)), ('M4', wash(4.4, 7.6, 0.9)), ('M5', wash(5.4, 9.2, 1.2)),
+                    ('M6', wash(6.5, 11.8, 1.6)), ('M8', wash(8.5, 14.8, 2.0)), ('M10', wash(10.7, 18.1, 2.2)),
+                    ('M12', wash(12.7, 21.1, 2.5)), ('M16', wash(17.0, 27.4, 3.5)), ('M20', wash(21.2, 33.6, 4.0))],
+                   bo=('M3', 'M5', 'M6', 'M8', 'M10', 'M12', 'M16', 'M20')),
+         ['mcm_split', 'bbi_127'], ['mcm_split_bo'], 'ID is McMaster (DIN 127 B d1 max); OD and thickness agree with Brighton-Best.'),
+    part('WTE-M', 'washer', 'tooth', 'External-tooth lock washer', 'DIN 6797 A', 'metric', washer_mm(TOOTH_M),
+         ['mcm_tooth_m', 'bbi_6797a'], [], 'Teeth are not modelled (flat ring at the washer thickness).'),
+    part('WTI-M', 'washer', 'tooth', 'Internal-tooth lock washer', 'DIN 6797 J', 'metric', washer_mm(TOOTH_M[:6]),
+         ['mcm_tooth_m', 'bbi_6797j'], [], 'McMaster stocks 18-8 to M10. Teeth are not modelled.'),
+    part('NHX-I', 'nut', 'hex', 'Hex nut', 'ASME B18.2.2', 'inch',
+         part_in([('#2', nut(fr(3, 16), fr(1, 16))), ('#4', nut(0.25, fr(3, 32))), ('#6', nut(fr(5, 16), fr(7, 64))),
+                  ('#8', nut(fr(11, 32), 0.125)), ('#10', nut(0.375, 0.125)), ('1/4', nut(fr(7, 16), fr(7, 32))),
+                  ('5/16', nut(0.5, fr(17, 64))), ('3/8', nut(fr(9, 16), fr(21, 64))), ('1/2', nut(0.75, fr(7, 16)))],
+                 unf=ALL_IN, bo=ALL_IN, bo_unf=('#6', '#8', '#10', '1/4', '5/16', '3/8', '1/2')),
+         ['mcm_hexnut_i', 'bbi_hexnut'], ['mcm_hexnut_bo'],
+         '#2 to #10 are machine screw nuts. McMaster also sells 1/4-20 at 3/16 high and 5/16, 3/8 in a wider '
+         'B18.6.3 style; the ASTM F594 heights are used.'),
+    part('NTH-I', 'nut', 'hex', 'Thin-profile hex nut', 'ASME B18.2.2 (jam)', 'inch',
+         part_in([('1/4', nut(fr(7, 16), fr(5, 32))), ('5/16', nut(0.5, fr(3, 16))), ('3/8', nut(fr(9, 16), fr(7, 32))),
+                  ('1/2', nut(0.75, fr(5, 16)))], unf=ALL_IN, bo=ALL_IN),
+         ['mcm_thin_bo'], ['mcm_thin_bo']),
+    part('NNL-I', 'nut', 'nylon', 'Nylon-insert locknut', 'IFI 100/107', 'inch',
+         part_in([('#2', nut(0.25, fr(9, 64))), ('#4', nut(0.25, fr(9, 64))), ('#6', nut(fr(5, 16), fr(11, 64))),
+                  ('#8', nut(fr(11, 32), fr(15, 64))), ('#10', nut(0.375, fr(15, 64))), ('1/4', nut(fr(7, 16), fr(5, 16))),
+                  ('5/16', nut(0.5, fr(11, 32))), ('3/8', nut(fr(9, 16), fr(29, 64))), ('1/2', nut(0.75, fr(19, 32)))],
+                 unf=('#6', '#8', '#10', '1/4', '5/16', '3/8', '1/2'), bo=ALL_IN),
+         ['mcm_nylon_bo'], ['mcm_nylon_bo']),
+    part('WSA-I', 'washer', 'flat', 'SAE washer', 'ASME B18.21.1 (SAE)', 'inch',
+         washer_in([('#2', wash(0.094, 0.250, 0.015)), ('#4', wash(0.125, 0.312, 0.032)), ('#6', wash(0.156, 0.375, 0.049)),
+                    ('#8', wash(0.188, 0.438, 0.049)), ('#10', wash(0.219, 0.500, 0.049)), ('1/4', wash(0.281, 0.625, 0.065)),
+                    ('5/16', wash(0.344, 0.688, 0.065)), ('3/8', wash(0.406, 0.812, 0.065)), ('1/2', wash(0.531, 1.062, 0.095))],
+                   bo=ALL_IN),
+         ['mcm_sae_bo', 'bbi_sae'], ['mcm_sae_bo'],
+         'Thickness is the Brighton-Best basic value (inside McMaster\'s range), except #2: McMaster 0.012-0.018 vs 0.020.'),
+    part('WUS-I', 'washer', 'flat', 'USS washer', 'USS', 'inch',
+         washer_in([('1/4', wash(0.312, 0.750, 0.065)), ('5/16', wash(0.375, 0.875, 0.083)),
+                    ('3/8', wash(0.438, 1.000, 0.083)), ('1/2', wash(0.562, 1.375, 0.109))], bo=ALL_IN),
+         ['mcm_uss_bo', 'bbi_uss'], ['mcm_uss_bo'], 'McMaster 1/4 OD is 0.750; Brighton-Best (B18.21.1 wide) gives 0.734.'),
+    part('WSL-I', 'washer', 'split', 'Split lock washer', 'ASME B18.21.1', 'inch',
+         washer_in([('#2', wash(0.094, 0.172, 0.020)), ('#4', wash(0.120, 0.209, 0.025)), ('#6', wash(0.148, 0.250, 0.031)),
+                    ('#8', wash(0.174, 0.293, 0.040)), ('#10', wash(0.200, 0.334, 0.047)), ('1/4', wash(0.260, 0.487, 0.062)),
+                    ('5/16', wash(0.322, 0.583, 0.078)), ('3/8', wash(0.385, 0.680, 0.094)), ('1/2', wash(0.512, 0.869, 0.125))],
+                   bo=ALL_IN),
+         ['mcm_split', 'bbi_split'], ['mcm_split_bo'], 'McMaster ID, OD and thickness = B18.21.1 A max, B max, T min.'),
+]
+PART_MCMASTER = {
+    'NHX': 'Hex Nuts', 'NTH': 'Thin-Profile Hex Nuts', 'NNL': 'Nylon-Insert Locknuts', 'NFL': 'Flange Nuts',
+    'NSF': 'Serrated Flange Nuts', 'WGP': 'General Purpose Washers', 'WSA': 'SAE Washers', 'WUS': 'USS Washers',
+    'WOV': 'Oversized Washers', 'WSL': 'Split Lock Washers', 'WTE': 'Tooth Lock Washers (external)',
+    'WTI': 'Tooth Lock Washers (internal)',
+}
+for _p in PARTS:
+    _p['mcmaster'] = PART_MCMASTER[_p['code'].rsplit('-', 1)[0]]
+    _p['mcmaster_url'] = _p['source'].split(' ')[0]
+
+
 def build():
     return {
         'schema': 2,
@@ -418,6 +617,7 @@ def build():
         'alloy_materials': ALLOY_MATERIAL,
         'families': FAMILIES,
         'pending_approval': PENDING,
+        'parts': PARTS,
     }
 
 
@@ -441,6 +641,16 @@ def sources_md():
         name = fam['name'] + (' (pending approval, not offered)' if fam in PENDING else '')
         out.append('| %s | %s | %s | %s |' % (fam['code'], name, fam['standard'], ' | '.join(
             ', '.join(src.get(k, [])) for k in ('dims', 'lengths', 'thread', 'alloy'))))
+    out += ['', '## Nuts and washers', '',
+            'Dimensions follow McMaster-Carr 18-8 stock, cross-checked with the listed standard or maker sheet.', '',
+            '| Code | McMaster name | Standard | Sizes | Dimension sources | Black oxide (SS-BO) sizes | Notes |',
+            '|---|---|---|---|---|---|---|']
+    for p in PARTS:
+        bo = [r['size'] for r in p['sizes'] if 'SS-BO' in r['finishes']]
+        out.append('| %s | %s | %s | %s | %s | %s | %s |' % (
+            p['code'], p['mcmaster'], p['standard'], ', '.join(r['size'] for r in p['sizes']),
+            ', '.join(p['sources']['dims']), (', '.join(bo) + ' (' + ', '.join(p['sources']['finish']) + ')') if bo else 'none',
+            p['notes'] or ''))
     out += ['', '## Source keys', '', '| Key | Source |', '|---|---|']
     out += ['| %s | %s |' % (k, v) for k, v in SRC.items()]
     out += ['', 'Lengths with no length source use the preferred series trimmed to an unverified range (TBD).',

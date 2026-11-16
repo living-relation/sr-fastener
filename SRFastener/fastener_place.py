@@ -1,4 +1,7 @@
-"""Reads a picked hole edge, makes or reuses the screw component, places it and joins it (Fusion API)."""
+"""Reads a picked hole edge, makes or reuses the screw, nut or washer component, places it and joins it (Fusion API).
+
+Stacking: a nut, washer or screw head placed at a hole edge sits on top of any SR nuts and washers already
+placed at that edge (same axis, touching), so pick the same edge for a washer and then a screw or nut."""
 import adsk.core
 import adsk.fusion
 
@@ -67,17 +70,59 @@ def read_hole(edge, flip=False):
     return Hole(edge, centre, into, radius, thread)
 
 
-def world_matrix(hole):
-    """Screw +z points out of the hole (head side); origin on the seat plane."""
+def world_matrix(hole, offset=0.0):
+    """Part +z points out of the hole (head side); origin on the seat plane, moved `offset` cm outward."""
     z = hole.into.copy()
     z.scaleBy(-1)
     ref = adsk.core.Vector3D.create(1, 0, 0) if abs(z.x) < 0.9 else adsk.core.Vector3D.create(0, 1, 0)
     x = ref.crossProduct(z)
     x.normalize()
     y = z.crossProduct(x)
+    origin = hole.centre.copy()
+    if offset:
+        v = z.copy()
+        v.scaleBy(offset)
+        origin.translateBy(v)
     m = adsk.core.Matrix3D.create()
-    m.setWithCoordinateSystem(hole.centre, x, y, z)
+    m.setWithCoordinateSystem(origin, x, y, z)
     return m
+
+
+def _attr(comp, name):
+    a = comp.attributes.itemByName(ATTR, name)
+    return a.value if a else None
+
+
+def stack_offset(design, hole):
+    """How far (cm) out of the hole the next part's seat is: the top of the SR nuts and washers already stacked
+    on this hole's axis, starting at the hole face and touching each other."""
+    out = hole.into.copy()
+    out.scaleBy(-1)
+    spans = []
+    for occ in design.rootComponent.allOccurrences:
+        comp = occ.component
+        if _attr(comp, 'kind') not in ('nut', 'washer'):
+            continue
+        try:
+            t = float(_attr(comp, 'thickness'))
+        except (TypeError, ValueError):
+            continue
+        origin, _, _, z = occ.transform2.getAsCoordinateSystem()
+        if z.dotProduct(out) < 0.999:
+            continue
+        v = hole.centre.vectorTo(origin)
+        along = v.dotProduct(out)
+        radial2 = max(v.dotProduct(v) - along * along, 0.0)
+        if radial2 > 1e-6:
+            continue
+        spans.append((along, along + t))
+    top = 0.0
+    for lo, hi in sorted(spans):
+        if lo > top + 1e-3:
+            break
+        if lo > -1e-3:
+            top = max(top, hi)
+    return top
 
 
 def _find_component(design, pn):
@@ -188,7 +233,8 @@ def make_component(app, design, parent, cat, fam, row, length, finish_key, matri
     comp.name = pn
     comp.partNumber = pn
     comp.description = bom['description']
-    body = geom.build_body(fam, row, length)
+    is_part = fc.kind(fam) != 'screw'
+    body = geom.build_part_body(fam, row)[0] if is_part else geom.build_body(fam, row, length)
     if design.designType == adsk.fusion.DesignTypes.ParametricDesignType:
         bf = comp.features.baseFeatures.add()
         bf.startEdit()
@@ -214,8 +260,11 @@ def make_component(app, design, parent, cat, fam, row, length, finish_key, matri
         comp.attributes.add(ATTR, k, str(bom[k]))
     comp.attributes.add(ATTR, 'family', fam['code'])
     comp.attributes.add(ATTR, 'size', row['size'])
-    comp.attributes.add(ATTR, 'length', str(length))
-    if thread and design.designType == adsk.fusion.DesignTypes.ParametricDesignType:
+    comp.attributes.add(ATTR, 'length', str(length) if length is not None else '')
+    comp.attributes.add(ATTR, 'kind', fc.kind(fam))
+    if is_part:
+        comp.attributes.add(ATTR, 'thickness', repr(fc.part_geometry(fam, row)['thickness']))
+    elif thread and design.designType == adsk.fusion.DesignTypes.ParametricDesignType:
         _apply_thread(comp, fam, row, length, notes)
     return occ, notes
 
@@ -227,7 +276,7 @@ def _seat_edge(occ, matrix, prefer_radius):
     best = None
     for body in occ.bRepBodies:
         for e in body.edges:
-            c = adsk.core.Circle3D.cast(e.geometry)
+            c = adsk.core.Circle3D.cast(e.geometry) or adsk.core.Arc3D.cast(e.geometry)  # arcs: split washer
             if c and c.center.distanceTo(seat) < 1e-3:
                 score = abs(c.radius - prefer_radius)
                 if best is None or score < best[0]:
@@ -239,8 +288,9 @@ def _z_of(occ):
     return occ.transform2.getAsCoordinateSystem()[3]
 
 
-def join(design, parent, occ, hole, world_m, local_m, notes):
-    """Rigid joint between the screw's seat edge and the hole edge; flips if Fusion lands it upside down."""
+def join(design, parent, occ, hole, world_m, local_m, notes, offset=0.0):
+    """Rigid joint between the part's seat edge and the hole edge, `offset` cm out of the hole (stacking).
+    Tries both flip states and both offset signs and keeps the one that lands where world_m says."""
     if design.designType != adsk.fusion.DesignTypes.ParametricDesignType:
         notes.append('no joint: design is in direct modeling mode')
         return None
@@ -253,17 +303,22 @@ def join(design, parent, occ, hole, world_m, local_m, notes):
         g1 = adsk.fusion.JointGeometry.createByCurve(screw_edge, key)
         g2 = adsk.fusion.JointGeometry.createByCurve(hole.edge, key)
         want = world_m.getAsCoordinateSystem()[3]
+        want_o = world_m.translation.asPoint()
         joint = None
-        for flipped in (False, True):
+        tries = [(f, sg) for f in (False, True) for sg in ((1.0, -1.0) if offset else (1.0,))]
+        for flipped, sign in tries:
             ji = parent.joints.createInput(g1, g2)
             ji.setAsRigidJointMotion()
             ji.isFlipped = flipped
+            if offset:
+                ji.offset = adsk.core.ValueInput.createByReal(sign * offset)
             joint = parent.joints.add(ji)
-            if _z_of(occ).dotProduct(want) > 0.999:
+            if (_z_of(occ).dotProduct(want) > 0.999
+                    and occ.transform2.translation.asPoint().distanceTo(want_o) < 1e-3):
                 break
             joint.deleteMe()
             joint = None
-            occ.transform2 = local_m  # put it back before the second try
+            occ.transform2 = local_m  # put it back before the next try
             screw_edge = _seat_edge(occ, world_m, hole.radius)
             g1 = adsk.fusion.JointGeometry.createByCurve(screw_edge, key)
         if joint is None:
@@ -278,8 +333,12 @@ def join(design, parent, occ, hole, world_m, local_m, notes):
         return None
 
 
-def place(app, design, cat, fam, row, length, finish_key, edges, flip=False, thread=True):
-    """Place one screw per picked edge. Returns (occurrences, notes)."""
+_STACKS = ('cap', 'button', 'pan', 'cheese', 'hex')  # screw heads that sit on a washer (not flat or set screws)
+
+
+def place(app, design, cat, fam, row, length, finish_key, edges, flip=False, thread=True, stack=True):
+    """Place one screw, nut or washer per picked edge, stacked on SR nuts/washers already at that edge.
+    Returns (occurrences, notes)."""
     parent = design.activeComponent
     active_occ = design.activeOccurrence
     occs, notes = [], []
@@ -288,13 +347,15 @@ def place(app, design, cat, fam, row, length, finish_key, edges, flip=False, thr
         if hole is None:
             notes.append('skipped a non-circular edge')
             continue
-        wm = world_matrix(hole)
+        stacks = stack and (fc.kind(fam) != 'screw' or fam.get('head') in _STACKS)
+        off = stack_offset(design, hole) if stacks else 0.0
+        wm = world_matrix(hole, off)
         local = wm.copy()
         if active_occ is not None:
             inv = active_occ.transform2.copy()
             inv.invert()
             local.transformBy(inv)
         occ, notes = make_component(app, design, parent, cat, fam, row, length, finish_key, local, thread, notes)
-        join(design, parent, occ, hole, wm, local, notes)
+        join(design, parent, occ, hole, wm, local, notes, off)
         occs.append(occ)
     return occs, notes

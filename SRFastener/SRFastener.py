@@ -1,6 +1,7 @@
-"""SR Fastener: pick a screw (type, size, length, finish), click hole edges, and it is placed, joined and BOM-filled.
+"""SR Fastener: pick a screw, nut or washer (type, size, length, finish), click hole edges, and it is placed,
+joined and BOM-filled. Nuts and washers stack: pick a hole edge for a washer, then the same edge for the screw or nut.
 
-Library screws are made by this add-in from data/catalog.json. Nobody opens or inserts a library file by hand.
+Library parts are made by this add-in from data/catalog.json. Nobody opens or inserts a library file by hand.
 """
 import json
 import os
@@ -16,9 +17,10 @@ from . import fastener_place as fp  # noqa: E402
 
 CMD_ID = 'srFastenerInsertCmd'
 CMD_NAME = 'SR Fastener'
-CMD_TIP = ('Insert a socket head, button head, flat head, low-profile or hex head bolt, or a cup-tip or flat-tip set screw, into hole edges. '
-           'Pick type, size, length and finish (stainless, stainless black oxide or alloy black oxide); '
-           'BOM fields fill in.')
+CMD_TIP = ('Insert a screw (socket, button, flat, low-profile, pan or cheese head, or a cup-tip or flat-tip set screw), a hex head bolt, '
+           'a nut (hex, thin-profile, nylon-insert lock, flange) or a washer (flat, SAE, USS, oversized, split lock, '
+           'tooth lock) at hole edges. Pick type, size, length and finish (stainless, stainless black oxide or alloy '
+           'black oxide); parts stack on washers and nuts already at the edge and BOM fields fill in.')
 WORKSPACE = 'FusionSolidEnvironment'
 PANELS = ['InsertPanel', 'SolidScriptsAddinsPanel']
 SYSTEMS = [('metric', 'Metric'), ('inch', 'Inch')]
@@ -86,6 +88,7 @@ def _sel_key(dd, items):
 class _State:
     def __init__(self):
         self.system = 'metric'
+        self.kind = 'screw'
         self.code = None
         self.size = None
         self.length = None
@@ -98,12 +101,15 @@ class _State:
     def row(self):
         return fc.size_row(self.family(), self.size)
 
+    def is_screw(self):
+        return self.kind == 'screw'
+
 
 _st = _State()
 
 
-def _family_items(system):
-    return [(f['code'], '%s (%s)' % (f['name'], f['standard'])) for f in fc.families(_catalog(), system)]
+def _family_items(system, kind):
+    return [(f['code'], '%s (%s)' % (f['name'], f['standard'])) for f in fc.families(_catalog(), system, kind)]
 
 
 def _size_items(fam):
@@ -128,7 +134,7 @@ def _finish_items(fam, row):
 def _refresh(inputs, level):
     """level: 'system' rebuilds everything below it, 'family' sizes down, 'size' lengths down."""
     if level == 'system':
-        _st.items['family'] = _family_items(_st.system)
+        _st.items['family'] = _family_items(_st.system, _st.kind)
         _st.code = _fill(inputs.itemById('family'), _st.items['family'], _st.code)
         level = 'family'
     fam = _st.family()
@@ -138,9 +144,15 @@ def _refresh(inputs, level):
         level = 'size'
     row = _st.row()
     if level == 'size':
-        _st.items['length'] = _length_items(fam, row)
-        cur = str(_st.length) if _st.length is not None else None
-        _st.length = float(_fill(inputs.itemById('length'), _st.items['length'], cur))
+        screw = _st.is_screw()
+        inputs.itemById('length').isVisible = screw
+        inputs.itemById('thread').isVisible = screw
+        if screw:
+            _st.items['length'] = _length_items(fam, row)
+            cur = str(_st.length) if _st.length is not None else None
+            _st.length = float(_fill(inputs.itemById('length'), _st.items['length'], cur))
+        else:
+            _st.length = None
         _st.items['finish'] = _finish_items(fam, row)
         _st.finish = _fill(inputs.itemById('finish'), _st.items['finish'], _st.finish)
     _bom_preview(inputs)
@@ -165,7 +177,8 @@ def _hole_note(inputs):
     edges = _edges(inputs)
     box = inputs.itemById('holeinfo')
     if not edges:
-        box.text = 'Pick one or more circular hole edges (top edge of each hole or countersink).'
+        box.text = ('Pick circular hole edges on the side the part goes: the top edge (or countersink) for a screw '
+                    'or a washer under its head, the bottom edge of a through hole for a nut.')
         return
     try:
         hole = fp.read_hole(edges[0], inputs.itemById('flip').value)
@@ -191,7 +204,8 @@ def _run_place(inputs):
     design = adsk.fusion.Design.cast(app.activeProduct)
     fam, row = _st.family(), _st.row()
     return fp.place(app, design, _catalog(), fam, row, _st.length, _st.finish, _edges(inputs),
-                    flip=inputs.itemById('flip').value, thread=inputs.itemById('thread').value)
+                    flip=inputs.itemById('flip').value, thread=inputs.itemById('thread').value and _st.is_screw(),
+                    stack=inputs.itemById('stack').value)
 
 
 # ---------- event handlers ----------
@@ -205,9 +219,11 @@ class _Created(adsk.core.CommandCreatedEventHandler):
                 return
             s = _load_settings()
             _st.system = s.get('system', 'metric')
+            _st.kind = s.get('kind', 'screw')
+            screw_len = s.get('length')
             _st.code = s.get('family')
             _st.size = s.get('size')
-            _st.length = s.get('length')
+            _st.length = screw_len
             _st.finish = s.get('finish', 'SS')
             cmd = args.command
             cmd.okButtonText = 'Insert'
@@ -215,6 +231,8 @@ class _Created(adsk.core.CommandCreatedEventHandler):
             inputs = cmd.commandInputs
             sysdd = inputs.addDropDownCommandInput('system', 'Units', adsk.core.DropDownStyles.TextListDropDownStyle)
             _st.system = _fill(sysdd, SYSTEMS, _st.system)
+            kinddd = inputs.addDropDownCommandInput('kind', 'Part', adsk.core.DropDownStyles.TextListDropDownStyle)
+            _st.kind = _fill(kinddd, list(fc.KINDS), _st.kind)
             inputs.addDropDownCommandInput('family', 'Type', adsk.core.DropDownStyles.TextListDropDownStyle)
             inputs.addDropDownCommandInput('size', 'Size', adsk.core.DropDownStyles.TextListDropDownStyle)
             inputs.addDropDownCommandInput('length', 'Length', adsk.core.DropDownStyles.TextListDropDownStyle)
@@ -225,6 +243,7 @@ class _Created(adsk.core.CommandCreatedEventHandler):
             inputs.addBoolValueInput('auto', 'Match size to first hole', True, '', bool(s.get('auto', True)))
             inputs.addBoolValueInput('flip', 'Flip direction', True, '', False)
             inputs.addBoolValueInput('thread', 'Cosmetic thread', True, '', bool(s.get('thread', True)))
+            inputs.addBoolValueInput('stack', 'Stack on nuts/washers', True, '', bool(s.get('stack', True)))
             inputs.addTextBoxCommandInput('holeinfo', 'Hole', '', 2, True)
             grp = inputs.addGroupCommandInput('bom', 'BOM')
             gi = grp.children
@@ -250,6 +269,10 @@ class _Changed(adsk.core.InputChangedEventHandler):
             if cid == 'system':
                 _st.system = _sel_key(inputs.itemById('system'), SYSTEMS)
                 _refresh(inputs, 'system')
+            elif cid == 'kind':
+                _st.kind = _sel_key(inputs.itemById('kind'), list(fc.KINDS))
+                _st.code = None
+                _refresh(inputs, 'system')
             elif cid == 'family':
                 _st.code = _sel_key(inputs.itemById('family'), _st.items['family'])
                 _refresh(inputs, 'family')
@@ -270,7 +293,7 @@ class _Changed(adsk.core.InputChangedEventHandler):
 
 class _Validate(adsk.core.ValidateInputsEventHandler):
     def notify(self, args):
-        args.areInputsValid = bool(_edges(args.inputs)) and _st.length is not None
+        args.areInputsValid = bool(_edges(args.inputs)) and (_st.length is not None or not _st.is_screw())
 
 
 class _Preview(adsk.core.CommandEventHandler):
@@ -286,12 +309,14 @@ class _Execute(adsk.core.CommandEventHandler):
         try:
             inputs = args.command.commandInputs
             occs, notes = _run_place(inputs)
-            _save_settings({'system': _st.system, 'family': _st.code, 'size': _st.size, 'length': _st.length,
+            old = _load_settings()
+            _save_settings({'system': _st.system, 'kind': _st.kind, 'family': _st.code, 'size': _st.size,
+                            'length': _st.length if _st.is_screw() else old.get('length'),
                             'finish': _st.finish, 'auto': inputs.itemById('auto').value,
-                            'thread': inputs.itemById('thread').value})
+                            'thread': inputs.itemById('thread').value, 'stack': inputs.itemById('stack').value})
             if notes:
                 uniq = sorted(set(notes))
-                _ui().messageBox('Placed %d screw(s). Notes:\n- %s' % (len(occs), '\n- '.join(uniq)), CMD_NAME)
+                _ui().messageBox('Placed %d part(s). Notes:\n- %s' % (len(occs), '\n- '.join(uniq)), CMD_NAME)
         except Exception:
             _ui().messageBox('SR Fastener failed:\n' + traceback.format_exc(), CMD_NAME)
 

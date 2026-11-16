@@ -1,20 +1,24 @@
 # SR Fastener
 
-A Fusion add-in that places screws and set screws. Pick a type, size, length and finish, click the hole edges,
-and SR Fastener builds the screw, puts it in the hole with a rigid joint, and fills in the
+A Fusion add-in that places screws, set screws, nuts and washers. Pick a type, size, length and finish, click
+the hole edges, and SR Fastener builds the part, puts it on the hole with a rigid joint, and fills in the
 BOM part number, description and material.
 
 ![SR Fastener button in the Insert panel](docs/screenshots/button.png)
 
-![SR Fastener dialog](docs/screenshots/dialog.png)
+![SR Fastener dialog](docs/screenshots/dialog.png) ![SR Fastener dialog for a nut](docs/screenshots/dialog-nut.png)
 
 ## What it does
 
 - **Toolbar button** "SR Fastener" in the Design workspace, Solid tab, **Insert** panel (also listed under Utilities > Add-ins).
-- **Dialog:** Units, Type, Size, Length, Finish, hole selection, "Match size to first hole",
-  "Flip direction", "Cosmetic thread", and a read-only BOM preview.
+- **Dialog:** Units, Part (screws, nuts or washers), Type, Size, Length (screws only), Finish, hole selection,
+  "Match size to first hole", "Flip direction", "Cosmetic thread" (screws only), "Stack on nuts/washers", and a
+  read-only BOM preview.
 - **Placing:** pick one or more circular hole edges (the top edge of a hole or of a countersink).
   Each screw is centred on the hole, points into the material, and gets a rigid joint to the hole edge.
+- **Nuts and washers:** pick the hole edge on the side where the part goes (top edge for a washer under a
+  screw head, bottom edge of a through hole for a washer and nut on the thread end). Parts placed on the same
+  edge stack: a washer first, then the screw or nut sits on top of it. Place the washer before the screw.
 - **One component per part number:** the same screw used twice is two occurrences of one component, so
   the BOM counts quantity.
 - **BOM fields:** part number, description and Fusion material are set on the component.
@@ -53,6 +57,44 @@ shallower socket the standard gives for their shortest lengths), countersink ang
 inch), button and pan crowns (crown radius or side height from the table), slot width and depth, flat-tip and cup-tip
 diameters (the cup recess shape itself is not dimensioned in the standards and is drawn as a 118 deg cone), thread pitch, and the threaded length (partly threaded screws get a cosmetic thread of the
 tabled length from the tip; shorter ones are threaded to the head).
+
+## Nuts and washers
+
+Names and codes follow McMaster-Carr's category names. Dimensions are what McMaster lists for its 18-8
+stainless stock, cross-checked with the standard or a maker data sheet (see [docs/SOURCES.md](docs/SOURCES.md)).
+
+| Type (McMaster name) | Code | Standard | Sizes | Black oxide (SS-BO) |
+|---|---|---|---|---|
+| Hex nut, metric | NHX | DIN 934 | M3 to M20 | M3 to M6 |
+| Thin-profile hex nut, metric | NTH | DIN 439 B | M3 to M16 | all |
+| Nylon-insert locknut, metric | NNL | DIN 985 | M3 to M20 | M3 to M12 |
+| Flange nut, metric | NFL | ISO 4161 (M5 to M12), McMaster (M3, M4) | M3 to M12 | no |
+| Serrated flange nut, metric | NSF | ISO 4161 / DIN 6923 | M3 to M12 | no |
+| General purpose washer, metric | WGP | ISO 7089 | M3 to M20 | M3 to M8 |
+| Oversized washer, metric | WOV | ISO 7093-1 | M3 to M20 | no |
+| Split lock washer, metric | WSL | DIN 127 B | M3 to M20 | all but M4 |
+| External-tooth lock washer, metric | WTE | DIN 6797 A | M3 to M20 | no |
+| Internal-tooth lock washer, metric | WTI | DIN 6797 J | M3 to M10 | no |
+| Hex nut, inch | NHX | ASME B18.2.2 | #2 to 1/2, UNC and UNF | all UNC; UNF #6 and up |
+| Thin-profile hex nut, inch | NTH | ASME B18.2.2 (jam) | 1/4 to 1/2, UNC and UNF | all |
+| Nylon-insert locknut, inch | NNL | IFI 100/107 | #2 to 1/2 UNC, #6 to 1/2 UNF | all |
+| SAE washer, inch | WSA | ASME B18.21.1 (SAE) | #2 to 1/2 | all |
+| USS washer, inch | WUS | USS | 1/4 to 1/2 | all |
+| Split lock washer, inch | WSL | ASME B18.21.1 | #2 to 1/2 | all |
+
+Alloy steel black oxide is not offered for nuts and washers. Part numbers have no length:
+`NHX-M5-0.8 18-8 SS`, `NHX-1/4-20 18-8 SS-BO`, `NNL-10-32 18-8 SS`, `WGP-M5 18-8 SS`, `WSA-1/4 18-8 SS`.
+Descriptions carry the size, e.g. `Split lock washer, DIN 127 B, M6, 6.5 mm ID x 11.8 mm OD x 1.6 mm thick, 18-8 stainless steel`.
+
+Simplified in the model: nut bores are the nominal diameter (no cosmetic thread), the nylon insert is drawn as
+part of the hex, flange serrations and lock-washer teeth are not drawn, and the split-washer gap is as wide as the
+washer is thick and flat (not helical).
+
+Where McMaster and the standard differ, McMaster wins and the difference is listed in SOURCES.md, e.g. McMaster's
+metric hex nuts are DIN 934 (ISO 4032 is taller from M5 and narrower at M10/M12), and its 1/4 USS washer is
+0.750 in OD (Brighton-Best's B18.21.1 table says 0.734).
+
+![Live test: washers and nuts stacked on screws and holes](docs/screenshots/nuts-washers.png)
 
 ## Finishes
 
@@ -98,7 +140,10 @@ These follow the shop's basic hardware codes, which end with the finish:
 Codes: screws are S + head letter + H, which is the shop's existing SSH/SBH/SFH/SLH pattern; the external hex
 is a hex head bolt, HHB (Daniel's name; McMaster sells it as Hex Head Screws);
 set screws are SS + tip letter (SSF flat-tip, SSC cup-tip).
-Codes not in the shop list yet: `HHB` (named by Daniel), `SSC`, `SSF`, `SPH`, `SCH` and the finish `ALLOY-BO`.
+Nuts are N + two letters (NHX hex, NTH thin-profile, NNL nylon-insert locknut, NFL flange, NSF serrated
+flange); washers are W + two letters (WGP general purpose, WSA SAE, WUS USS, WOV oversized, WSL split lock,
+WTE/WTI external/internal tooth lock).
+Codes not in the shop list yet: `HHB` (named by Daniel), `SSC`, `SSF`, `SPH`, `SCH`, all the nut and washer codes, and the finish `ALLOY-BO`.
 If a screw is bought from McMaster-Carr, use McMaster's part number on the BOM instead. The tool
 stores the vendor part number as `TBD`.
 
@@ -119,7 +164,9 @@ Settings (last type, size, length, finish) are saved in `%APPDATA%\SRFastener\se
 - **Stocked lengths and vendor part numbers:** McMaster-Carr pages need a browser that runs scripts, so they
   could not be read; lengths come from the standards' preferred-length tables (or a maker's maximum length)
   where cited, and are marked unverified in [docs/SOURCES.md](docs/SOURCES.md) where not. Vendor part numbers are `TBD`.
-- **Screw types not yet in the tool:** see [docs/MISSING-SCREWS.md](docs/MISSING-SCREWS.md).
+- **Screw, nut and washer types not yet in the tool:** see [docs/MISSING-SCREWS.md](docs/MISSING-SCREWS.md).
+- **Stacking under a screw already placed:** a washer added after its screw does not push the screw up; place
+  the washer first.
 - **Thread detail:** threads are cosmetic (Fusion thread feature), not modelled.
 - **Phillips recess:** shown as two crossed slots sized from ISO 7045 (`m` and mean gauge penetration); the
   true ISO 4757 wing shape is not modeled. Cheese head sides are straight (ISO 1207 allows up to 5 deg taper).
@@ -137,8 +184,10 @@ python tools/check.py           # repo safety scan + catalog freshness + unit te
 dialog). It opens a new design, cuts a plate with 29 holes, places every type in every finish (alloy black
 oxide in each family that offers it, a UNF screw, cup-tip set screws, the pan and cheese heads, and partly threaded screws),
 checks the part number, description, material, appearance, position, tip depth, joint, reuse, toolbar
-button, and that partial cosmetic threads have the tabled length and start at the tip, then closes the
-design without saving.
+button, and that partial cosmetic threads have the tabled length and start at the tip. A second plate with
+9 holes gets every nut and washer type, stacked under screw heads and on the thread end, and checks the seat
+height of each stacked part, its direction, thickness, outside size and joint. Then it closes the design
+without saving.
 
 ![Live test plate: one screw of each type](docs/screenshots/test-plate.png)
 
