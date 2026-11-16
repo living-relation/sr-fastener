@@ -22,6 +22,29 @@ listed for it; `tests/test_sources.py` spot-checks rows against them. Blank mean
 | SSF-I | Flat-tip set screw | ASME B18.3 | hk_tech | hk_tech |  | av_in_set |
 | SSC-I | Cup-tip set screw | ASME B18.3 | hk_tech | hk_tech |  | hk_tech |
 
+## Nuts and washers
+
+Dimensions follow McMaster-Carr 18-8 stock, cross-checked with the listed standard or maker sheet.
+
+| Code | McMaster name | Standard | Sizes | Dimension sources | Black oxide (SS-BO) sizes | Notes |
+|---|---|---|---|---|---|---|
+| NHX-M | Hex Nuts | DIN 934 | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_hexnut_m | M3, M4, M5, M6 (mcm_hexnut_bo) | McMaster stocks DIN 934. ISO 4032 is taller from M5 (M5 m 4.7, M6 5.2, M8 6.8, M10 8.4, M12 10.8, M16 14.8, M20 18.0) and narrower at M10 (s 16) and M12 (s 18). |
+| NTH-M | Thin-Profile Hex Nuts | DIN 439 B | M3, M4, M5, M6, M8, M10, M12, M16 | mcm_thin_bo, iso4035 | M3, M4, M5, M6, M8, M10, M12, M16 (mcm_thin_bo) | Heights match ISO 4035; McMaster widths at M10 (17) and M12 (19) are DIN 439 B, ISO 4035 says 16 and 18. |
+| NNL-M | Nylon-Insert Locknuts | DIN 985 | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_nylon_m, bbi_985 | M3, M4, M5, M6, M8, M10, M12 (mcm_nylon_m) | DIN 985 (McMaster and Brighton-Best agree). ISO 10511 is lower and narrower at M10/M12. |
+| NFL-M | Flange Nuts | ISO 4161 (DIN 6923) | M3, M4, M5, M6, M8, M10, M12 | mcm_flange_m, iso4161 | none | M5 to M12 are ISO 4161 (c = flange thickness min); M3 and M4 are not in ISO 4161 and come from McMaster. |
+| NSF-M | Serrated Flange Nuts | ISO 4161 (DIN 6923) | M3, M4, M5, M6, M8, M10, M12 | mcm_serr, iso4161, bbi_6923 | none | Serrations are not modelled. McMaster lists M5 flange dia 11 mm; ISO 4161 and Brighton-Best give 11.8 max. |
+| WGP-M | General Purpose Washers | ISO 7089 | M3, M4, M5, M6, M8, M10, M12, M16, M20 | iso7089, mcm_gp_bo | M3, M4, M5, M6, M8 (mcm_gp_bo) | McMaster rows read for M3 to M8; M10 to M20 from ISO 7089. |
+| WOV-M | Oversized Washers | ISO 7093-1 | M3, M4, M5, M6, M8, M10, M12, M16, M20 | iso7093, mcm_over_m | none | ISO 7093-1 values. McMaster lists M5 thk 1.0-1.4 and M20 ID 22. |
+| WSL-M | Split Lock Washers | DIN 127 B | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_split, bbi_127 | M3, M5, M6, M8, M10, M12, M16, M20 (mcm_split_bo) | ID is McMaster (DIN 127 B d1 max); OD and thickness agree with Brighton-Best. |
+| WTE-M | Tooth Lock Washers (external) | DIN 6797 A | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_tooth_m, bbi_6797a | none | Teeth are not modelled (flat ring at the washer thickness). |
+| WTI-M | Tooth Lock Washers (internal) | DIN 6797 J | M3, M4, M5, M6, M8, M10 | mcm_tooth_m, bbi_6797j | none | McMaster stocks 18-8 to M10. Teeth are not modelled. |
+| NHX-I | Hex Nuts | ASME B18.2.2 | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2, #2-64, #4-48, #6-40, #8-36, #10-32, 1/4-28, 5/16-24, 3/8-24, 1/2-20 | mcm_hexnut_i, bbi_hexnut | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2, #6-40, #8-36, #10-32, 1/4-28, 5/16-24, 3/8-24, 1/2-20 (mcm_hexnut_bo) | #2 to #10 are machine screw nuts. McMaster also sells 1/4-20 at 3/16 high and 5/16, 3/8 in a wider B18.6.3 style; the ASTM F594 heights are used. |
+| NTH-I | Thin-Profile Hex Nuts | ASME B18.2.2 (jam) | 1/4, 5/16, 3/8, 1/2, 1/4-28, 5/16-24, 3/8-24, 1/2-20 | mcm_thin_bo | 1/4, 5/16, 3/8, 1/2, 1/4-28, 5/16-24, 3/8-24, 1/2-20 (mcm_thin_bo) |  |
+| NNL-I | Nylon-Insert Locknuts | IFI 100/107 | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2, #6-40, #8-36, #10-32, 1/4-28, 5/16-24, 3/8-24, 1/2-20 | mcm_nylon_bo | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2, #6-40, #8-36, #10-32, 1/4-28, 5/16-24, 3/8-24, 1/2-20 (mcm_nylon_bo) |  |
+| WSA-I | SAE Washers | ASME B18.21.1 (SAE) | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 | mcm_sae_bo, bbi_sae | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 (mcm_sae_bo) | Thickness is the Brighton-Best basic value (inside McMaster's range), except #2: McMaster 0.012-0.018 vs 0.020. |
+| WUS-I | USS Washers | USS | 1/4, 5/16, 3/8, 1/2 | mcm_uss_bo, bbi_uss | 1/4, 5/16, 3/8, 1/2 (mcm_uss_bo) | McMaster 1/4 OD is 0.750; Brighton-Best (B18.21.1 wide) gives 0.734. |
+| WSL-I | Split Lock Washers | ASME B18.21.1 | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 | mcm_split, bbi_split | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 (mcm_split_bo) | McMaster ID, OD and thickness = B18.21.1 A max, B max, T min. |
+
 ## Source keys
 
 | Key | Source |
@@ -53,6 +76,35 @@ listed for it; `tests/test_sources.py` spot-checks rows against them. Blank mean
 | av_m_set2 | https://www.fastenal.ca/product/details/90061 (Fastenal M6 x 25 ISO 4026 flat point, black oxide alloy steel) |
 | av_in_set | https://www.fastenal.ca/product/details/24879 (Fastenal 1/4-20 x 1-1/2 flat point, black oxide alloy steel, ASME B18.3 / ASTM F912) |
 | av_in_hex | https://www.raptorsupplies.com/c/fasteners/c5/black-oxide-grade-8-steel-hex-head-cap-screws (Grade 8 black oxide hex cap screws, ASME B18.2.1 / SAE J429) |
+| mcm_hexnut_m | https://www.mcmaster.com/products/hex-nuts/material~18-8-stainless-steel/system-of-measurement~metric/hex-nuts-3~~/ (McMaster 18-8 metric hex nuts, DIN 934: width, height) |
+| mcm_hexnut_i | https://www.mcmaster.com/products/hex-nuts/material~18-8-stainless-steel/hex-nuts-3~~/ (McMaster 18-8 inch hex nuts, ASME B18.2.2 / ASTM F594: width, height) |
+| mcm_hexnut_bo | https://www.mcmaster.com/products/hex-nuts/finish~black-oxide/material~18-8-stainless-steel/hex-nuts-3~~/ (McMaster black-oxide 18-8 hex nuts: inch threads stocked, metric M3 to M6) |
+| mcm_thin_bo | https://www.mcmaster.com/products/hex-nuts/finish~black-oxide/material~18-8-stainless-steel/thin-profile-hex-nuts-2~~/ (McMaster black-oxide 18-8 thin-profile hex nuts, DIN 439 B: width, height) |
+| mcm_nylon_m | https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/system-of-measurement~metric/nylon-insert-locknuts-2~~/ (McMaster 18-8 and black-oxide 18-8 metric nylon-insert locknuts: width, height) |
+| mcm_nylon_bo | https://www.mcmaster.com/products/locknuts/finish~black-oxide/material~18-8-stainless-steel/nylon-insert-locknuts-2~~/ (McMaster black-oxide 18-8 nylon-insert locknuts, inch: width, height) |
+| mcm_flange_m | https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~metric/flange-nuts-1~~/ (McMaster 18-8 metric flange nuts: width, height, flange dia, flange thk) |
+| mcm_serr | https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/serrated-flange-nuts-1~~/ (McMaster 18-8 serrated flange nuts: width, height, flange dia, flange thk) |
+| mcm_gp_bo | https://www.mcmaster.com/products/washers/finish~black-oxide/material~18-8-stainless-steel/general-purpose-washers-3~~/ (McMaster black-oxide 18-8 general purpose washers, metric M3 to M8: ID, OD, thk) |
+| mcm_sae_bo | https://www.mcmaster.com/products/washers/finish~black-oxide/material~18-8-stainless-steel/sae-washers-1~~/ (McMaster black-oxide 18-8 SAE washers: ID, OD, thk) |
+| mcm_uss_bo | https://www.mcmaster.com/products/washers/finish~black-oxide/material~18-8-stainless-steel/uss-washers-2~~/ (McMaster black-oxide 18-8 USS washers: ID, OD, thk) |
+| mcm_over_m | https://www.mcmaster.com/products/oversized-washers/material~18-8-stainless-steel/system-of-measurement~metric/ (McMaster 18-8 metric oversized washers: ID, OD, thk) |
+| mcm_split | https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/split-lock-washers-2~~/ (McMaster 18-8 split lock washers: ID, OD, thk) |
+| mcm_split_bo | https://www.mcmaster.com/products/split-lock-washers/finish~black-oxide/material~18-8-stainless-steel/ (McMaster black-oxide 18-8 split lock washers: inch #2 to 1/2, metric M3 and M5 to M20) |
+| mcm_tooth_m | https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/system-of-measurement~metric/tooth-lock-washers-2~~/ (McMaster 18-8 metric tooth lock washers, DIN 6797 A and J: ID, OD, thk) |
+| iso4161 | https://cdn.standards.iteh.ai/samples/61523/6933d05d5928493fa0aaa091527bed78/ISO-4161-2012.pdf (ISO 4161:2012 Table 1: s, m max, dc max, c min) |
+| iso4032 | https://cdn.standards.iteh.ai/samples/26382/0f8d850e82f741f5b13e5ed78b236426/ISO-4032-1999.pdf (ISO 4032:1999 Table 1, for comparison with DIN 934) |
+| iso4035 | https://cdn.standards.iteh.ai/samples/61671/80e6085c74a64e5bb25f5198a1356852/ISO-4035-2012.pdf (ISO 4035:2012 Table 1: s, m max) |
+| iso7089 | https://cdn.standards.iteh.ai/samples/13666/bd926567c06846afbe5fef5c514ba406/ISO-7089-2000.pdf (ISO 7089:2000 Table 1: d1, d2, h) |
+| iso7093 | https://cdn.standards.iteh.ai/samples/13677/a0dc4c7265a048bcb627747f4d7cadf2/ISO-7093-1-2000.pdf (ISO 7093-1:2000 Table 1: d1, d2, h) |
+| bbi_985 | https://www.brightonbest.com/download/pds/PDS_Metric_DIN_985_Nylon_Insert_Lock_Nuts.pdf (Brighton-Best DIN 985: s, h max) |
+| bbi_6923 | https://www.brightonbest.com/download/pds/PDS_Metric_Serrated_Hex_Flange_Nuts.pdf (Brighton-Best DIN 6923 serrated flange nuts: s, m, dc) |
+| bbi_127 | https://www.brightonbest.com/download/pds/PDS_Metric_Type_B_Spring_Lock_Washers_With_Square_Ends_DIN_127.pdf (Brighton-Best DIN 127 B: d1, d2, s) |
+| bbi_6797a | https://www.brightonbest.com/download/pds/PDS_Metric_External_Tooth_Lock_Washers_DIN_6797.pdf (Brighton-Best DIN 6797 A: d1, d2, s1) |
+| bbi_6797j | https://www.brightonbest.com/download/pds/PDS_Metric_Internal_Tooth_Lock_Washers_DIN_6797.pdf (Brighton-Best DIN 6797 J: d1, d2, s1) |
+| bbi_hexnut | https://www.brightonbest.com/download/pds/Hex_Nut_2019.pdf (Brighton-Best finished hex nuts, ASME B18.2.2: F, H) |
+| bbi_sae | https://www.brightonbest.com/download/pds/SAE_Flat_Washers.pdf (Brighton-Best SAE washers, ASME B18.21.1 narrow: ID, OD, thk) |
+| bbi_uss | https://www.brightonbest.com/download/pds/USS_Flat_Washers.pdf (Brighton-Best USS washers: ID, OD, thk) |
+| bbi_split | https://www.brightonbest.com/download/pds/Regular_Spring_Lock_Washers_2019.pdf (Brighton-Best regular split lock washers, ASME B18.21.1: A, B, T) |
 
 Lengths with no length source use the preferred series trimmed to an unverified range (TBD).
 Vendor part numbers and stocked lengths are TBD.

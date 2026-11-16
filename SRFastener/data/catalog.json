@@ -28,7 +28,36 @@
   "av_m_set": "https://www.fastenersolutions.com/832070-p-37868.html (ISO 4026 / DIN 913 class 45H thermal black oxide)",
   "av_m_set2": "https://www.fastenal.ca/product/details/90061 (Fastenal M6 x 25 ISO 4026 flat point, black oxide alloy steel)",
   "av_in_set": "https://www.fastenal.ca/product/details/24879 (Fastenal 1/4-20 x 1-1/2 flat point, black oxide alloy steel, ASME B18.3 / ASTM F912)",
-  "av_in_hex": "https://www.raptorsupplies.com/c/fasteners/c5/black-oxide-grade-8-steel-hex-head-cap-screws (Grade 8 black oxide hex cap screws, ASME B18.2.1 / SAE J429)"
+  "av_in_hex": "https://www.raptorsupplies.com/c/fasteners/c5/black-oxide-grade-8-steel-hex-head-cap-screws (Grade 8 black oxide hex cap screws, ASME B18.2.1 / SAE J429)",
+  "mcm_hexnut_m": "https://www.mcmaster.com/products/hex-nuts/material~18-8-stainless-steel/system-of-measurement~metric/hex-nuts-3~~/ (McMaster 18-8 metric hex nuts, DIN 934: width, height)",
+  "mcm_hexnut_i": "https://www.mcmaster.com/products/hex-nuts/material~18-8-stainless-steel/hex-nuts-3~~/ (McMaster 18-8 inch hex nuts, ASME B18.2.2 / ASTM F594: width, height)",
+  "mcm_hexnut_bo": "https://www.mcmaster.com/products/hex-nuts/finish~black-oxide/material~18-8-stainless-steel/hex-nuts-3~~/ (McMaster black-oxide 18-8 hex nuts: inch threads stocked, metric M3 to M6)",
+  "mcm_thin_bo": "https://www.mcmaster.com/products/hex-nuts/finish~black-oxide/material~18-8-stainless-steel/thin-profile-hex-nuts-2~~/ (McMaster black-oxide 18-8 thin-profile hex nuts, DIN 439 B: width, height)",
+  "mcm_nylon_m": "https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/system-of-measurement~metric/nylon-insert-locknuts-2~~/ (McMaster 18-8 and black-oxide 18-8 metric nylon-insert locknuts: width, height)",
+  "mcm_nylon_bo": "https://www.mcmaster.com/products/locknuts/finish~black-oxide/material~18-8-stainless-steel/nylon-insert-locknuts-2~~/ (McMaster black-oxide 18-8 nylon-insert locknuts, inch: width, height)",
+  "mcm_flange_m": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~metric/flange-nuts-1~~/ (McMaster 18-8 metric flange nuts: width, height, flange dia, flange thk)",
+  "mcm_serr": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/serrated-flange-nuts-1~~/ (McMaster 18-8 serrated flange nuts: width, height, flange dia, flange thk)",
+  "mcm_gp_bo": "https://www.mcmaster.com/products/washers/finish~black-oxide/material~18-8-stainless-steel/general-purpose-washers-3~~/ (McMaster black-oxide 18-8 general purpose washers, metric M3 to M8: ID, OD, thk)",
+  "mcm_sae_bo": "https://www.mcmaster.com/products/washers/finish~black-oxide/material~18-8-stainless-steel/sae-washers-1~~/ (McMaster black-oxide 18-8 SAE washers: ID, OD, thk)",
+  "mcm_uss_bo": "https://www.mcmaster.com/products/washers/finish~black-oxide/material~18-8-stainless-steel/uss-washers-2~~/ (McMaster black-oxide 18-8 USS washers: ID, OD, thk)",
+  "mcm_over_m": "https://www.mcmaster.com/products/oversized-washers/material~18-8-stainless-steel/system-of-measurement~metric/ (McMaster 18-8 metric oversized washers: ID, OD, thk)",
+  "mcm_split": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/split-lock-washers-2~~/ (McMaster 18-8 split lock washers: ID, OD, thk)",
+  "mcm_split_bo": "https://www.mcmaster.com/products/split-lock-washers/finish~black-oxide/material~18-8-stainless-steel/ (McMaster black-oxide 18-8 split lock washers: inch #2 to 1/2, metric M3 and M5 to M20)",
+  "mcm_tooth_m": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/system-of-measurement~metric/tooth-lock-washers-2~~/ (McMaster 18-8 metric tooth lock washers, DIN 6797 A and J: ID, OD, thk)",
+  "iso4161": "https://cdn.standards.iteh.ai/samples/61523/6933d05d5928493fa0aaa091527bed78/ISO-4161-2012.pdf (ISO 4161:2012 Table 1: s, m max, dc max, c min)",
+  "iso4032": "https://cdn.standards.iteh.ai/samples/26382/0f8d850e82f741f5b13e5ed78b236426/ISO-4032-1999.pdf (ISO 4032:1999 Table 1, for comparison with DIN 934)",
+  "iso4035": "https://cdn.standards.iteh.ai/samples/61671/80e6085c74a64e5bb25f5198a1356852/ISO-4035-2012.pdf (ISO 4035:2012 Table 1: s, m max)",
+  "iso7089": "https://cdn.standards.iteh.ai/samples/13666/bd926567c06846afbe5fef5c514ba406/ISO-7089-2000.pdf (ISO 7089:2000 Table 1: d1, d2, h)",
+  "iso7093": "https://cdn.standards.iteh.ai/samples/13677/a0dc4c7265a048bcb627747f4d7cadf2/ISO-7093-1-2000.pdf (ISO 7093-1:2000 Table 1: d1, d2, h)",
+  "bbi_985": "https://www.brightonbest.com/download/pds/PDS_Metric_DIN_985_Nylon_Insert_Lock_Nuts.pdf (Brighton-Best DIN 985: s, h max)",
+  "bbi_6923": "https://www.brightonbest.com/download/pds/PDS_Metric_Serrated_Hex_Flange_Nuts.pdf (Brighton-Best DIN 6923 serrated flange nuts: s, m, dc)",
+  "bbi_127": "https://www.brightonbest.com/download/pds/PDS_Metric_Type_B_Spring_Lock_Washers_With_Square_Ends_DIN_127.pdf (Brighton-Best DIN 127 B: d1, d2, s)",
+  "bbi_6797a": "https://www.brightonbest.com/download/pds/PDS_Metric_External_Tooth_Lock_Washers_DIN_6797.pdf (Brighton-Best DIN 6797 A: d1, d2, s1)",
+  "bbi_6797j": "https://www.brightonbest.com/download/pds/PDS_Metric_Internal_Tooth_Lock_Washers_DIN_6797.pdf (Brighton-Best DIN 6797 J: d1, d2, s1)",
+  "bbi_hexnut": "https://www.brightonbest.com/download/pds/Hex_Nut_2019.pdf (Brighton-Best finished hex nuts, ASME B18.2.2: F, H)",
+  "bbi_sae": "https://www.brightonbest.com/download/pds/SAE_Flat_Washers.pdf (Brighton-Best SAE washers, ASME B18.21.1 narrow: ID, OD, thk)",
+  "bbi_uss": "https://www.brightonbest.com/download/pds/USS_Flat_Washers.pdf (Brighton-Best USS washers: ID, OD, thk)",
+  "bbi_split": "https://www.brightonbest.com/download/pds/Regular_Spring_Lock_Washers_2019.pdf (Brighton-Best regular split lock washers, ASME B18.21.1: A, B, T)"
  },
  "finishes": {
   "SS": {
@@ -6560,5 +6589,2402 @@
    "mcmaster_url": "https://www.mcmaster.com/products/set-screws/"
   }
  ],
- "pending_approval": []
+ "pending_approval": [],
+ "parts": [
+  {
+   "code": "NHX-M",
+   "kind": "nut",
+   "shape": "hex",
+   "name": "Hex nut",
+   "standard": "DIN 934",
+   "system": "metric",
+   "sizes": [
+    {
+     "size": "M3",
+     "d": 3.0,
+     "pitch": 0.5,
+     "dims": {
+      "s": 5.5,
+      "m": 2.4
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M4",
+     "d": 4.0,
+     "pitch": 0.7,
+     "dims": {
+      "s": 7.0,
+      "m": 3.2
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M5",
+     "d": 5.0,
+     "pitch": 0.8,
+     "dims": {
+      "s": 8.0,
+      "m": 4.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M6",
+     "d": 6.0,
+     "pitch": 1.0,
+     "dims": {
+      "s": 10.0,
+      "m": 5.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M8",
+     "d": 8.0,
+     "pitch": 1.25,
+     "dims": {
+      "s": 13.0,
+      "m": 6.5
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M10",
+     "d": 10.0,
+     "pitch": 1.5,
+     "dims": {
+      "s": 17.0,
+      "m": 8.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M12",
+     "d": 12.0,
+     "pitch": 1.75,
+     "dims": {
+      "s": 19.0,
+      "m": 10.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M16",
+     "d": 16.0,
+     "pitch": 2.0,
+     "dims": {
+      "s": 24.0,
+      "m": 13.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M20",
+     "d": 20.0,
+     "pitch": 2.5,
+     "dims": {
+      "s": 30.0,
+      "m": 16.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS",
+    "SS-BO"
+   ],
+   "source": "https://www.mcmaster.com/products/hex-nuts/material~18-8-stainless-steel/system-of-measurement~metric/hex-nuts-3~~/ (McMaster 18-8 metric hex nuts, DIN 934: width, height)",
+   "sources": {
+    "dims": [
+     "mcm_hexnut_m"
+    ],
+    "finish": [
+     "mcm_hexnut_bo"
+    ]
+   },
+   "notes": "McMaster stocks DIN 934. ISO 4032 is taller from M5 (M5 m 4.7, M6 5.2, M8 6.8, M10 8.4, M12 10.8, M16 14.8, M20 18.0) and narrower at M10 (s 16) and M12 (s 18).",
+   "mcmaster": "Hex Nuts",
+   "mcmaster_url": "https://www.mcmaster.com/products/hex-nuts/material~18-8-stainless-steel/system-of-measurement~metric/hex-nuts-3~~/"
+  },
+  {
+   "code": "NTH-M",
+   "kind": "nut",
+   "shape": "hex",
+   "name": "Thin-profile hex nut",
+   "standard": "DIN 439 B",
+   "system": "metric",
+   "sizes": [
+    {
+     "size": "M3",
+     "d": 3.0,
+     "pitch": 0.5,
+     "dims": {
+      "s": 5.5,
+      "m": 1.8
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M4",
+     "d": 4.0,
+     "pitch": 0.7,
+     "dims": {
+      "s": 7.0,
+      "m": 2.2
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M5",
+     "d": 5.0,
+     "pitch": 0.8,
+     "dims": {
+      "s": 8.0,
+      "m": 2.7
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M6",
+     "d": 6.0,
+     "pitch": 1.0,
+     "dims": {
+      "s": 10.0,
+      "m": 3.2
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M8",
+     "d": 8.0,
+     "pitch": 1.25,
+     "dims": {
+      "s": 13.0,
+      "m": 4.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M10",
+     "d": 10.0,
+     "pitch": 1.5,
+     "dims": {
+      "s": 17.0,
+      "m": 5.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M12",
+     "d": 12.0,
+     "pitch": 1.75,
+     "dims": {
+      "s": 19.0,
+      "m": 6.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M16",
+     "d": 16.0,
+     "pitch": 2.0,
+     "dims": {
+      "s": 24.0,
+      "m": 8.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS",
+    "SS-BO"
+   ],
+   "source": "https://www.mcmaster.com/products/hex-nuts/finish~black-oxide/material~18-8-stainless-steel/thin-profile-hex-nuts-2~~/ (McMaster black-oxide 18-8 thin-profile hex nuts, DIN 439 B: width, height)",
+   "sources": {
+    "dims": [
+     "mcm_thin_bo",
+     "iso4035"
+    ],
+    "finish": [
+     "mcm_thin_bo"
+    ]
+   },
+   "notes": "Heights match ISO 4035; McMaster widths at M10 (17) and M12 (19) are DIN 439 B, ISO 4035 says 16 and 18.",
+   "mcmaster": "Thin-Profile Hex Nuts",
+   "mcmaster_url": "https://www.mcmaster.com/products/hex-nuts/finish~black-oxide/material~18-8-stainless-steel/thin-profile-hex-nuts-2~~/"
+  },
+  {
+   "code": "NNL-M",
+   "kind": "nut",
+   "shape": "nylon",
+   "name": "Nylon-insert locknut",
+   "standard": "DIN 985",
+   "system": "metric",
+   "sizes": [
+    {
+     "size": "M3",
+     "d": 3.0,
+     "pitch": 0.5,
+     "dims": {
+      "s": 5.5,
+      "m": 4.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M4",
+     "d": 4.0,
+     "pitch": 0.7,
+     "dims": {
+      "s": 7.0,
+      "m": 5.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M5",
+     "d": 5.0,
+     "pitch": 0.8,
+     "dims": {
+      "s": 8.0,
+      "m": 5.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M6",
+     "d": 6.0,
+     "pitch": 1.0,
+     "dims": {
+      "s": 10.0,
+      "m": 6.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M8",
+     "d": 8.0,
+     "pitch": 1.25,
+     "dims": {
+      "s": 13.0,
+      "m": 8.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M10",
+     "d": 10.0,
+     "pitch": 1.5,
+     "dims": {
+      "s": 17.0,
+      "m": 10.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M12",
+     "d": 12.0,
+     "pitch": 1.75,
+     "dims": {
+      "s": 19.0,
+      "m": 12.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M16",
+     "d": 16.0,
+     "pitch": 2.0,
+     "dims": {
+      "s": 24.0,
+      "m": 16.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M20",
+     "d": 20.0,
+     "pitch": 2.5,
+     "dims": {
+      "s": 30.0,
+      "m": 20.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS",
+    "SS-BO"
+   ],
+   "source": "https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/system-of-measurement~metric/nylon-insert-locknuts-2~~/ (McMaster 18-8 and black-oxide 18-8 metric nylon-insert locknuts: width, height)",
+   "sources": {
+    "dims": [
+     "mcm_nylon_m",
+     "bbi_985"
+    ],
+    "finish": [
+     "mcm_nylon_m"
+    ]
+   },
+   "notes": "DIN 985 (McMaster and Brighton-Best agree). ISO 10511 is lower and narrower at M10/M12.",
+   "mcmaster": "Nylon-Insert Locknuts",
+   "mcmaster_url": "https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/system-of-measurement~metric/nylon-insert-locknuts-2~~/"
+  },
+  {
+   "code": "NFL-M",
+   "kind": "nut",
+   "shape": "flange",
+   "name": "Flange nut",
+   "standard": "ISO 4161 (DIN 6923)",
+   "system": "metric",
+   "sizes": [
+    {
+     "size": "M3",
+     "d": 3.0,
+     "pitch": 0.5,
+     "dims": {
+      "s": 5.5,
+      "m": 4.0,
+      "dc": 8.0,
+      "c": 1.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M4",
+     "d": 4.0,
+     "pitch": 0.7,
+     "dims": {
+      "s": 7.0,
+      "m": 4.0,
+      "dc": 10.0,
+      "c": 0.9
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M5",
+     "d": 5.0,
+     "pitch": 0.8,
+     "dims": {
+      "s": 8.0,
+      "m": 5.0,
+      "dc": 11.8,
+      "c": 1.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M6",
+     "d": 6.0,
+     "pitch": 1.0,
+     "dims": {
+      "s": 10.0,
+      "m": 6.0,
+      "dc": 14.2,
+      "c": 1.1
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M8",
+     "d": 8.0,
+     "pitch": 1.25,
+     "dims": {
+      "s": 13.0,
+      "m": 8.0,
+      "dc": 17.9,
+      "c": 1.2
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M10",
+     "d": 10.0,
+     "pitch": 1.5,
+     "dims": {
+      "s": 15.0,
+      "m": 10.0,
+      "dc": 21.8,
+      "c": 1.5
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M12",
+     "d": 12.0,
+     "pitch": 1.75,
+     "dims": {
+      "s": 18.0,
+      "m": 12.0,
+      "dc": 26.0,
+      "c": 1.8
+     },
+     "finishes": [
+      "SS"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS"
+   ],
+   "source": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~metric/flange-nuts-1~~/ (McMaster 18-8 metric flange nuts: width, height, flange dia, flange thk)",
+   "sources": {
+    "dims": [
+     "mcm_flange_m",
+     "iso4161"
+    ],
+    "finish": []
+   },
+   "notes": "M5 to M12 are ISO 4161 (c = flange thickness min); M3 and M4 are not in ISO 4161 and come from McMaster.",
+   "mcmaster": "Flange Nuts",
+   "mcmaster_url": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~metric/flange-nuts-1~~/"
+  },
+  {
+   "code": "NSF-M",
+   "kind": "nut",
+   "shape": "flange",
+   "name": "Serrated flange nut",
+   "standard": "ISO 4161 (DIN 6923)",
+   "system": "metric",
+   "sizes": [
+    {
+     "size": "M3",
+     "d": 3.0,
+     "pitch": 0.5,
+     "dims": {
+      "s": 5.5,
+      "m": 4.0,
+      "dc": 8.0,
+      "c": 0.7
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M4",
+     "d": 4.0,
+     "pitch": 0.7,
+     "dims": {
+      "s": 7.0,
+      "m": 4.65,
+      "dc": 10.0,
+      "c": 1.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M5",
+     "d": 5.0,
+     "pitch": 0.8,
+     "dims": {
+      "s": 8.0,
+      "m": 5.0,
+      "dc": 11.8,
+      "c": 1.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M6",
+     "d": 6.0,
+     "pitch": 1.0,
+     "dims": {
+      "s": 10.0,
+      "m": 6.0,
+      "dc": 14.2,
+      "c": 1.1
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M8",
+     "d": 8.0,
+     "pitch": 1.25,
+     "dims": {
+      "s": 13.0,
+      "m": 8.0,
+      "dc": 17.9,
+      "c": 1.2
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M10",
+     "d": 10.0,
+     "pitch": 1.5,
+     "dims": {
+      "s": 15.0,
+      "m": 10.0,
+      "dc": 21.8,
+      "c": 1.5
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M12",
+     "d": 12.0,
+     "pitch": 1.75,
+     "dims": {
+      "s": 18.0,
+      "m": 12.0,
+      "dc": 26.0,
+      "c": 1.8
+     },
+     "finishes": [
+      "SS"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS"
+   ],
+   "source": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/serrated-flange-nuts-1~~/ (McMaster 18-8 serrated flange nuts: width, height, flange dia, flange thk)",
+   "sources": {
+    "dims": [
+     "mcm_serr",
+     "iso4161",
+     "bbi_6923"
+    ],
+    "finish": []
+   },
+   "notes": "Serrations are not modelled. McMaster lists M5 flange dia 11 mm; ISO 4161 and Brighton-Best give 11.8 max.",
+   "mcmaster": "Serrated Flange Nuts",
+   "mcmaster_url": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/serrated-flange-nuts-1~~/"
+  },
+  {
+   "code": "WGP-M",
+   "kind": "washer",
+   "shape": "flat",
+   "name": "General purpose washer",
+   "standard": "ISO 7089",
+   "system": "metric",
+   "sizes": [
+    {
+     "size": "M3",
+     "d": 3.0,
+     "dims": {
+      "d1": 3.2,
+      "d2": 7.0,
+      "t": 0.5
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M4",
+     "d": 4.0,
+     "dims": {
+      "d1": 4.3,
+      "d2": 9.0,
+      "t": 0.8
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M5",
+     "d": 5.0,
+     "dims": {
+      "d1": 5.3,
+      "d2": 10.0,
+      "t": 1.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M6",
+     "d": 6.0,
+     "dims": {
+      "d1": 6.4,
+      "d2": 12.0,
+      "t": 1.6
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M8",
+     "d": 8.0,
+     "dims": {
+      "d1": 8.4,
+      "d2": 16.0,
+      "t": 1.6
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M10",
+     "d": 10.0,
+     "dims": {
+      "d1": 10.5,
+      "d2": 20.0,
+      "t": 2.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M12",
+     "d": 12.0,
+     "dims": {
+      "d1": 13.0,
+      "d2": 24.0,
+      "t": 2.5
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M16",
+     "d": 16.0,
+     "dims": {
+      "d1": 17.0,
+      "d2": 30.0,
+      "t": 3.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M20",
+     "d": 20.0,
+     "dims": {
+      "d1": 21.0,
+      "d2": 37.0,
+      "t": 3.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS",
+    "SS-BO"
+   ],
+   "source": "https://cdn.standards.iteh.ai/samples/13666/bd926567c06846afbe5fef5c514ba406/ISO-7089-2000.pdf (ISO 7089:2000 Table 1: d1, d2, h)",
+   "sources": {
+    "dims": [
+     "iso7089",
+     "mcm_gp_bo"
+    ],
+    "finish": [
+     "mcm_gp_bo"
+    ]
+   },
+   "notes": "McMaster rows read for M3 to M8; M10 to M20 from ISO 7089.",
+   "mcmaster": "General Purpose Washers",
+   "mcmaster_url": "https://cdn.standards.iteh.ai/samples/13666/bd926567c06846afbe5fef5c514ba406/ISO-7089-2000.pdf"
+  },
+  {
+   "code": "WOV-M",
+   "kind": "washer",
+   "shape": "flat",
+   "name": "Oversized washer",
+   "standard": "ISO 7093-1",
+   "system": "metric",
+   "sizes": [
+    {
+     "size": "M3",
+     "d": 3.0,
+     "dims": {
+      "d1": 3.2,
+      "d2": 9.0,
+      "t": 0.8
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M4",
+     "d": 4.0,
+     "dims": {
+      "d1": 4.3,
+      "d2": 12.0,
+      "t": 1.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M5",
+     "d": 5.0,
+     "dims": {
+      "d1": 5.3,
+      "d2": 15.0,
+      "t": 1.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M6",
+     "d": 6.0,
+     "dims": {
+      "d1": 6.4,
+      "d2": 18.0,
+      "t": 1.6
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M8",
+     "d": 8.0,
+     "dims": {
+      "d1": 8.4,
+      "d2": 24.0,
+      "t": 2.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M10",
+     "d": 10.0,
+     "dims": {
+      "d1": 10.5,
+      "d2": 30.0,
+      "t": 2.5
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M12",
+     "d": 12.0,
+     "dims": {
+      "d1": 13.0,
+      "d2": 37.0,
+      "t": 3.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M16",
+     "d": 16.0,
+     "dims": {
+      "d1": 17.0,
+      "d2": 50.0,
+      "t": 3.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M20",
+     "d": 20.0,
+     "dims": {
+      "d1": 21.0,
+      "d2": 60.0,
+      "t": 4.0
+     },
+     "finishes": [
+      "SS"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS"
+   ],
+   "source": "https://cdn.standards.iteh.ai/samples/13677/a0dc4c7265a048bcb627747f4d7cadf2/ISO-7093-1-2000.pdf (ISO 7093-1:2000 Table 1: d1, d2, h)",
+   "sources": {
+    "dims": [
+     "iso7093",
+     "mcm_over_m"
+    ],
+    "finish": []
+   },
+   "notes": "ISO 7093-1 values. McMaster lists M5 thk 1.0-1.4 and M20 ID 22.",
+   "mcmaster": "Oversized Washers",
+   "mcmaster_url": "https://cdn.standards.iteh.ai/samples/13677/a0dc4c7265a048bcb627747f4d7cadf2/ISO-7093-1-2000.pdf"
+  },
+  {
+   "code": "WSL-M",
+   "kind": "washer",
+   "shape": "split",
+   "name": "Split lock washer",
+   "standard": "DIN 127 B",
+   "system": "metric",
+   "sizes": [
+    {
+     "size": "M3",
+     "d": 3.0,
+     "dims": {
+      "d1": 3.4,
+      "d2": 6.2,
+      "t": 0.8
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M4",
+     "d": 4.0,
+     "dims": {
+      "d1": 4.4,
+      "d2": 7.6,
+      "t": 0.9
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M5",
+     "d": 5.0,
+     "dims": {
+      "d1": 5.4,
+      "d2": 9.2,
+      "t": 1.2
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M6",
+     "d": 6.0,
+     "dims": {
+      "d1": 6.5,
+      "d2": 11.8,
+      "t": 1.6
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M8",
+     "d": 8.0,
+     "dims": {
+      "d1": 8.5,
+      "d2": 14.8,
+      "t": 2.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M10",
+     "d": 10.0,
+     "dims": {
+      "d1": 10.7,
+      "d2": 18.1,
+      "t": 2.2
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M12",
+     "d": 12.0,
+     "dims": {
+      "d1": 12.7,
+      "d2": 21.1,
+      "t": 2.5
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M16",
+     "d": 16.0,
+     "dims": {
+      "d1": 17.0,
+      "d2": 27.4,
+      "t": 3.5
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M20",
+     "d": 20.0,
+     "dims": {
+      "d1": 21.2,
+      "d2": 33.6,
+      "t": 4.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS",
+    "SS-BO"
+   ],
+   "source": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/split-lock-washers-2~~/ (McMaster 18-8 split lock washers: ID, OD, thk)",
+   "sources": {
+    "dims": [
+     "mcm_split",
+     "bbi_127"
+    ],
+    "finish": [
+     "mcm_split_bo"
+    ]
+   },
+   "notes": "ID is McMaster (DIN 127 B d1 max); OD and thickness agree with Brighton-Best.",
+   "mcmaster": "Split Lock Washers",
+   "mcmaster_url": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/split-lock-washers-2~~/"
+  },
+  {
+   "code": "WTE-M",
+   "kind": "washer",
+   "shape": "tooth",
+   "name": "External-tooth lock washer",
+   "standard": "DIN 6797 A",
+   "system": "metric",
+   "sizes": [
+    {
+     "size": "M3",
+     "d": 3.0,
+     "dims": {
+      "d1": 3.2,
+      "d2": 6.0,
+      "t": 0.4
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M4",
+     "d": 4.0,
+     "dims": {
+      "d1": 4.3,
+      "d2": 8.0,
+      "t": 0.5
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M5",
+     "d": 5.0,
+     "dims": {
+      "d1": 5.3,
+      "d2": 10.0,
+      "t": 0.6
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M6",
+     "d": 6.0,
+     "dims": {
+      "d1": 6.4,
+      "d2": 11.0,
+      "t": 0.7
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M8",
+     "d": 8.0,
+     "dims": {
+      "d1": 8.4,
+      "d2": 15.0,
+      "t": 0.8
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M10",
+     "d": 10.0,
+     "dims": {
+      "d1": 10.5,
+      "d2": 18.0,
+      "t": 0.9
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M12",
+     "d": 12.0,
+     "dims": {
+      "d1": 13.0,
+      "d2": 20.5,
+      "t": 1.05
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M16",
+     "d": 16.0,
+     "dims": {
+      "d1": 17.0,
+      "d2": 26.0,
+      "t": 1.2
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M20",
+     "d": 20.0,
+     "dims": {
+      "d1": 21.0,
+      "d2": 33.0,
+      "t": 1.4
+     },
+     "finishes": [
+      "SS"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS"
+   ],
+   "source": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/system-of-measurement~metric/tooth-lock-washers-2~~/ (McMaster 18-8 metric tooth lock washers, DIN 6797 A and J: ID, OD, thk)",
+   "sources": {
+    "dims": [
+     "mcm_tooth_m",
+     "bbi_6797a"
+    ],
+    "finish": []
+   },
+   "notes": "Teeth are not modelled (flat ring at the washer thickness).",
+   "mcmaster": "Tooth Lock Washers (external)",
+   "mcmaster_url": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/system-of-measurement~metric/tooth-lock-washers-2~~/"
+  },
+  {
+   "code": "WTI-M",
+   "kind": "washer",
+   "shape": "tooth",
+   "name": "Internal-tooth lock washer",
+   "standard": "DIN 6797 J",
+   "system": "metric",
+   "sizes": [
+    {
+     "size": "M3",
+     "d": 3.0,
+     "dims": {
+      "d1": 3.2,
+      "d2": 6.0,
+      "t": 0.4
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M4",
+     "d": 4.0,
+     "dims": {
+      "d1": 4.3,
+      "d2": 8.0,
+      "t": 0.5
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M5",
+     "d": 5.0,
+     "dims": {
+      "d1": 5.3,
+      "d2": 10.0,
+      "t": 0.6
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M6",
+     "d": 6.0,
+     "dims": {
+      "d1": 6.4,
+      "d2": 11.0,
+      "t": 0.7
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M8",
+     "d": 8.0,
+     "dims": {
+      "d1": 8.4,
+      "d2": 15.0,
+      "t": 0.8
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "M10",
+     "d": 10.0,
+     "dims": {
+      "d1": 10.5,
+      "d2": 18.0,
+      "t": 0.9
+     },
+     "finishes": [
+      "SS"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS"
+   ],
+   "source": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/system-of-measurement~metric/tooth-lock-washers-2~~/ (McMaster 18-8 metric tooth lock washers, DIN 6797 A and J: ID, OD, thk)",
+   "sources": {
+    "dims": [
+     "mcm_tooth_m",
+     "bbi_6797j"
+    ],
+    "finish": []
+   },
+   "notes": "McMaster stocks 18-8 to M10. Teeth are not modelled.",
+   "mcmaster": "Tooth Lock Washers (internal)",
+   "mcmaster_url": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/system-of-measurement~metric/tooth-lock-washers-2~~/"
+  },
+  {
+   "code": "NHX-I",
+   "kind": "nut",
+   "shape": "hex",
+   "name": "Hex nut",
+   "standard": "ASME B18.2.2",
+   "system": "inch",
+   "sizes": [
+    {
+     "size": "#2",
+     "nominal": "#2",
+     "d": 0.086,
+     "series": "UNC",
+     "tpi": 56,
+     "dims": {
+      "s": 0.1875,
+      "m": 0.0625
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#4",
+     "nominal": "#4",
+     "d": 0.112,
+     "series": "UNC",
+     "tpi": 40,
+     "dims": {
+      "s": 0.25,
+      "m": 0.0938
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#6",
+     "nominal": "#6",
+     "d": 0.138,
+     "series": "UNC",
+     "tpi": 32,
+     "dims": {
+      "s": 0.3125,
+      "m": 0.1094
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#8",
+     "nominal": "#8",
+     "d": 0.164,
+     "series": "UNC",
+     "tpi": 32,
+     "dims": {
+      "s": 0.3438,
+      "m": 0.125
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#10",
+     "nominal": "#10",
+     "d": 0.19,
+     "series": "UNC",
+     "tpi": 24,
+     "dims": {
+      "s": 0.375,
+      "m": 0.125
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/4",
+     "nominal": "1/4",
+     "d": 0.25,
+     "series": "UNC",
+     "tpi": 20,
+     "dims": {
+      "s": 0.4375,
+      "m": 0.2188
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "5/16",
+     "nominal": "5/16",
+     "d": 0.3125,
+     "series": "UNC",
+     "tpi": 18,
+     "dims": {
+      "s": 0.5,
+      "m": 0.2656
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "3/8",
+     "nominal": "3/8",
+     "d": 0.375,
+     "series": "UNC",
+     "tpi": 16,
+     "dims": {
+      "s": 0.5625,
+      "m": 0.3281
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/2",
+     "nominal": "1/2",
+     "d": 0.5,
+     "series": "UNC",
+     "tpi": 13,
+     "dims": {
+      "s": 0.75,
+      "m": 0.4375
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#2-64",
+     "nominal": "#2",
+     "d": 0.086,
+     "series": "UNF",
+     "tpi": 64,
+     "dims": {
+      "s": 0.1875,
+      "m": 0.0625
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "#4-48",
+     "nominal": "#4",
+     "d": 0.112,
+     "series": "UNF",
+     "tpi": 48,
+     "dims": {
+      "s": 0.25,
+      "m": 0.0938
+     },
+     "finishes": [
+      "SS"
+     ]
+    },
+    {
+     "size": "#6-40",
+     "nominal": "#6",
+     "d": 0.138,
+     "series": "UNF",
+     "tpi": 40,
+     "dims": {
+      "s": 0.3125,
+      "m": 0.1094
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#8-36",
+     "nominal": "#8",
+     "d": 0.164,
+     "series": "UNF",
+     "tpi": 36,
+     "dims": {
+      "s": 0.3438,
+      "m": 0.125
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#10-32",
+     "nominal": "#10",
+     "d": 0.19,
+     "series": "UNF",
+     "tpi": 32,
+     "dims": {
+      "s": 0.375,
+      "m": 0.125
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/4-28",
+     "nominal": "1/4",
+     "d": 0.25,
+     "series": "UNF",
+     "tpi": 28,
+     "dims": {
+      "s": 0.4375,
+      "m": 0.2188
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "5/16-24",
+     "nominal": "5/16",
+     "d": 0.3125,
+     "series": "UNF",
+     "tpi": 24,
+     "dims": {
+      "s": 0.5,
+      "m": 0.2656
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "3/8-24",
+     "nominal": "3/8",
+     "d": 0.375,
+     "series": "UNF",
+     "tpi": 24,
+     "dims": {
+      "s": 0.5625,
+      "m": 0.3281
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/2-20",
+     "nominal": "1/2",
+     "d": 0.5,
+     "series": "UNF",
+     "tpi": 20,
+     "dims": {
+      "s": 0.75,
+      "m": 0.4375
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS",
+    "SS-BO"
+   ],
+   "source": "https://www.mcmaster.com/products/hex-nuts/material~18-8-stainless-steel/hex-nuts-3~~/ (McMaster 18-8 inch hex nuts, ASME B18.2.2 / ASTM F594: width, height)",
+   "sources": {
+    "dims": [
+     "mcm_hexnut_i",
+     "bbi_hexnut"
+    ],
+    "finish": [
+     "mcm_hexnut_bo"
+    ]
+   },
+   "notes": "#2 to #10 are machine screw nuts. McMaster also sells 1/4-20 at 3/16 high and 5/16, 3/8 in a wider B18.6.3 style; the ASTM F594 heights are used.",
+   "mcmaster": "Hex Nuts",
+   "mcmaster_url": "https://www.mcmaster.com/products/hex-nuts/material~18-8-stainless-steel/hex-nuts-3~~/"
+  },
+  {
+   "code": "NTH-I",
+   "kind": "nut",
+   "shape": "hex",
+   "name": "Thin-profile hex nut",
+   "standard": "ASME B18.2.2 (jam)",
+   "system": "inch",
+   "sizes": [
+    {
+     "size": "1/4",
+     "nominal": "1/4",
+     "d": 0.25,
+     "series": "UNC",
+     "tpi": 20,
+     "dims": {
+      "s": 0.4375,
+      "m": 0.1562
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "5/16",
+     "nominal": "5/16",
+     "d": 0.3125,
+     "series": "UNC",
+     "tpi": 18,
+     "dims": {
+      "s": 0.5,
+      "m": 0.1875
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "3/8",
+     "nominal": "3/8",
+     "d": 0.375,
+     "series": "UNC",
+     "tpi": 16,
+     "dims": {
+      "s": 0.5625,
+      "m": 0.2188
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/2",
+     "nominal": "1/2",
+     "d": 0.5,
+     "series": "UNC",
+     "tpi": 13,
+     "dims": {
+      "s": 0.75,
+      "m": 0.3125
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/4-28",
+     "nominal": "1/4",
+     "d": 0.25,
+     "series": "UNF",
+     "tpi": 28,
+     "dims": {
+      "s": 0.4375,
+      "m": 0.1562
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "5/16-24",
+     "nominal": "5/16",
+     "d": 0.3125,
+     "series": "UNF",
+     "tpi": 24,
+     "dims": {
+      "s": 0.5,
+      "m": 0.1875
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "3/8-24",
+     "nominal": "3/8",
+     "d": 0.375,
+     "series": "UNF",
+     "tpi": 24,
+     "dims": {
+      "s": 0.5625,
+      "m": 0.2188
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/2-20",
+     "nominal": "1/2",
+     "d": 0.5,
+     "series": "UNF",
+     "tpi": 20,
+     "dims": {
+      "s": 0.75,
+      "m": 0.3125
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS",
+    "SS-BO"
+   ],
+   "source": "https://www.mcmaster.com/products/hex-nuts/finish~black-oxide/material~18-8-stainless-steel/thin-profile-hex-nuts-2~~/ (McMaster black-oxide 18-8 thin-profile hex nuts, DIN 439 B: width, height)",
+   "sources": {
+    "dims": [
+     "mcm_thin_bo"
+    ],
+    "finish": [
+     "mcm_thin_bo"
+    ]
+   },
+   "notes": "",
+   "mcmaster": "Thin-Profile Hex Nuts",
+   "mcmaster_url": "https://www.mcmaster.com/products/hex-nuts/finish~black-oxide/material~18-8-stainless-steel/thin-profile-hex-nuts-2~~/"
+  },
+  {
+   "code": "NNL-I",
+   "kind": "nut",
+   "shape": "nylon",
+   "name": "Nylon-insert locknut",
+   "standard": "IFI 100/107",
+   "system": "inch",
+   "sizes": [
+    {
+     "size": "#2",
+     "nominal": "#2",
+     "d": 0.086,
+     "series": "UNC",
+     "tpi": 56,
+     "dims": {
+      "s": 0.25,
+      "m": 0.1406
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#4",
+     "nominal": "#4",
+     "d": 0.112,
+     "series": "UNC",
+     "tpi": 40,
+     "dims": {
+      "s": 0.25,
+      "m": 0.1406
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#6",
+     "nominal": "#6",
+     "d": 0.138,
+     "series": "UNC",
+     "tpi": 32,
+     "dims": {
+      "s": 0.3125,
+      "m": 0.1719
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#8",
+     "nominal": "#8",
+     "d": 0.164,
+     "series": "UNC",
+     "tpi": 32,
+     "dims": {
+      "s": 0.3438,
+      "m": 0.2344
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#10",
+     "nominal": "#10",
+     "d": 0.19,
+     "series": "UNC",
+     "tpi": 24,
+     "dims": {
+      "s": 0.375,
+      "m": 0.2344
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/4",
+     "nominal": "1/4",
+     "d": 0.25,
+     "series": "UNC",
+     "tpi": 20,
+     "dims": {
+      "s": 0.4375,
+      "m": 0.3125
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "5/16",
+     "nominal": "5/16",
+     "d": 0.3125,
+     "series": "UNC",
+     "tpi": 18,
+     "dims": {
+      "s": 0.5,
+      "m": 0.3438
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "3/8",
+     "nominal": "3/8",
+     "d": 0.375,
+     "series": "UNC",
+     "tpi": 16,
+     "dims": {
+      "s": 0.5625,
+      "m": 0.4531
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/2",
+     "nominal": "1/2",
+     "d": 0.5,
+     "series": "UNC",
+     "tpi": 13,
+     "dims": {
+      "s": 0.75,
+      "m": 0.5938
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#6-40",
+     "nominal": "#6",
+     "d": 0.138,
+     "series": "UNF",
+     "tpi": 40,
+     "dims": {
+      "s": 0.3125,
+      "m": 0.1719
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#8-36",
+     "nominal": "#8",
+     "d": 0.164,
+     "series": "UNF",
+     "tpi": 36,
+     "dims": {
+      "s": 0.3438,
+      "m": 0.2344
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#10-32",
+     "nominal": "#10",
+     "d": 0.19,
+     "series": "UNF",
+     "tpi": 32,
+     "dims": {
+      "s": 0.375,
+      "m": 0.2344
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/4-28",
+     "nominal": "1/4",
+     "d": 0.25,
+     "series": "UNF",
+     "tpi": 28,
+     "dims": {
+      "s": 0.4375,
+      "m": 0.3125
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "5/16-24",
+     "nominal": "5/16",
+     "d": 0.3125,
+     "series": "UNF",
+     "tpi": 24,
+     "dims": {
+      "s": 0.5,
+      "m": 0.3438
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "3/8-24",
+     "nominal": "3/8",
+     "d": 0.375,
+     "series": "UNF",
+     "tpi": 24,
+     "dims": {
+      "s": 0.5625,
+      "m": 0.4531
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/2-20",
+     "nominal": "1/2",
+     "d": 0.5,
+     "series": "UNF",
+     "tpi": 20,
+     "dims": {
+      "s": 0.75,
+      "m": 0.5938
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS",
+    "SS-BO"
+   ],
+   "source": "https://www.mcmaster.com/products/locknuts/finish~black-oxide/material~18-8-stainless-steel/nylon-insert-locknuts-2~~/ (McMaster black-oxide 18-8 nylon-insert locknuts, inch: width, height)",
+   "sources": {
+    "dims": [
+     "mcm_nylon_bo"
+    ],
+    "finish": [
+     "mcm_nylon_bo"
+    ]
+   },
+   "notes": "",
+   "mcmaster": "Nylon-Insert Locknuts",
+   "mcmaster_url": "https://www.mcmaster.com/products/locknuts/finish~black-oxide/material~18-8-stainless-steel/nylon-insert-locknuts-2~~/"
+  },
+  {
+   "code": "WSA-I",
+   "kind": "washer",
+   "shape": "flat",
+   "name": "SAE washer",
+   "standard": "ASME B18.21.1 (SAE)",
+   "system": "inch",
+   "sizes": [
+    {
+     "size": "#2",
+     "nominal": "#2",
+     "d": 0.086,
+     "dims": {
+      "d1": 0.094,
+      "d2": 0.25,
+      "t": 0.015
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#4",
+     "nominal": "#4",
+     "d": 0.112,
+     "dims": {
+      "d1": 0.125,
+      "d2": 0.312,
+      "t": 0.032
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#6",
+     "nominal": "#6",
+     "d": 0.138,
+     "dims": {
+      "d1": 0.156,
+      "d2": 0.375,
+      "t": 0.049
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#8",
+     "nominal": "#8",
+     "d": 0.164,
+     "dims": {
+      "d1": 0.188,
+      "d2": 0.438,
+      "t": 0.049
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#10",
+     "nominal": "#10",
+     "d": 0.19,
+     "dims": {
+      "d1": 0.219,
+      "d2": 0.5,
+      "t": 0.049
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/4",
+     "nominal": "1/4",
+     "d": 0.25,
+     "dims": {
+      "d1": 0.281,
+      "d2": 0.625,
+      "t": 0.065
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "5/16",
+     "nominal": "5/16",
+     "d": 0.3125,
+     "dims": {
+      "d1": 0.344,
+      "d2": 0.688,
+      "t": 0.065
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "3/8",
+     "nominal": "3/8",
+     "d": 0.375,
+     "dims": {
+      "d1": 0.406,
+      "d2": 0.812,
+      "t": 0.065
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/2",
+     "nominal": "1/2",
+     "d": 0.5,
+     "dims": {
+      "d1": 0.531,
+      "d2": 1.062,
+      "t": 0.095
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS",
+    "SS-BO"
+   ],
+   "source": "https://www.mcmaster.com/products/washers/finish~black-oxide/material~18-8-stainless-steel/sae-washers-1~~/ (McMaster black-oxide 18-8 SAE washers: ID, OD, thk)",
+   "sources": {
+    "dims": [
+     "mcm_sae_bo",
+     "bbi_sae"
+    ],
+    "finish": [
+     "mcm_sae_bo"
+    ]
+   },
+   "notes": "Thickness is the Brighton-Best basic value (inside McMaster's range), except #2: McMaster 0.012-0.018 vs 0.020.",
+   "mcmaster": "SAE Washers",
+   "mcmaster_url": "https://www.mcmaster.com/products/washers/finish~black-oxide/material~18-8-stainless-steel/sae-washers-1~~/"
+  },
+  {
+   "code": "WUS-I",
+   "kind": "washer",
+   "shape": "flat",
+   "name": "USS washer",
+   "standard": "USS",
+   "system": "inch",
+   "sizes": [
+    {
+     "size": "1/4",
+     "nominal": "1/4",
+     "d": 0.25,
+     "dims": {
+      "d1": 0.312,
+      "d2": 0.75,
+      "t": 0.065
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "5/16",
+     "nominal": "5/16",
+     "d": 0.3125,
+     "dims": {
+      "d1": 0.375,
+      "d2": 0.875,
+      "t": 0.083
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "3/8",
+     "nominal": "3/8",
+     "d": 0.375,
+     "dims": {
+      "d1": 0.438,
+      "d2": 1.0,
+      "t": 0.083
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/2",
+     "nominal": "1/2",
+     "d": 0.5,
+     "dims": {
+      "d1": 0.562,
+      "d2": 1.375,
+      "t": 0.109
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS",
+    "SS-BO"
+   ],
+   "source": "https://www.mcmaster.com/products/washers/finish~black-oxide/material~18-8-stainless-steel/uss-washers-2~~/ (McMaster black-oxide 18-8 USS washers: ID, OD, thk)",
+   "sources": {
+    "dims": [
+     "mcm_uss_bo",
+     "bbi_uss"
+    ],
+    "finish": [
+     "mcm_uss_bo"
+    ]
+   },
+   "notes": "McMaster 1/4 OD is 0.750; Brighton-Best (B18.21.1 wide) gives 0.734.",
+   "mcmaster": "USS Washers",
+   "mcmaster_url": "https://www.mcmaster.com/products/washers/finish~black-oxide/material~18-8-stainless-steel/uss-washers-2~~/"
+  },
+  {
+   "code": "WSL-I",
+   "kind": "washer",
+   "shape": "split",
+   "name": "Split lock washer",
+   "standard": "ASME B18.21.1",
+   "system": "inch",
+   "sizes": [
+    {
+     "size": "#2",
+     "nominal": "#2",
+     "d": 0.086,
+     "dims": {
+      "d1": 0.094,
+      "d2": 0.172,
+      "t": 0.02
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#4",
+     "nominal": "#4",
+     "d": 0.112,
+     "dims": {
+      "d1": 0.12,
+      "d2": 0.209,
+      "t": 0.025
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#6",
+     "nominal": "#6",
+     "d": 0.138,
+     "dims": {
+      "d1": 0.148,
+      "d2": 0.25,
+      "t": 0.031
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#8",
+     "nominal": "#8",
+     "d": 0.164,
+     "dims": {
+      "d1": 0.174,
+      "d2": 0.293,
+      "t": 0.04
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "#10",
+     "nominal": "#10",
+     "d": 0.19,
+     "dims": {
+      "d1": 0.2,
+      "d2": 0.334,
+      "t": 0.047
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/4",
+     "nominal": "1/4",
+     "d": 0.25,
+     "dims": {
+      "d1": 0.26,
+      "d2": 0.487,
+      "t": 0.062
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "5/16",
+     "nominal": "5/16",
+     "d": 0.3125,
+     "dims": {
+      "d1": 0.322,
+      "d2": 0.583,
+      "t": 0.078
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "3/8",
+     "nominal": "3/8",
+     "d": 0.375,
+     "dims": {
+      "d1": 0.385,
+      "d2": 0.68,
+      "t": 0.094
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "1/2",
+     "nominal": "1/2",
+     "d": 0.5,
+     "dims": {
+      "d1": 0.512,
+      "d2": 0.869,
+      "t": 0.125
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS",
+    "SS-BO"
+   ],
+   "source": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/split-lock-washers-2~~/ (McMaster 18-8 split lock washers: ID, OD, thk)",
+   "sources": {
+    "dims": [
+     "mcm_split",
+     "bbi_split"
+    ],
+    "finish": [
+     "mcm_split_bo"
+    ]
+   },
+   "notes": "McMaster ID, OD and thickness = B18.21.1 A max, B max, T min.",
+   "mcmaster": "Split Lock Washers",
+   "mcmaster_url": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/split-lock-washers-2~~/"
+  }
+ ]
 }

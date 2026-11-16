@@ -31,13 +31,13 @@ def _load():
     return pkg, core, place, main_mod
 
 
-def _plate_with_holes(design, holes):
-    """holes: list of (x_cm, diameter_cm). Plate 1 cm thick on XY, holes cut through from the top (z=1)."""
+def _plate_with_holes(design, holes, y0=0.0):
+    """holes: list of (x_cm, diameter_cm). Plate 1 cm thick on XY centred on y=y0, holes cut through from the top (z=1)."""
     root = design.rootComponent
     sk = root.sketches.add(root.xYConstructionPlane)
     width = max(x for x, _ in holes) + 2.0
-    sk.sketchCurves.sketchLines.addTwoPointRectangle(adsk.core.Point3D.create(-1, -1.5, 0),
-                                                     adsk.core.Point3D.create(width, 1.5, 0))
+    sk.sketchCurves.sketchLines.addTwoPointRectangle(adsk.core.Point3D.create(-1, y0 - 1.5, 0),
+                                                     adsk.core.Point3D.create(width, y0 + 1.5, 0))
     prof = max((sk.profiles.item(i) for i in range(sk.profiles.count)), key=lambda p: p.areaProperties().area)
     ext = root.features.extrudeFeatures.addSimple(prof, adsk.core.ValueInput.createByReal(1.0),
                                                   adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
@@ -46,7 +46,7 @@ def _plate_with_holes(design, holes):
               key=lambda f: f.centroid.z)
     sk2 = root.sketches.add(top)
     for x, dia in holes:
-        p = sk2.modelToSketchSpace(adsk.core.Point3D.create(x, 0, 1.0))
+        p = sk2.modelToSketchSpace(adsk.core.Point3D.create(x, y0, 1.0))
         sk2.sketchCurves.sketchCircles.addByCenterRadius(p, dia / 2.0)
     profs = adsk.core.ObjectCollection.create()
     for i in range(sk2.profiles.count):
@@ -59,13 +59,83 @@ def _plate_with_holes(design, holes):
     return body
 
 
-def _top_edge(body, x):
+def _top_edge(body, x, z=1.0, y=None):
     best = None
     for e in body.edges:
         c = adsk.core.Circle3D.cast(e.geometry)
-        if c and abs(c.center.z - 1.0) < 1e-6 and abs(c.center.x - x) < 1e-6:
+        if c and abs(c.center.z - z) < 1e-6 and abs(c.center.x - x) < 1e-6 and (y is None or abs(c.center.y - y) < 1e-6):
             best = e
     return best
+
+
+# Nuts and washers: (hole dia cm, [(code, size, finish, 'top'|'bottom')...]) placed in order on one hole,
+# so later parts stack on earlier ones. Expected seat height = plate face +/- thickness of what is below it.
+PART_STACKS = [
+    (0.55, [('WGP-M', 'M5', 'SS', 'top'), ('SSH-M', 'M5', 'SS', 'top', 16), ('WSL-M', 'M5', 'SS', 'bottom'),
+            ('NHX-M', 'M5', 'SS-BO', 'bottom')]),
+    (0.66, [('WSA-I', '1/4', 'SS-BO', 'top'), ('SHH-I', '1/4', 'SS', 'top', 1.0), ('WUS-I', '1/4', 'SS', 'bottom'),
+            ('NNL-I', '1/4', 'SS-BO', 'bottom')]),
+    (0.66, [('NTH-M', 'M6', 'SS-BO', 'bottom'), ('NFL-M', 'M6', 'SS', 'top')]),
+    (0.88, [('WOV-M', 'M8', 'SS', 'top'), ('NSF-M', 'M8', 'SS', 'bottom')]),
+    (0.55, [('WTE-M', 'M5', 'SS', 'top'), ('WTI-M', 'M5', 'SS', 'bottom')]),
+    (0.88, [('NNL-M', 'M8', 'SS-BO', 'top'), ('WSL-M', 'M8', 'SS-BO', 'bottom'), ('NTH-M', 'M8', 'SS', 'bottom')]),
+    (1.0, [('NTH-I', '3/8', 'SS-BO', 'top'), ('WSL-I', '3/8', 'SS', 'bottom'), ('NHX-I', '3/8-24', 'SS-BO', 'bottom')]),
+    (0.51, [('NHX-I', '#10-32', 'SS-BO', 'bottom'), ('WSL-I', '#10', 'SS-BO', 'top'), ('WSA-I', '#10', 'SS', 'top')]),
+    (0.37, [('NHX-I', '#6', 'SS', 'bottom'), ('NNL-I', '#6-40', 'SS-BO', 'top')]),
+]
+
+
+def _parts(app, design, core, place, cat, check, report):
+    y0 = 4.0
+    holes = [(i * 2.5, dia) for i, (dia, _) in enumerate(PART_STACKS)]
+    body = _plate_with_holes(design, holes, y0)
+    joints_before = design.rootComponent.joints.count
+    placed = 0
+    for i, (dia, seq) in enumerate(PART_STACKS):
+        x = holes[i][0]
+        height = {'top': 0.0, 'bottom': 0.0}
+        for item in seq:
+            code, size, fin, side = item[:4]
+            length = item[4] if len(item) > 4 else None
+            fam = core.family(cat, code)
+            row = core.size_row(fam, size)
+            edge = _top_edge(body, x, 1.0 if side == 'top' else 0.0, y0)
+            tag = '%s %s %s %s' % (code, size, fin, side)
+            check('%s edge found' % tag, edge is not None)
+            occs, notes = place.place(app, design, cat, fam, row, length, fin, [edge])
+            placed += 1
+            report['notes'] += ['%s: %s' % (tag, n) for n in notes]
+            occ = occs[0]
+            comp = occ.component
+            bom = core.bom_fields(cat, fam, row, length, fin)
+            check('%s part number' % tag, comp.partNumber == bom['part_number'], comp.partNumber)
+            check('%s description' % tag, comp.description == bom['description'], comp.description)
+            check('%s material' % tag, comp.material and comp.material.name == bom['material'],
+                  comp.material.name if comp.material else None)
+            b = comp.bRepBodies.item(0)
+            check('%s solid' % tag, b.isSolid and b.volume > 0, b.volume)
+            origin, _, _, z = occ.transform2.getAsCoordinateSystem()
+            sign = 1.0 if side == 'top' else -1.0
+            want_z = (1.0 + height['top']) if side == 'top' else -height['bottom']
+            check('%s seat height (stacked)' % tag, abs(origin.x - x) < 1e-4 and abs(origin.y - y0) < 1e-4
+                  and abs(origin.z - want_z) < 1e-4, (origin.x, origin.y, origin.z, want_z))
+            check('%s faces out of the hole' % tag, abs(z.z - sign) < 1e-6, z.asArray())
+            check('%s joint, no notes' % tag, not notes, notes)
+            bb = occ.bRepBodies.item(0).boundingBox
+            if core.kind(fam) != 'screw':
+                g = core.part_geometry(fam, row)
+                check('%s thickness' % tag, abs((bb.maxPoint.z - bb.minPoint.z) - g['thickness']) < 1e-3,
+                      (bb.maxPoint.z - bb.minPoint.z, g['thickness']))
+                width = max(bb.maxPoint.x - bb.minPoint.x, bb.maxPoint.y - bb.minPoint.y)  # split gap cuts one side
+                want_w = 2 * g.get('flange_r', g.get('outer_r', 0)) if g['shape'] != 'hex' and g['shape'] != 'nylon' else None
+                if want_w:
+                    check('%s outside diameter' % tag, abs(width - want_w) < 1e-3, (width, want_w))
+                else:
+                    check('%s hex at least across flats' % tag, width >= g['across_flats'] - 1e-3, (width, g['across_flats']))
+                height[side] += g['thickness']
+    check('part joints made', design.rootComponent.joints.count - joints_before == placed,
+          (design.rootComponent.joints.count - joints_before, placed))
+    return placed
 
 
 def main(keep=False, out=None):
@@ -159,11 +229,12 @@ def main(keep=False, out=None):
                     tip = -g['L']
                     check('%s thread at tip end' % code, zs and min(zs) < tip + 0.2 and max(zs) < tip + g['thread_len'] + 0.2,
                           (min(zs) if zs else None, max(zs) if zs else None, tip, g['thread_len']))
+        report['parts_placed'] = _parts(app, design, core, place, cat, check, report)
         root = design.rootComponent
         same = [o for o in root.occurrences if o.component.partNumber == 'SSH-M3-0.5 x 10 18-8 SS']
         check('reuse: two occurrences, one component', len(same) == 2 and same[0].component == same[1].component,
               len(same))
-        check('joints made', root.joints.count == len(cases), root.joints.count)
+        check('joints made', root.joints.count == len(cases) + report['parts_placed'], root.joints.count)
         threads = sum(c.features.threadFeatures.count for c in design.allComponents)
         report['cosmetic_threads'] = threads
         # toolbar button

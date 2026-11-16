@@ -18,12 +18,21 @@ def load_catalog(path=CATALOG_PATH):
         return json.load(f)
 
 
-def families(cat, system=None):
-    return [f for f in cat['families'] if system in (None, f['system'])]
+KINDS = (('screw', 'Screws'), ('nut', 'Nuts'), ('washer', 'Washers'))
+
+
+def kind(fam):
+    return fam.get('kind', 'screw')
+
+
+def families(cat, system=None, kind_=None):
+    """Screw families by default; kind_='nut' or 'washer' lists those from cat['parts']."""
+    pool = cat['families'] if kind_ in (None, 'screw') else [p for p in cat.get('parts', []) if p['kind'] == kind_]
+    return [f for f in pool if system in (None, f['system'])]
 
 
 def family(cat, code):
-    for f in cat['families']:
+    for f in cat['families'] + cat.get('parts', []):
         if f['code'] == code:
             return f
     raise KeyError(code)
@@ -64,6 +73,8 @@ def nominal(row):
 
 
 def thread_label(fam, row):
+    if kind(fam) == 'washer':
+        return ('%s screw' % nominal(row)) if fam['system'] == 'inch' else row['size']
     if fam['system'] == 'inch':
         return '%s-%d %s' % (nominal(row), row['tpi'], row.get('series', 'UNC'))
     return '%s x %g' % (row['size'], row['pitch'])
@@ -71,6 +82,8 @@ def thread_label(fam, row):
 
 def finishes_for(cat, fam, row):
     """Finish keys offered for this size: the family's list, with ALLOY-BO only where a maker sells it."""
+    if 'finishes' in row:  # nuts and washers: per size, black oxide only where McMaster stocks it
+        return list(row['finishes'])
     out = []
     for k in fam.get('finishes', list(cat['finishes'])):
         if k == 'ALLOY-BO' and 'ALLOY-BO' not in row.get('grade', {}):
@@ -81,6 +94,15 @@ def finishes_for(cat, fam, row):
 
 def part_number(fam, row, length, finish_key):
     """Daniel's BOM code: 'SSH-M3-0.5 x 10 18-8 SS', 'SSH-1/4-20 x 1.5 18-8 SS-BO', 'SSH-4-40 x 0.25 18-8 SS'."""
+    code = fam['code'].rsplit('-', 1)[0]
+    if kind(fam) != 'screw':
+        if kind(fam) == 'washer':
+            body = nominal(row).lstrip('#') if fam['system'] == 'inch' else row['size']
+        elif fam['system'] == 'inch':
+            body = '%s-%d' % (nominal(row).lstrip('#'), row['tpi'])
+        else:
+            body = '%s-%g' % (row['size'], row['pitch'])
+        return '%s-%s %s' % (code, body, _FIN_CODE.get(finish_key, finish_key))
     if fam['system'] == 'inch':
         body = '%s-%d x %s' % (nominal(row).lstrip('#'), row['tpi'], ('%.4f' % length).rstrip('0').rstrip('.'))
     else:
@@ -99,11 +121,31 @@ def grade(row, finish_key):
 def description(cat, fam, row, length, finish_key):
     """'Socket head cap screw, ISO 4762, M3 x 0.5 x 10 mm, 18-8 stainless steel'
     (alloy adds the grade: '..., alloy steel, black oxide, class 12.9')."""
+    if kind(fam) != 'screw':
+        return part_description(cat, fam, row, finish_key)
     unit_len = length_label(fam, length)
     text = '%s, %s, %s x %s, %s' % (fam['name'], fam['standard'], thread_label(fam, row), unit_len,
                                     finish(cat, finish_key)['name'].lower())
     g = grade(row, finish_key)
     return text + (', ' + g if g else '')
+
+
+def _dim(fam, v):
+    return (('%.3f' % v).rstrip('0').rstrip('.') + '"') if fam['system'] == 'inch' else ('%g mm' % v)
+
+
+def part_description(cat, fam, row, finish_key):
+    """'Hex nut, DIN 934, M5 x 0.8, 8 mm wide x 4 mm high, 18-8 stainless steel'
+    'Split lock washer, DIN 127 B, M5, 5.4 mm ID x 9.2 mm OD x 1.2 mm thick, 18-8 stainless steel'"""
+    d = row['dims']
+    if kind(fam) == 'nut':
+        size = '%s wide x %s high' % (_dim(fam, d['s']), _dim(fam, d['m']))
+        if 'dc' in d:
+            size += ', %s flange' % _dim(fam, d['dc'])
+    else:
+        size = '%s ID x %s OD x %s thick' % (_dim(fam, d['d1']), _dim(fam, d['d2']), _dim(fam, d['t']))
+    return '%s, %s, %s, %s, %s' % (fam['name'], fam['standard'], thread_label(fam, row), size,
+                                   finish(cat, finish_key)['name'].lower())
 
 
 def component_name(fam, row, length, finish_key):
@@ -127,6 +169,24 @@ def bom_fields(cat, fam, row, length, finish_key):
         'standard': fam['standard'],
         'source': fam['source'],
     }
+
+
+def part_geometry(fam, row):
+    """Nuts and washers, in cm. z=0 is the face that sits on the part (or on the washer/nut below);
+    the body goes +z. bore_r: nut bore = nominal diameter (threads cosmetic), washer bore = ID."""
+    c = lambda v: to_cm(fam, v)  # noqa: E731
+    d = row['dims']
+    g = {'kind': kind(fam), 'shape': fam['shape']}
+    if kind(fam) == 'nut':
+        g.update(bore_r=c(row['d']) / 2.0, across_flats=c(d['s']), height=c(d['m']))
+        if fam['shape'] == 'flange':
+            g.update(flange_r=c(d['dc']) / 2.0, flange_t=c(d['c']))
+    else:
+        g.update(bore_r=c(d['d1']) / 2.0, outer_r=c(d['d2']) / 2.0, height=c(d['t']))
+        if fam['shape'] == 'split':
+            g['gap'] = g['height']  # slot width drawn equal to the thickness (not dimensioned in the standards)
+    g['thickness'] = g['height']
+    return g
 
 
 def thread_length(fam, row, length):
@@ -263,7 +323,7 @@ def size_from_designation(fam, designation):
     except ValueError:
         return None
     for row in fam['sizes']:
-        if nominal(row).lstrip('#') == nom and row['tpi'] == tpi:
+        if nominal(row).lstrip('#') == nom and row.get('tpi', tpi) == tpi:
             return row['size']
     return None
 
