@@ -1378,8 +1378,8 @@
    "mcmaster_url": "https://www.mcmaster.com/products/socket-head-screws/"
   },
   {
-   "code": "SHH-M",
-   "name": "Hex head screw, fully threaded",
+   "code": "HHB-M",
+   "name": "Hex head bolt, fully threaded",
    "standard": "ISO 4017",
    "system": "metric",
    "head": "hex",
@@ -5211,8 +5211,8 @@
    "mcmaster_url": "https://www.mcmaster.com/products/socket-head-screws/"
   },
   {
-   "code": "SHH-I",
-   "name": "Hex head screw",
+   "code": "HHB-I",
+   "name": "Hex head bolt",
    "standard": "ASME B18.2.1",
    "system": "inch",
    "head": "hex",

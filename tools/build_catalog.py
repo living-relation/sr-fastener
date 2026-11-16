@@ -244,7 +244,7 @@ FAMILIES = [
              ('M6', cap(10.0, 4.0, 4.0, 2.88)), ('M8', cap(13.0, 5.0, 5.0, 3.65)), ('M10', cap(16.0, 6.0, 7.0, 4.35)),
              ('M12', cap(18.0, 7.0, 8.0, 4.85)), ('M16', cap(24.0, 9.0, 12.0, 5.35))],
              R_MM_UNVERIFIED, None, every(M_ALL, 'class 10.9'))),
-    dict(code='SHH-M', name='Hex head screw, fully threaded', standard='ISO 4017', system='metric', head='hex',
+    dict(code='HHB-M', name='Hex head bolt, fully threaded', standard='ISO 4017', system='metric', head='hex',
          drive='none', finishes=STD, source=SRC['iso4017'],
          sources={'dims': ['iso4017'], 'lengths': [], 'thread': ['iso4017'], 'alloy': []},
          sizes=mm_sizes([
@@ -337,7 +337,7 @@ FAMILIES = [
              ('1/4', cap(0.375, 0.127, 0.125, 0.094)), ('5/16', cap(0.437, 0.158, 0.156, 0.110)),
              ('3/8', cap(0.562, 0.192, 0.188, 0.115)), ('1/2', cap(0.750, 0.254, 0.250, 0.151))],
              alloy=every(I_ALL[3:], 'ASTM A574'), unf=I_ALL[3:])),
-    dict(code='SHH-I', name='Hex head screw', standard='ASME B18.2.1', system='inch', head='hex', drive='none',
+    dict(code='HHB-I', name='Hex head bolt', standard='ASME B18.2.1', system='inch', head='hex', drive='none',
          finishes=ALL, source=SRC['b1821_hex'],
          sources={'dims': ['b1821_hex'], 'lengths': [], 'thread': ['b1821_hex'], 'alloy': ['av_in_hex']},
          sizes=in_sizes([
@@ -393,7 +393,7 @@ MCMASTER = {
     'SBH': ('Button Head Hex-Drive Screws', MCM + 'rounded-head-screws/'),
     'SFH': ('Hex-Drive Flat Head Screws', MCM + 'flat-head-screws/'),
     'SLH': ('Low-Profile Socket Head Screws', MCM + 'socket-head-screws/'),
-    'SHH': ('Hex Head Screws', MCM + 'hex-head-screws/'),
+    'HHB': ('Hex Head Screws', MCM + 'hex-head-screws/'),
     'SSF': ('Flat-Tip Set Screws', MCM + 'set-screws/'),
     'SSC': ('Cup-Tip Set Screws', MCM + 'set-screws/'),
     'SPH': ('Pan Head Phillips Screws', MCM + 'rounded-head-screws/'),

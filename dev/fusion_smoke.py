@@ -86,15 +86,15 @@ def main(keep=False, out=None):
         design.designType = adsk.fusion.DesignTypes.ParametricDesignType
         cases = [('SSH-M', 'M3', 10, 'SS', 0.34), ('SSH-M', 'M3', 10, 'SS', 0.34), ('SSH-M', 'M5', 16, 'SS-BO', 0.55),
                  ('SBH-M', 'M4', 12, 'SS-BO', 0.45), ('SFH-M', 'M4', 12, 'SS', 0.45), ('SLH-M', 'M6', 16, 'SS', 0.66),
-                 ('SHH-M', 'M6', 20, 'SS-BO', 0.66), ('SSF-M', 'M8', 10, 'SS', 0.68),
+                 ('HHB-M', 'M6', 20, 'SS-BO', 0.66), ('SSF-M', 'M8', 10, 'SS', 0.68),
                  ('SSH-I', '1/4', 1.0, 'SS-BO', 0.66), ('SBH-I', '#10', 0.5, 'SS', 0.51),
-                 ('SFH-I', '#8', 0.5, 'SS-BO', 0.44), ('SLH-I', '#6', 0.375, 'SS', 0.37), ('SHH-I', '1/4', 1.0, 'SS', 0.66),
+                 ('SFH-I', '#8', 0.5, 'SS-BO', 0.44), ('SLH-I', '#6', 0.375, 'SS', 0.37), ('HHB-I', '1/4', 1.0, 'SS', 0.66),
                  # alloy steel black oxide, one per family that offers it
                  ('SSH-M', 'M5', 16, 'ALLOY-BO', 0.55), ('SBH-M', 'M6', 12, 'ALLOY-BO', 0.66),
                  ('SFH-M', 'M5', 16, 'ALLOY-BO', 0.55), ('SLH-M', 'M8', 20, 'ALLOY-BO', 0.88),
                  ('SSF-M', 'M6', 8, 'ALLOY-BO', 0.5), ('SSH-I', '1/4', 2.0, 'ALLOY-BO', 0.66),
                  ('SBH-I', '#10-32', 0.5, 'ALLOY-BO', 0.51), ('SFH-I', '#10', 2.0, 'ALLOY-BO', 0.51),
-                 ('SLH-I', '1/4', 0.75, 'ALLOY-BO', 0.66), ('SHH-I', '1/4', 1.5, 'ALLOY-BO', 0.66),
+                 ('SLH-I', '1/4', 0.75, 'ALLOY-BO', 0.66), ('HHB-I', '1/4', 1.5, 'ALLOY-BO', 0.66),
                  ('SSF-I', '1/4', 0.5, 'ALLOY-BO', 0.53),
                  # new types and a partly threaded metric screw
                  ('SSC-M', 'M6', 10, 'SS', 0.5), ('SSC-I', '1/4', 0.5, 'ALLOY-BO', 0.53), ('SSH-M', 'M6', 35, 'SS', 0.66),

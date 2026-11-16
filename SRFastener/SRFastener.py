@@ -16,7 +16,7 @@ from . import fastener_place as fp  # noqa: E402
 
 CMD_ID = 'srFastenerInsertCmd'
 CMD_NAME = 'SR Fastener'
-CMD_TIP = ('Insert a socket head, button head, flat head, low-profile or hex head screw, or a cup-tip or flat-tip set screw, into hole edges. '
+CMD_TIP = ('Insert a socket head, button head, flat head, low-profile or hex head bolt, or a cup-tip or flat-tip set screw, into hole edges. '
            'Pick type, size, length and finish (stainless, stainless black oxide or alloy black oxide); '
            'BOM fields fill in.')
 WORKSPACE = 'FusionSolidEnvironment'

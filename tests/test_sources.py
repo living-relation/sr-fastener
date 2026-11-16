@@ -56,9 +56,9 @@ def test_din7984():  # Brighton-Best DIN 7984 data sheet (t min); Fastener Netwo
 
 
 def test_iso4017():  # ISO 4017:2022 Table 1 (s nom = max, k nom)
-    assert dims('SHH-M', 'M3') == {'s': 5.5, 'k': 2.0}
-    assert dims('SHH-M', 'M8') == {'s': 13.0, 'k': 5.3}
-    assert dims('SHH-M', 'M16') == {'s': 24.0, 'k': 10.0}
+    assert dims('HHB-M', 'M3') == {'s': 5.5, 'k': 2.0}
+    assert dims('HHB-M', 'M8') == {'s': 13.0, 'k': 5.3}
+    assert dims('HHB-M', 'M16') == {'s': 24.0, 'k': 10.0}
 
 
 def test_iso4026():  # ISO 4026:2003 Table 1 (dp max, s nom, t min below / in the shaded area)
@@ -100,9 +100,9 @@ def test_inch_set_screw():  # Holo-Krome Table 13: J nom, TH min, flat point C2 
 
 
 def test_inch_hex():  # Brighton-Best / ASME B18.2.1: F max, H max, LT
-    assert dims('SHH-I', '1/4') == {'s': 0.438, 'k': 0.163}
-    assert dims('SHH-I', '1/2') == {'s': 0.750, 'k': 0.323}
-    assert fc.size_row(fc.family(CAT, 'SHH-I'), '3/8')['thread']['b'] == 1.0
+    assert dims('HHB-I', '1/4') == {'s': 0.438, 'k': 0.163}
+    assert dims('HHB-I', '1/2') == {'s': 0.750, 'k': 0.323}
+    assert fc.size_row(fc.family(CAT, 'HHB-I'), '3/8')['thread']['b'] == 1.0
 
 
 def test_unf_rows_share_head_data():
