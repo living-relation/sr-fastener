@@ -36,7 +36,7 @@ Names and codes follow McMaster-Carr's category names (checked on mcmaster.com 2
 | Button head hex-drive screw, metric | SBH | ISO 7380-1 | M3 to M16 |
 | Hex-drive flat head screw 90 deg, metric | SFH | ISO 10642 | M3 to M20 |
 | Low-profile socket head screw, metric | SLH | DIN 7984 | M3 to M16 |
-| Hex head screw, fully threaded, metric | SHH | ISO 4017 | M3 to M16 |
+| Hex head bolt, fully threaded, metric | HHB | ISO 4017 | M3 to M16 |
 | Flat-tip set screw, metric | SSF | ISO 4026 | M3 to M12 |
 | Cup-tip set screw, metric | SSC | ISO 4029 | M3 to M12 |
 | Pan head Phillips screw, metric | SPH | ISO 7045 | M2 to M10 |
@@ -45,7 +45,7 @@ Names and codes follow McMaster-Carr's category names (checked on mcmaster.com 2
 | Button head hex-drive screw, inch | SBH | ASME B18.3 | #2 to 1/2, UNC and UNF |
 | Hex-drive flat head screw 82 deg, inch | SFH | ASME B18.3 | #2 to 1/2, UNC and UNF |
 | Low-profile socket head screw, inch | SLH | ASME B18.3 | #4 to 1/2 UNC, #8 to 1/2 UNF |
-| Hex head screw, inch | SHH | ASME B18.2.1 | 1/4 to 1/2 |
+| Hex head bolt, inch | HHB | ASME B18.2.1 | 1/4 to 1/2 |
 | Flat-tip set screw, inch | SSF | ASME B18.3 | #2 to 1/2, UNC and UNF |
 | Cup-tip set screw, inch | SSC | ASME B18.3 | #2 to 1/2, UNC and UNF |
 
@@ -119,10 +119,10 @@ carries the grade, e.g. `Socket head screw, ISO 4762, M5 x 0.8 x 16 mm, alloy st
 | Button head, inch | all sizes | ASTM F835 | Holo-Krome |
 | Flat head, inch | #4 to 1/2 (not #2) | ASTM F835 | Holo-Krome |
 | Low head, inch | #8 to 1/2 (not #4, #6) | ASTM A574 | Holo-Krome |
-| Hex head screw, inch | all sizes | SAE J429 Grade 8 | Raptor Supplies listing |
+| Hex head bolt, inch | all sizes | SAE J429 Grade 8 | Raptor Supplies listing |
 | Flat-tip set screw, inch | all sizes | ASTM F912 | Fastenal |
 | Cup-tip set screw, inch | all sizes | ASTM F912 | Holo-Krome alloy cup point, black finish (tech manual) |
-| Hex head screw, metric (ISO 4017) | **not offered** | | only plain or "tempered black" found, not black oxide |
+| Hex head bolt, metric (ISO 4017) | **not offered** | | only plain or "tempered black" found, not black oxide |
 
 Fusion has no plain "alloy steel" material, and the makers do not name the alloy, so the material is a
 quenched-and-tempered Fusion steel whose hardness falls in the grade's range (same density and stiffness).
@@ -137,12 +137,13 @@ These follow the shop's basic hardware codes, which end with the finish:
 - `SBH-10-32 x 0.5 ALLOY-BO` (UNF)
 - `SSH-M5-0.8 x 16 ALLOY-BO`
 
-Codes: screws are S + head letter + H, which is the shop's existing SSH/SBH/SFH/SLH pattern (SHH hex head);
+Codes: screws are S + head letter + H, which is the shop's existing SSH/SBH/SFH/SLH pattern; the external hex
+is a hex head bolt, HHB (Daniel's name; McMaster sells it as Hex Head Screws);
 set screws are SS + tip letter (SSF flat-tip, SSC cup-tip).
 Nuts are N + two letters (NHX hex, NTH thin-profile, NNL nylon-insert locknut, NFL flange, NSF serrated
 flange); washers are W + two letters (WGP general purpose, WSA SAE, WUS USS, WOV oversized, WSL split lock,
 WTE/WTI external/internal tooth lock).
-Codes not in the shop list yet: `SHH`, `SSC`, `SSF`, `SPH`, `SCH`, all the nut and washer codes, and the finish `ALLOY-BO`.
+Codes not in the shop list yet: `HHB` (named by Daniel), `SSC`, `SSF`, `SPH`, `SCH`, all the nut and washer codes, and the finish `ALLOY-BO`.
 If a screw is bought from McMaster-Carr, use McMaster's part number on the BOM instead. The tool
 stores the vendor part number as `TBD`.
 

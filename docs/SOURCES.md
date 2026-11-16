@@ -9,7 +9,7 @@ listed for it; `tests/test_sources.py` spot-checks rows against them. Blank mean
 | SBH-M | Button head hex-drive screw | ISO 7380-1 | iso7380, iso7380_22, hk_m_bhcs | iso7380 | iso7380 | hk_m_bhcs, av_m_bhcs16 |
 | SFH-M | Hex-drive flat head screw, 90 deg | ISO 10642 | iso10642, hk_m_fhcs | iso10642 | iso10642 | hk_m_fhcs |
 | SLH-M | Low-profile socket head screw | DIN 7984 | bbi_7984, fn_7984 |  |  | bbi_7984 |
-| SHH-M | Hex head screw, fully threaded | ISO 4017 | iso4017 |  | iso4017 |  |
+| HHB-M | Hex head bolt, fully threaded | ISO 4017 | iso4017 |  | iso4017 |  |
 | SSF-M | Flat-tip set screw | ISO 4026 | iso4026 | iso4026 | iso4026 | av_m_set, av_m_set2 |
 | SSC-M | Cup-tip set screw | ISO 4029 | iso4029, hk_tech | iso4029 | iso4029 | hk_tech |
 | SPH-M | Pan head Phillips screw | ISO 7045 | iso7045 | iso7045 | iso7045 |  |
@@ -18,7 +18,7 @@ listed for it; `tests/test_sources.py` spot-checks rows against them. Blank mean
 | SBH-I | Button head hex-drive screw | ASME B18.3 | hk_bhcs | hk_bhcs | hk_tech | hk_bhcs |
 | SFH-I | Hex-drive flat head screw, 82 deg | ASME B18.3 | hk_fhcs, b183_fhcs |  | hk_tech | hk_fhcs |
 | SLH-I | Low-profile socket head screw | ASME B18.3 | hk_lhcs, b183_lhcs |  |  | hk_lhcs |
-| SHH-I | Hex head screw | ASME B18.2.1 | b1821_hex |  | b1821_hex | av_in_hex |
+| HHB-I | Hex head bolt | ASME B18.2.1 | b1821_hex |  | b1821_hex | av_in_hex |
 | SSF-I | Flat-tip set screw | ASME B18.3 | hk_tech | hk_tech |  | av_in_set |
 | SSC-I | Cup-tip set screw | ASME B18.3 | hk_tech | hk_tech |  | hk_tech |
 

@@ -110,7 +110,7 @@ def test_alloy_black_oxide_bom():
 
 
 def test_alloy_not_offered_where_makers_do_not_sell_it():
-    no = {'SHH-M': None, 'SPH-M': None, 'SCH-M': None,
+    no = {'HHB-M': None, 'SPH-M': None, 'SCH-M': None,
           'SFH-M': ['M20'], 'SFH-I': ['#2'], 'SLH-I': ['#4', '#6']}
     for code, sizes in no.items():
         fam = fc.family(CAT, code)
@@ -124,7 +124,7 @@ def test_alloy_not_offered_where_makers_do_not_sell_it():
                     pass
     assert fc.grade(fc.size_row(fc.family(CAT, 'SBH-M'), 'M16'), 'ALLOY-BO') == 'class 10.9'
     assert fc.grade(fc.size_row(fc.family(CAT, 'SLH-M'), 'M6'), 'ALLOY-BO') == 'class 10.9'
-    assert fc.grade(fc.size_row(fc.family(CAT, 'SHH-I'), '1/2'), 'ALLOY-BO') == 'SAE J429 Grade 8'
+    assert fc.grade(fc.size_row(fc.family(CAT, 'HHB-I'), '1/2'), 'ALLOY-BO') == 'SAE J429 Grade 8'
 
 
 def test_thread_lengths():
@@ -137,7 +137,7 @@ def test_thread_lengths():
     assert fc.thread_length(i, fc.size_row(i, '1/4'), 1.25) == 1.25
     f = fc.family(CAT, 'SFH-I')
     assert math.isclose(fc.thread_length(f, fc.size_row(f, '#10'), 2.0), 0.88)  # Table 9: LGH 1.12 from head top
-    h = fc.family(CAT, 'SHH-I')
+    h = fc.family(CAT, 'HHB-I')
     assert fc.thread_length(h, fc.size_row(h, '1/4'), 0.75) == 0.75 and fc.thread_length(h, fc.size_row(h, '1/4'), 1.5) == 0.75
     p = fc.family(CAT, 'SPH-M')
     assert fc.thread_length(p, fc.size_row(p, 'M5'), 40) == 40 and fc.thread_length(p, fc.size_row(p, 'M5'), 45) == 38
@@ -201,5 +201,7 @@ def test_names_follow_mcmaster():
         words = fam['mcmaster'].lower()
         if code.startswith('SS') and fam['head'] == 'set':
             assert words.startswith({'F': 'flat-tip', 'C': 'cup-tip'}[code[2]])
+        elif code == 'HHB':  # Daniel's name for McMaster's Hex Head Screws
+            assert words == 'hex head screws' and fam['name'].startswith('Hex head bolt')
         else:
             assert code[0] == 'S' and code[2] == 'H'

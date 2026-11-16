@@ -17,7 +17,7 @@ from . import fastener_place as fp  # noqa: E402
 
 CMD_ID = 'srFastenerInsertCmd'
 CMD_NAME = 'SR Fastener'
-CMD_TIP = ('Insert a screw (socket, button, flat, low-profile, hex, pan or cheese head, or a cup-tip or flat-tip set screw), '
+CMD_TIP = ('Insert a screw (socket, button, flat, low-profile, pan or cheese head, or a cup-tip or flat-tip set screw), a hex head bolt, '
            'a nut (hex, thin-profile, nylon-insert lock, flange) or a washer (flat, SAE, USS, oversized, split lock, '
            'tooth lock) at hole edges. Pick type, size, length and finish (stainless, stainless black oxide or alloy '
            'black oxide); parts stack on washers and nuts already at the edge and BOM fields fill in.')
