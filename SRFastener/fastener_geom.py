@@ -1,0 +1,76 @@
+"""Builds one screw as a temporary B-Rep body (Fusion API). Numbers come from fastener_core.geometry()."""
+import math
+
+import adsk.core
+import adsk.fusion
+
+from . import fastener_core as fc
+
+_EPS = 0.0005  # cm; lets the socket cutter break through the top face cleanly
+
+
+def _p(x, y, z):
+    return adsk.core.Point3D.create(x, y, z)
+
+
+def _cyl(tbm, z0, r0, z1, r1):
+    return tbm.createCylinderOrCone(_p(0, 0, z0), r0, _p(0, 0, z1), r1)
+
+
+def _hex_prism(tbm, across_flats, z0, z1):
+    """Hexagonal prism on the z axis: three slabs of width `across_flats` at 0/60/120 deg, intersected."""
+    h = z1 - z0
+    centre = _p(0, 0, (z0 + z1) / 2.0)
+    body = None
+    for k in range(3):
+        a = math.radians(60.0 * k)
+        length_dir = adsk.core.Vector3D.create(math.cos(a), math.sin(a), 0)
+        width_dir = adsk.core.Vector3D.create(-math.sin(a), math.cos(a), 0)
+        box = adsk.core.OrientedBoundingBox3D.create(centre, length_dir, width_dir, across_flats * 4.0, across_flats, h)
+        slab = tbm.createBox(box)
+        if body is None:
+            body = slab
+        else:
+            tbm.booleanOperation(body, slab, adsk.fusion.BooleanTypes.IntersectionBooleanType)
+    return body
+
+
+def _cut_socket(tbm, body, key, depth, z_top):
+    cutter = _hex_prism(tbm, key, z_top - depth, z_top + _EPS)
+    tbm.booleanOperation(body, cutter, adsk.fusion.BooleanTypes.DifferenceBooleanType)
+
+
+def build_body(fam, row, length):
+    """Return a TemporaryBRepManager body for the screw, seat plane at z=0 (see fastener_core.geometry)."""
+    tbm = adsk.fusion.TemporaryBRepManager.get()
+    g = fc.geometry(fam, row, length)
+    r, L = g['r'], g['L']
+    union = adsk.fusion.BooleanTypes.UnionBooleanType
+    head = g['head']
+    if head == 'cap':
+        body = _cyl(tbm, 0.0, g['head_r'], g['head_h'], g['head_r'])
+        tbm.booleanOperation(body, _cyl(tbm, 0.0, r, -L, r), union)
+        _cut_socket(tbm, body, g['key'], g['key_depth'], g['head_h'])
+    elif head == 'button':
+        radius, zc = fc.button_sphere(g['head_r'], g['head_h'])
+        body = tbm.createSphere(_p(0, 0, zc), radius)
+        tbm.booleanOperation(body, _cyl(tbm, 0.0, g['head_r'], g['head_h'] + _EPS, g['head_r']),
+                             adsk.fusion.BooleanTypes.IntersectionBooleanType)
+        tbm.booleanOperation(body, _cyl(tbm, 0.0, r, -L, r), union)
+        _cut_socket(tbm, body, g['key'], g['key_depth'], g['head_h'])
+    elif head == 'flat':
+        body = _cyl(tbm, 0.0, g['head_r'], -g['cone_h'], r)
+        tbm.booleanOperation(body, _cyl(tbm, -g['cone_h'], r, -L, r), union)
+        _cut_socket(tbm, body, g['key'], g['key_depth'], 0.0)
+    elif head == 'hex':
+        body = _hex_prism(tbm, g['across_flats'], 0.0, g['head_h'])
+        tbm.booleanOperation(body, _cyl(tbm, 0.0, r, -L, r), union)
+    elif head == 'set':
+        tip = -L + g['point_h']
+        body = _cyl(tbm, 0.0, r, tip, r)
+        if g['point_h'] > 0:
+            tbm.booleanOperation(body, _cyl(tbm, tip, r, -L, g['point_r']), union)
+        _cut_socket(tbm, body, g['key'], g['key_depth'], 0.0)
+    else:
+        raise ValueError(head)
+    return body

@@ -1,0 +1,12 @@
+{
+  "autodeskProduct": "Fusion",
+  "type": "addin",
+  "id": "40a7b599-5e4b-4ba5-932a-21051641c6e7",
+  "author": "Spark Robotic",
+  "description": {"": "SR Fastener: insert socket, button, flat, low-head, hex and set screws into hole edges, in stainless or black oxide, with part number, description and material filled for the BOM."},
+  "version": "0.1.0",
+  "runOnStartup": true,
+  "supportedOS": "windows|mac",
+  "editEnabled": true,
+  "iconFilename": "resources/icon/32x32.png"
+}
