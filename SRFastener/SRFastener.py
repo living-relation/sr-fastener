@@ -16,8 +16,9 @@ from . import fastener_place as fp  # noqa: E402
 
 CMD_ID = 'srFastenerInsertCmd'
 CMD_NAME = 'SR Fastener'
-CMD_TIP = ('Insert a socket, button, flat, low-head, hex or set screw into hole edges. '
-           'Pick type, size, length and finish (stainless or black oxide); BOM fields fill in.')
+CMD_TIP = ('Insert a socket head, button head, flat head, low-profile or hex head screw, or a cup-tip or flat-tip set screw, into hole edges. '
+           'Pick type, size, length and finish (stainless, stainless black oxide or alloy black oxide); '
+           'BOM fields fill in.')
 WORKSPACE = 'FusionSolidEnvironment'
 PANELS = ['InsertPanel', 'SolidScriptsAddinsPanel']
 SYSTEMS = [('metric', 'Metric'), ('inch', 'Inch')]
@@ -113,8 +114,15 @@ def _length_items(fam, row):
     return [(str(L), fc.length_label(fam, L)) for L in row['lengths']]
 
 
-def _finish_items():
-    return [(k, v['name']) for k, v in _catalog()['finishes'].items()]
+def _finish_items(fam, row):
+    """Only finishes a maker sells for this type and size (alloy black oxide is not offered everywhere)."""
+    cat = _catalog()
+    items = []
+    for k in fc.finishes_for(cat, fam, row):
+        label = cat['finishes'][k]['name']
+        g = fc.grade(row, k)
+        items.append((k, label + (' (%s)' % g if g else '')))
+    return items
 
 
 def _refresh(inputs, level):
@@ -133,6 +141,8 @@ def _refresh(inputs, level):
         _st.items['length'] = _length_items(fam, row)
         cur = str(_st.length) if _st.length is not None else None
         _st.length = float(_fill(inputs.itemById('length'), _st.items['length'], cur))
+        _st.items['finish'] = _finish_items(fam, row)
+        _st.finish = _fill(inputs.itemById('finish'), _st.items['finish'], _st.finish)
     _bom_preview(inputs)
 
 
@@ -141,7 +151,8 @@ def _bom_preview(inputs):
     bom = fc.bom_fields(_catalog(), fam, row, _st.length, _st.finish)
     inputs.itemById('pn').text = bom['part_number']
     inputs.itemById('desc').text = bom['description']
-    inputs.itemById('mat').text = '%s  (appearance: %s)' % (bom['material'], bom['appearance'])
+    inputs.itemById('mat').text = '%s%s  (appearance: %s)' % (bom['material'], (', ' + bom['grade']) if bom['grade'] else '',
+                                                              bom['appearance'])
 
 
 def _edges(inputs):
@@ -207,9 +218,7 @@ class _Created(adsk.core.CommandCreatedEventHandler):
             inputs.addDropDownCommandInput('family', 'Type', adsk.core.DropDownStyles.TextListDropDownStyle)
             inputs.addDropDownCommandInput('size', 'Size', adsk.core.DropDownStyles.TextListDropDownStyle)
             inputs.addDropDownCommandInput('length', 'Length', adsk.core.DropDownStyles.TextListDropDownStyle)
-            fin = inputs.addDropDownCommandInput('finish', 'Finish', adsk.core.DropDownStyles.TextListDropDownStyle)
-            _st.items['finish'] = _finish_items()
-            _st.finish = _fill(fin, _st.items['finish'], _st.finish)
+            inputs.addDropDownCommandInput('finish', 'Finish', adsk.core.DropDownStyles.TextListDropDownStyle)
             sel = inputs.addSelectionInput('holes', 'Holes', 'Pick circular hole edges')
             sel.addSelectionFilter('CircularEdges')
             sel.setSelectionLimits(1, 0)

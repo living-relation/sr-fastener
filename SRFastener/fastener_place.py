@@ -111,12 +111,33 @@ def _appearance(app, design, name):
     return None
 
 
-def _apply_thread(comp, fam, row, notes):
+def _tip_end_location(face, tip_z):
+    """ThreadLocations value whose end of this cylindrical face is the screw tip (lowest z in the component)."""
+    ev = face.evaluator
+    rng = ev.parametricRange()
+    best = None
+    for axis in (0, 1):
+        a0 = adsk.core.Point2D.create(rng.minPoint.x, rng.minPoint.y)
+        a1 = adsk.core.Point2D.create(rng.maxPoint.x if axis == 0 else rng.minPoint.x,
+                                      rng.maxPoint.y if axis == 1 else rng.minPoint.y)
+        _, p0 = ev.getPointAtParameter(a0)
+        _, p1 = ev.getPointAtParameter(a1)
+        dz = p1.z - p0.z
+        if best is None or abs(dz) > abs(best[1]):
+            best = (axis, dz, p0.z, p1.z)
+    _, dz, z_lo, z_hi = best
+    low_is_tip = abs(z_lo - tip_z) < abs(z_hi - tip_z)
+    return (adsk.fusion.ThreadLocations.LowEndThreadLocation if low_is_tip
+            else adsk.fusion.ThreadLocations.HighEndThreadLocation)
+
+
+def _apply_thread(comp, fam, row, length, notes):
     try:
         ttype, designation, tclass = fc.thread_spec(fam, row)
         query = comp.features.threadFeatures.threadDataQuery
         body = comp.bRepBodies.item(0)
-        r = fc.to_cm(fam, row['d']) / 2.0
+        g = fc.geometry(fam, row, length)
+        r = g['r']
         face = None
         for f in body.faces:
             if f.geometry.surfaceType == adsk.core.SurfaceTypes.CylinderSurfaceType:
@@ -140,8 +161,15 @@ def _apply_thread(comp, fam, row, notes):
         faces = adsk.core.ObjectCollection.create()
         faces.add(face)
         ti = comp.features.threadFeatures.createInput(faces, info)
-        ti.isFullLength = True
         ti.isModeled = False
+        shank_len = g['shank'][0] - g['shank'][1]
+        if g['thread_len'] < shank_len - 1e-4:
+            ti.isFullLength = False
+            ti.threadLength = adsk.core.ValueInput.createByReal(g['thread_len'])
+            ti.threadOffset = adsk.core.ValueInput.createByReal(0.0)
+            ti.threadLocation = _tip_end_location(face, -g['L'] + g.get('point_h', 0.0))
+        else:
+            ti.isFullLength = True
         comp.features.threadFeatures.add(ti)
     except Exception as e:  # cosmetic only; never block placing the screw
         notes.append('cosmetic thread skipped: %s' % e)
@@ -182,13 +210,13 @@ def make_component(app, design, parent, cat, fam, row, length, finish_key, matri
         b.appearance = ap
     else:
         notes.append('appearance not found: %s' % bom['appearance'])
-    for k in ('part_number', 'description', 'finish', 'vendor_pn', 'standard', 'source'):
+    for k in ('part_number', 'description', 'finish', 'grade', 'vendor_pn', 'standard', 'source'):
         comp.attributes.add(ATTR, k, str(bom[k]))
     comp.attributes.add(ATTR, 'family', fam['code'])
     comp.attributes.add(ATTR, 'size', row['size'])
     comp.attributes.add(ATTR, 'length', str(length))
     if thread and design.designType == adsk.fusion.DesignTypes.ParametricDesignType:
-        _apply_thread(comp, fam, row, notes)
+        _apply_thread(comp, fam, row, length, notes)
     return occ, notes
 
 
