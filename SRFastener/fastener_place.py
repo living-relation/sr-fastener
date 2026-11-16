@@ -1,0 +1,272 @@
+"""Reads a picked hole edge, makes or reuses the screw component, places it and joins it (Fusion API)."""
+import adsk.core
+import adsk.fusion
+
+from . import fastener_core as fc
+from . import fastener_geom as geom
+
+ATTR = 'srfastener'
+_TOL = 1e-4  # cm
+
+
+class Hole:
+    """centre (Point3D, world), into (unit Vector3D pointing into the material), radius (cm), thread (str|None)."""
+
+    def __init__(self, edge, centre, into, radius, thread):
+        self.edge, self.centre, self.into, self.radius, self.thread = edge, centre, into, radius, thread
+
+
+def _thread_designation(face):
+    """Designation of a thread feature on this face, if any (e.g. 'M3x0.5')."""
+    try:
+        native = face.nativeObject or face
+        comp = native.body.parentComponent
+        for tf in comp.features.threadFeatures:
+            try:
+                faces = tf.faces
+                for i in range(faces.count):
+                    if faces.item(i).tempId == native.tempId:
+                        return tf.threadInfo.threadDesignation
+            except Exception:
+                continue
+    except Exception:
+        pass
+    return None
+
+
+def read_hole(edge, flip=False):
+    circle = adsk.core.Circle3D.cast(edge.geometry)
+    if circle is None:
+        arc = adsk.core.Arc3D.cast(edge.geometry)
+        if arc is None:
+            return None
+        centre, normal, radius = arc.center, arc.normal, arc.radius
+    else:
+        centre, normal, radius = circle.center, circle.normal, circle.radius
+    normal = normal.copy()
+    normal.normalize()
+    into, thread = None, None
+    for i in range(edge.faces.count):
+        face = edge.faces.item(i)
+        st = face.geometry.surfaceType
+        if st in (adsk.core.SurfaceTypes.CylinderSurfaceType, adsk.core.SurfaceTypes.ConeSurfaceType):
+            v = centre.vectorTo(face.pointOnFace).dotProduct(normal)
+            if abs(v) > _TOL:
+                into = normal.copy()
+                if v < 0:
+                    into.scaleBy(-1)
+            if st == adsk.core.SurfaceTypes.CylinderSurfaceType:
+                thread = thread or _thread_designation(face)
+            if into is not None:
+                break
+    if into is None:  # no wall found: point away from the planar face's side we can't see; user can flip
+        into = normal.copy()
+        into.scaleBy(-1)
+    if flip:
+        into.scaleBy(-1)
+    return Hole(edge, centre, into, radius, thread)
+
+
+def world_matrix(hole):
+    """Screw +z points out of the hole (head side); origin on the seat plane."""
+    z = hole.into.copy()
+    z.scaleBy(-1)
+    ref = adsk.core.Vector3D.create(1, 0, 0) if abs(z.x) < 0.9 else adsk.core.Vector3D.create(0, 1, 0)
+    x = ref.crossProduct(z)
+    x.normalize()
+    y = z.crossProduct(x)
+    m = adsk.core.Matrix3D.create()
+    m.setWithCoordinateSystem(hole.centre, x, y, z)
+    return m
+
+
+def _find_component(design, pn):
+    for comp in design.allComponents:
+        a = comp.attributes.itemByName(ATTR, 'part_number')
+        if a and a.value == pn:
+            return comp
+    return None
+
+
+def _material(app, name):
+    for libname in ('Fusion Material Library',):
+        lib = app.materialLibraries.itemByName(libname)
+        if lib:
+            m = lib.materials.itemByName(name)
+            if m:
+                return m
+    return None
+
+
+def _appearance(app, design, name):
+    a = design.appearances.itemByName(name)
+    if a:
+        return a
+    for libname in ('Fusion Appearance Library', 'Fusion Material Library'):
+        lib = app.materialLibraries.itemByName(libname)
+        if lib:
+            src = lib.appearances.itemByName(name)
+            if src:
+                return design.appearances.addByCopy(src, name)
+    return None
+
+
+def _apply_thread(comp, fam, row, notes):
+    try:
+        ttype, designation, tclass = fc.thread_spec(fam, row)
+        query = comp.features.threadFeatures.threadDataQuery
+        body = comp.bRepBodies.item(0)
+        r = fc.to_cm(fam, row['d']) / 2.0
+        face = None
+        for f in body.faces:
+            if f.geometry.surfaceType == adsk.core.SurfaceTypes.CylinderSurfaceType:
+                cyl = adsk.core.Cylinder.cast(f.geometry)
+                if abs(cyl.radius - r) < _TOL:
+                    if face is None or f.area > face.area:
+                        face = f
+        if face is None:
+            notes.append('cosmetic thread skipped: no shank face found')
+            return
+        size_list = query.allSizes(ttype)
+        nominal = None
+        for s in size_list:
+            for d in query.allDesignations(ttype, s):
+                if d == designation:
+                    nominal = s
+        if nominal is None:
+            notes.append('cosmetic thread skipped: Fusion has no %s %s' % (ttype, designation))
+            return
+        info = comp.features.threadFeatures.createThreadInfo(False, ttype, designation, tclass)
+        faces = adsk.core.ObjectCollection.create()
+        faces.add(face)
+        ti = comp.features.threadFeatures.createInput(faces, info)
+        ti.isFullLength = True
+        ti.isModeled = False
+        comp.features.threadFeatures.add(ti)
+    except Exception as e:  # cosmetic only; never block placing the screw
+        notes.append('cosmetic thread skipped: %s' % e)
+
+
+def make_component(app, design, parent, cat, fam, row, length, finish_key, matrix, thread=True, notes=None):
+    """Create (or reuse) the screw component and add an occurrence at `matrix` (parent-local)."""
+    notes = notes if notes is not None else []
+    bom = fc.bom_fields(cat, fam, row, length, finish_key)
+    pn = bom['part_number']
+    existing = _find_component(design, pn)
+    if existing is not None:
+        return parent.occurrences.addExistingComponent(existing, matrix), notes
+    occ = parent.occurrences.addNewComponent(matrix)
+    comp = occ.component
+    comp.name = pn
+    comp.partNumber = pn
+    comp.description = bom['description']
+    body = geom.build_body(fam, row, length)
+    if design.designType == adsk.fusion.DesignTypes.ParametricDesignType:
+        bf = comp.features.baseFeatures.add()
+        bf.startEdit()
+        comp.bRepBodies.add(body, bf)
+        bf.finishEdit()
+        bf.name = 'SR Fastener'
+    else:
+        comp.bRepBodies.add(body)
+    b = comp.bRepBodies.item(0)
+    b.name = pn
+    mat = _material(app, bom['material'])
+    if mat:
+        comp.material = mat
+        b.material = mat
+    else:
+        notes.append('material not found: %s' % bom['material'])
+    ap = _appearance(app, design, bom['appearance'])
+    if ap:
+        b.appearance = ap
+    else:
+        notes.append('appearance not found: %s' % bom['appearance'])
+    for k in ('part_number', 'description', 'finish', 'vendor_pn', 'standard', 'source'):
+        comp.attributes.add(ATTR, k, str(bom[k]))
+    comp.attributes.add(ATTR, 'family', fam['code'])
+    comp.attributes.add(ATTR, 'size', row['size'])
+    comp.attributes.add(ATTR, 'length', str(length))
+    if thread and design.designType == adsk.fusion.DesignTypes.ParametricDesignType:
+        _apply_thread(comp, fam, row, notes)
+    return occ, notes
+
+
+def _seat_edge(occ, matrix, prefer_radius):
+    """Circular edge of the placed screw whose centre is the seat point; closest radius to the hole wins."""
+    origin = matrix.translation
+    seat = adsk.core.Point3D.create(origin.x, origin.y, origin.z)
+    best = None
+    for body in occ.bRepBodies:
+        for e in body.edges:
+            c = adsk.core.Circle3D.cast(e.geometry)
+            if c and c.center.distanceTo(seat) < 1e-3:
+                score = abs(c.radius - prefer_radius)
+                if best is None or score < best[0]:
+                    best = (score, e)
+    return best[1] if best else None
+
+
+def _z_of(occ):
+    return occ.transform2.getAsCoordinateSystem()[3]
+
+
+def join(design, parent, occ, hole, world_m, local_m, notes):
+    """Rigid joint between the screw's seat edge and the hole edge; flips if Fusion lands it upside down."""
+    if design.designType != adsk.fusion.DesignTypes.ParametricDesignType:
+        notes.append('no joint: design is in direct modeling mode')
+        return None
+    try:
+        screw_edge = _seat_edge(occ, world_m, hole.radius)
+        if screw_edge is None:
+            notes.append('no joint: seat edge not found')
+            return None
+        key = adsk.fusion.JointKeyPointTypes.CenterKeyPoint
+        g1 = adsk.fusion.JointGeometry.createByCurve(screw_edge, key)
+        g2 = adsk.fusion.JointGeometry.createByCurve(hole.edge, key)
+        want = world_m.getAsCoordinateSystem()[3]
+        joint = None
+        for flipped in (False, True):
+            ji = parent.joints.createInput(g1, g2)
+            ji.setAsRigidJointMotion()
+            ji.isFlipped = flipped
+            joint = parent.joints.add(ji)
+            if _z_of(occ).dotProduct(want) > 0.999:
+                break
+            joint.deleteMe()
+            joint = None
+            occ.transform2 = local_m  # put it back before the second try
+            screw_edge = _seat_edge(occ, world_m, hole.radius)
+            g1 = adsk.fusion.JointGeometry.createByCurve(screw_edge, key)
+        if joint is None:
+            notes.append('no joint: neither joint direction kept the screw in the hole')
+            return None
+        got = occ.transform2.translation
+        if got.asPoint().distanceTo(world_m.translation.asPoint()) > 1e-3:
+            notes.append('joint moved the screw off the hole centre; check it')
+        return joint
+    except Exception as e:
+        notes.append('no joint: %s' % e)
+        return None
+
+
+def place(app, design, cat, fam, row, length, finish_key, edges, flip=False, thread=True):
+    """Place one screw per picked edge. Returns (occurrences, notes)."""
+    parent = design.activeComponent
+    active_occ = design.activeOccurrence
+    occs, notes = [], []
+    for edge in edges:
+        hole = read_hole(edge, flip)
+        if hole is None:
+            notes.append('skipped a non-circular edge')
+            continue
+        wm = world_matrix(hole)
+        local = wm.copy()
+        if active_occ is not None:
+            inv = active_occ.transform2.copy()
+            inv.invert()
+            local.transformBy(inv)
+        occ, notes = make_component(app, design, parent, cat, fam, row, length, finish_key, local, thread, notes)
+        join(design, parent, occ, hole, wm, local, notes)
+        occs.append(occ)
+    return occs, notes
