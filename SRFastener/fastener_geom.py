@@ -40,6 +40,34 @@ def _cut_socket(tbm, body, key, depth, z_top):
     tbm.booleanOperation(body, cutter, adsk.fusion.BooleanTypes.DifferenceBooleanType)
 
 
+def _box(tbm, cx, cy, cz, lx, ly, lz, angle_deg=0.0):
+    a = math.radians(angle_deg)
+    length_dir = adsk.core.Vector3D.create(math.cos(a), math.sin(a), 0)
+    width_dir = adsk.core.Vector3D.create(-math.sin(a), math.cos(a), 0)
+    return tbm.createBox(adsk.core.OrientedBoundingBox3D.create(_p(cx, cy, cz), length_dir, width_dir, lx, ly, lz))
+
+
+def _dome_head(tbm, g):
+    """Domed head (button or pan): sphere from fastener_core.dome() clipped to the head cylinder."""
+    body = tbm.createSphere(_p(0, 0, g['dome_zc']), g['dome_r'])
+    tbm.booleanOperation(body, _cyl(tbm, 0.0, g['head_r'], g['head_h'] + _EPS, g['head_r']),
+                         adsk.fusion.BooleanTypes.IntersectionBooleanType)
+    return body
+
+
+def _cut_slot(tbm, body, width, depth, z_top, span):
+    cutter = _box(tbm, 0, 0, z_top - depth / 2.0 + _EPS / 2.0, span, width, depth + _EPS)
+    tbm.booleanOperation(body, cutter, adsk.fusion.BooleanTypes.DifferenceBooleanType)
+
+
+def _cut_cross(tbm, body, m, depth, z_top):
+    """Cross recess, simplified: two crossed slots m long (ISO 7045 'm', recess diameter at the top) and
+    m/5 wide, cut to the mean gauge penetration depth. The true ISO 4757 wing shape is not modeled."""
+    for ang in (0.0, 90.0):
+        cutter = _box(tbm, 0, 0, z_top - depth / 2.0 + _EPS / 2.0, m, m / 5.0, depth + _EPS, ang)
+        tbm.booleanOperation(body, cutter, adsk.fusion.BooleanTypes.DifferenceBooleanType)
+
+
 def build_body(fam, row, length):
     """Return a TemporaryBRepManager body for the screw, seat plane at z=0 (see fastener_core.geometry)."""
     tbm = adsk.fusion.TemporaryBRepManager.get()
@@ -52,12 +80,17 @@ def build_body(fam, row, length):
         tbm.booleanOperation(body, _cyl(tbm, 0.0, r, -L, r), union)
         _cut_socket(tbm, body, g['key'], g['key_depth'], g['head_h'])
     elif head == 'button':
-        radius, zc = fc.button_sphere(g['head_r'], g['head_h'])
-        body = tbm.createSphere(_p(0, 0, zc), radius)
-        tbm.booleanOperation(body, _cyl(tbm, 0.0, g['head_r'], g['head_h'] + _EPS, g['head_r']),
-                             adsk.fusion.BooleanTypes.IntersectionBooleanType)
+        body = _dome_head(tbm, g)
         tbm.booleanOperation(body, _cyl(tbm, 0.0, r, -L, r), union)
         _cut_socket(tbm, body, g['key'], g['key_depth'], g['head_h'])
+    elif head == 'pan':
+        body = _dome_head(tbm, g)
+        tbm.booleanOperation(body, _cyl(tbm, 0.0, r, -L, r), union)
+        _cut_cross(tbm, body, g['recess_m'], g['recess_depth'], g['head_h'])
+    elif head == 'cheese':
+        body = _cyl(tbm, 0.0, g['head_r'], g['head_h'], g['head_r'])
+        tbm.booleanOperation(body, _cyl(tbm, 0.0, r, -L, r), union)
+        _cut_slot(tbm, body, g['slot_w'], g['slot_depth'], g['head_h'], g['head_r'] * 2.0 + 0.1)
     elif head == 'flat':
         body = _cyl(tbm, 0.0, g['head_r'], -g['cone_h'], r)
         tbm.booleanOperation(body, _cyl(tbm, -g['cone_h'], r, -L, r), union)
@@ -70,6 +103,9 @@ def build_body(fam, row, length):
         body = _cyl(tbm, 0.0, r, tip, r)
         if g['point_h'] > 0:
             tbm.booleanOperation(body, _cyl(tbm, tip, r, -L, g['point_r']), union)
+        if g.get('point') == 'cup':
+            cup = _cyl(tbm, -L - _EPS, g['cup_r'], -L + g['cup_depth'], 0.0)
+            tbm.booleanOperation(body, cup, adsk.fusion.BooleanTypes.DifferenceBooleanType)
         _cut_socket(tbm, body, g['key'], g['key_depth'], 0.0)
     else:
         raise ValueError(head)

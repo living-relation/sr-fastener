@@ -1,33 +1,19 @@
-# Screw types in the Fusion fastener library vs SR Fastener
+# Screw types not in SR Fastener yet
 
-## Library files found
+Daniel approves new types automatically once their data is checked against McMaster-Carr or Fastenal. Names below are McMaster-Carr's category names
+(mcmaster.com, checked 2026-11-16).
 
-| Where | What |
-|---|---|
-| Personal hub, project **SR Hardware Library**, folder **SR Screw Library** | 8 files: socket head (metric and inch), button head (metric and inch), flat head (metric 90 deg and inch 82 deg), low head (metric and inch). Each file is one fixed size with no configurations. |
-| Personal hub, **Standard Components > Fasteners > Bolts and Screws** | Empty. |
-| Work hub, **Standard Components > Fasteners** | The shop's off-the-shelf fastener folder. It was not reachable live from this session, so its list below is from an earlier read and is **unverified**. |
+## Not built yet (next PRs, most common first)
 
-No library files were moved or renamed. Any moves in the work hub wait for approval.
-
-## Added to SR Fastener
-
-| Type | Standard | Sizes |
+| McMaster name | Standard | Metric / inch |
 |---|---|---|
-| Hex head screw, fully threaded, metric | ISO 4017 | M3 to M16 |
-| Hex head cap screw, inch | ASME B18.2.1 | 1/4 to 1/2 |
-| Socket set screw, flat point, metric | ISO 4026 | M3 to M12 |
+| Tapping Screws (self-tapping) | ISO 7049 / ISO 15482, ASME B18.6.4 | both |
+| JIS Steel Flat Head Screws (cross-recessed countersunk) | JIS B 1111 | metric |
+| Threaded Inserts (SPIROL heat-set) | maker datasheet | both |
+| Cone-Tip Set Screws | ISO 4027, ASME B18.3 | both |
+| Extended-Tip Set Screws (dog point) | ISO 4028, ASME B18.3 | both |
+| Oval-Tip Set Screws | ASME B18.3 | inch (metric: no ISO standard) |
+| Flanged Button Head Hex-Drive Screws | ISO 7380-2 | metric |
+| Shoulder Screws | ISO 7379, ASME B18.3 | both |
 
-These are on top of the 8 types already in the library: socket head, button head, flat head and low head, in metric and inch.
-
-## Still missing (TBD)
-
-| Type | Why it is not added yet |
-|---|---|
-| Self-tapping screws, inch | The exact standard and head style in the library are not confirmed. |
-| Self-tapping screws, ISO 15482 | Need confirmed head and recess data. |
-| Cross-recessed countersunk screw, JIS B 1111 | Recess data not confirmed. |
-| SPIROL heat-set insert | Not a screw. Knurl and length data need the maker's datasheet. |
-| Inch socket set screw | Not added yet. Needs the ASME B18.3 set-screw table. |
-
-Washers and nuts are left out on purpose. Add them only when the owner picks them.
+The work hub's Standard Components > Fasteners folder was not reachable live, so its list could not be rechecked.

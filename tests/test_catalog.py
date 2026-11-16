@@ -16,8 +16,14 @@ def test_catalog_json_is_generated():
 
 
 def test_every_family_cites_a_source_and_has_sizes():
-    for fam in CAT['families']:
+    for fam in CAT['families'] + CAT['pending_approval']:
         assert fam['source'].startswith('https://'), fam['code']
+        assert fam['sources']['dims'], fam['code']
+        for keys in fam['sources'].values():
+            for k in keys:
+                assert CAT['sources'][k].startswith('https://'), (fam['code'], k)
+        if any('ALLOY-BO' in r.get('grade', {}) for r in fam['sizes']):
+            assert fam['sources']['alloy'], fam['code']
         assert fam['sizes'], fam['code']
         for row in fam['sizes']:
             assert row['lengths'], (fam['code'], row['size'])
@@ -28,7 +34,7 @@ def test_part_numbers_unique():
     for fam in CAT['families']:
         for row in fam['sizes']:
             for L in row['lengths']:
-                for fk in CAT['finishes']:
+                for fk in fc.finishes_for(CAT, fam, row):
                     pn = fc.part_number(fam, row, L, fk)
                     assert pn not in seen
                     seen.add(pn)
@@ -38,7 +44,7 @@ def test_heads_bigger_than_shank_and_key_fits():
     for fam in CAT['families']:
         for row in fam['sizes']:
             dims = row['dims']
-            if 'dk' in dims:
+            if 'dk' in dims and 's' in dims:
                 assert dims['dk'] > row['d'], (fam['code'], row['size'])
                 assert dims['s'] < row['d'] * 1.2 + (dims['dk'] - row['d']), (fam['code'], row['size'])
                 assert dims['t'] < max(dims['k'], 0.0) * 1.0 + (row['d'] if fam['head'] == 'flat' else 0), (fam['code'], row['size'])

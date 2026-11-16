@@ -86,9 +86,19 @@ def main(keep=False, out=None):
         design.designType = adsk.fusion.DesignTypes.ParametricDesignType
         cases = [('SSH-M', 'M3', 10, 'SS', 0.34), ('SSH-M', 'M3', 10, 'SS', 0.34), ('SSH-M', 'M5', 16, 'SS-BO', 0.55),
                  ('SBH-M', 'M4', 12, 'SS-BO', 0.45), ('SFH-M', 'M4', 12, 'SS', 0.45), ('SLH-M', 'M6', 16, 'SS', 0.66),
-                 ('SHX-M', 'M6', 20, 'SS-BO', 0.66), ('SSF-M', 'M8', 10, 'SS', 0.68),
+                 ('HHB-M', 'M6', 20, 'SS-BO', 0.66), ('SSF-M', 'M8', 10, 'SS', 0.68),
                  ('SSH-I', '1/4', 1.0, 'SS-BO', 0.66), ('SBH-I', '#10', 0.5, 'SS', 0.51),
-                 ('SFH-I', '#8', 0.5, 'SS-BO', 0.44), ('SLH-I', '#6', 0.375, 'SS', 0.37), ('SHX-I', '1/4', 1.0, 'SS', 0.66)]
+                 ('SFH-I', '#8', 0.5, 'SS-BO', 0.44), ('SLH-I', '#6', 0.375, 'SS', 0.37), ('HHB-I', '1/4', 1.0, 'SS', 0.66),
+                 # alloy steel black oxide, one per family that offers it
+                 ('SSH-M', 'M5', 16, 'ALLOY-BO', 0.55), ('SBH-M', 'M6', 12, 'ALLOY-BO', 0.66),
+                 ('SFH-M', 'M5', 16, 'ALLOY-BO', 0.55), ('SLH-M', 'M8', 20, 'ALLOY-BO', 0.88),
+                 ('SSF-M', 'M6', 8, 'ALLOY-BO', 0.5), ('SSH-I', '1/4', 2.0, 'ALLOY-BO', 0.66),
+                 ('SBH-I', '#10-32', 0.5, 'ALLOY-BO', 0.51), ('SFH-I', '#10', 2.0, 'ALLOY-BO', 0.51),
+                 ('SLH-I', '1/4', 0.75, 'ALLOY-BO', 0.66), ('HHB-I', '1/4', 1.5, 'ALLOY-BO', 0.66),
+                 ('SSF-I', '1/4', 0.5, 'ALLOY-BO', 0.53),
+                 # new types and a partly threaded metric screw
+                 ('SSC-M', 'M6', 10, 'SS', 0.5), ('SSC-I', '1/4', 0.5, 'ALLOY-BO', 0.53), ('SSH-M', 'M6', 35, 'SS', 0.66),
+                 ('SPH-M', 'M4', 12, 'SS', 0.45), ('SCH-M', 'M5', 10, 'SS', 0.55)]
         holes = [(i * 2.5, c[4]) for i, c in enumerate(cases)]
         body = _plate_with_holes(design, holes)
         for i, (code, size, length, fin, dia) in enumerate(cases):
@@ -123,6 +133,32 @@ def main(keep=False, out=None):
             low = 1.0 - g['L']
             check('%s tip depth' % code, abs(bb.minPoint.z - low) < 2e-3, (bb.minPoint.z, low))
             check('%s joint' % code, not any('joint' in n for n in notes), notes)
+            check('%s no notes' % code, not notes, notes)
+            if comp.features.threadFeatures.count:
+                tf = comp.features.threadFeatures.item(0)
+                shank = g['shank'][0] - g['shank'][1]
+                want_full = g['thread_len'] >= shank - 1e-4
+                check('%s thread full/partial' % code, tf.isFullLength == want_full, (tf.isFullLength, g['thread_len'], shank))
+                if not want_full:
+                    got = tf.threadLength.value if hasattr(tf.threadLength, 'value') else None
+                    check('%s thread length' % code, got is not None and abs(got - g['thread_len']) < 1e-3, (got, g['thread_len']))
+                    # model the thread briefly to see which end it is on: the helix must reach the tip
+                    def _set_modeled(v):
+                        tf.timelineObject.rollTo(True)
+                        tf.isModeled = v
+                        design.timeline.moveToEnd()
+                    _set_modeled(True)
+                    zs = []
+                    for f in comp.bRepBodies.item(0).faces:
+                        if f.geometry.surfaceType not in (adsk.core.SurfaceTypes.PlaneSurfaceType,
+                                                          adsk.core.SurfaceTypes.CylinderSurfaceType,
+                                                          adsk.core.SurfaceTypes.ConeSurfaceType,
+                                                          adsk.core.SurfaceTypes.SphereSurfaceType):
+                            zs += [f.boundingBox.minPoint.z, f.boundingBox.maxPoint.z]
+                    _set_modeled(False)
+                    tip = -g['L']
+                    check('%s thread at tip end' % code, zs and min(zs) < tip + 0.2 and max(zs) < tip + g['thread_len'] + 0.2,
+                          (min(zs) if zs else None, max(zs) if zs else None, tip, g['thread_len']))
         root = design.rootComponent
         same = [o for o in root.occurrences if o.component.partNumber == 'SSH-M3-0.5 x 10 18-8 SS']
         check('reuse: two occurrences, one component', len(same) == 2 and same[0].component == same[1].component,
