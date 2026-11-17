@@ -139,7 +139,10 @@ def part_description(cat, fam, row, finish_key):
     'Split lock washer, DIN 127 B, M5, 5.4 mm ID x 9.2 mm OD x 1.2 mm thick, 18-8 stainless steel'"""
     d = row['dims']
     if kind(fam) == 'nut':
-        size = '%s wide x %s high' % (_dim(fam, d['s']), _dim(fam, d['m']))
+        if fam['shape'] == 'wing':
+            size = '%s wide x %s high, %s base' % (_dim(fam, d['w']), _dim(fam, d['m']), _dim(fam, d['db']))
+        else:
+            size = '%s wide x %s high' % (_dim(fam, d['s']), _dim(fam, d['m']))
         if 'dc' in d:
             size += ', %s flange' % _dim(fam, d['dc'])
     else:
@@ -178,9 +181,20 @@ def part_geometry(fam, row):
     d = row['dims']
     g = {'kind': kind(fam), 'shape': fam['shape']}
     if kind(fam) == 'nut':
-        g.update(bore_r=c(row['d']) / 2.0, across_flats=c(d['s']), height=c(d['m']))
+        g.update(bore_r=c(row['d']) / 2.0, height=c(d['m']))
+        if d.get('s'):
+            g['across_flats'] = c(d['s'])
         if fam['shape'] == 'flange':
             g.update(flange_r=c(d['dc']) / 2.0, flange_t=c(d['c']))
+        elif fam['shape'] == 'cap':
+            # hex up to height - s/2, then a half-sphere dome of radius s/2; blind bore to the thread depth
+            g.update(dome_r=g['across_flats'] / 2.0, bore_depth=c(d['dp']))
+            g['hex_h'] = g['height'] - g['dome_r']
+        elif fam['shape'] == 'wing':
+            # McMaster gives overall width, height and base dia only; base height and wing thickness are drawn
+            # as height/2 and base dia/4 (shape only, not dimensioned)
+            g.update(wing_w=c(d['w']), base_r=c(d['db']) / 2.0)
+            g.update(base_h=g['height'] / 2.0, wing_t=c(d['db']) / 4.0)
     else:
         g.update(bore_r=c(d['d1']) / 2.0, outer_r=c(d['d2']) / 2.0, height=c(d['t']))
         if fam['shape'] == 'split':

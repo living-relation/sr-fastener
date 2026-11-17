@@ -81,13 +81,31 @@ stainless stock, cross-checked with the standard or a maker data sheet (see [doc
 | SAE washer, inch | WSA | ASME B18.21.1 (SAE) | #2 to 1/2 | all |
 | USS washer, inch | WUS | USS | 1/4 to 1/2 | all |
 | Split lock washer, inch | WSL | ASME B18.21.1 | #2 to 1/2 | all |
+| Flange nut, inch | NFL | McMaster 94758A | #4 to 1/2 UNC, #10 to 1/2 UNF | no |
+| Serrated flange nut, inch | NSF | McMaster 93776A | #6 to 1/2 UNC, #10 to 3/8 UNF | no |
+| Top-lock distorted-thread locknut, metric | NTL | McMaster 90045A | M4 to M16 | no |
+| Top-lock distorted-thread locknut, inch | NTL | McMaster 90045A | #6 to 1/2 UNC, #10 to 1/2 UNF | no |
+| Thin-profile nylon-insert locknut, inch | NTN | McMaster 90101A | #4 to 1/2 UNC, #10 to 1/2 UNF | UNC 1/4 to 1/2; UNF 3/8, 1/2 |
+| Coupling nut, metric | NCP | DIN 6334 | M3 to M20 | M3 to M12 |
+| Coupling nut, inch | NCP | McMaster 90268A | #4 to 1/2 UNC, #10 to 1/2 UNF | no |
+| Cap nut, metric | NCA | DIN 1587 | M3 to M20 | no |
+| Cap nut, inch | NCA | McMaster 91855A | #6 to 1/2 UNC, #10 to 1/2 UNF | all UNC; #10-32 |
+| Wing nut, metric | NWG | DIN 315 (McMaster 94545A) | M3 to M20 | no |
+| Wing nut, inch | NWG | McMaster 92001A (Style 1) | #6 to 1/2 UNC, #10 to 5/16 UNF | no |
+| Square nut, metric | NSQ | DIN 557 | M5 to M16 | no |
+| Square nut, inch | NSQ | ASME B18.2.2 | #2 to 1/2 UNC, #10 to 3/8 UNF | no |
+| Thick washer, metric | WTK | DIN 7349 | M3 to M20 | no |
+| External-tooth lock washer, inch | WTE | ASME B18.21.1 | #2 to 1/2 | #6 to 3/8 |
+| Internal-tooth lock washer, inch | WTI | ASME B18.21.1 | #4 to 1/2 | no |
+| Oversized washer, inch | WOV | McMaster 90313A | #6 to 3/8 | no |
 
 Alloy steel black oxide is not offered for nuts and washers. Part numbers have no length:
 `NHX-M5-0.8 18-8 SS`, `NHX-1/4-20 18-8 SS-BO`, `NNL-10-32 18-8 SS`, `WGP-M5 18-8 SS`, `WSA-1/4 18-8 SS`.
 Descriptions carry the size, e.g. `Split lock washer, DIN 127 B, M6, 6.5 mm ID x 11.8 mm OD x 1.6 mm thick, 18-8 stainless steel`.
 
 Simplified in the model: nut bores are the nominal diameter (no cosmetic thread), the nylon insert is drawn as
-part of the hex, flange serrations and lock-washer teeth are not drawn, and the split-washer gap is as wide as the
+part of the hex, the top-lock distortion is not drawn, flange serrations and lock-washer teeth are not drawn,
+cap nuts are a hex with a half-sphere dome and a blind bore, wing nuts are a round base with a flat wing plate, and the split-washer gap is as wide as the
 washer is thick and flat (not helical).
 
 Where McMaster and the standard differ, McMaster wins and the difference is listed in SOURCES.md, e.g. McMaster's
@@ -141,8 +159,9 @@ Codes: screws are S + head letter + H, which is the shop's existing SSH/SBH/SFH/
 is a hex head bolt, HHB (Daniel's name; McMaster sells it as Hex Head Screws);
 set screws are SS + tip letter (SSF flat-tip, SSC cup-tip).
 Nuts are N + two letters (NHX hex, NTH thin-profile, NNL nylon-insert locknut, NFL flange, NSF serrated
-flange); washers are W + two letters (WGP general purpose, WSA SAE, WUS USS, WOV oversized, WSL split lock,
-WTE/WTI external/internal tooth lock).
+flange, NTL top-lock, NTN thin nylon-insert locknut, NCP coupling, NCA cap, NWG wing, NSQ square); washers are
+W + two letters (WGP general purpose, WSA SAE, WUS USS, WOV oversized, WSL split lock, WTE/WTI external/internal
+tooth lock, WTK thick).
 Codes not in the shop list yet: `HHB` (named by Daniel), `SSC`, `SSF`, `SPH`, `SCH`, all the nut and washer codes, and the finish `ALLOY-BO`.
 If a screw is bought from McMaster-Carr, use McMaster's part number on the BOM instead. The tool
 stores the vendor part number as `TBD`.
@@ -185,7 +204,7 @@ dialog). It opens a new design, cuts a plate with 29 holes, places every type in
 oxide in each family that offers it, a UNF screw, cup-tip set screws, the pan and cheese heads, and partly threaded screws),
 checks the part number, description, material, appearance, position, tip depth, joint, reuse, toolbar
 button, and that partial cosmetic threads have the tabled length and start at the tip. A second plate with
-9 holes gets every nut and washer type, stacked under screw heads and on the thread end, and checks the seat
+17 holes gets every nut and washer type, stacked under screw heads and on the thread end, and checks the seat
 height of each stacked part, its direction, thickness, outside size and joint. Then it closes the design
 without saving.
 
