@@ -150,7 +150,7 @@ def _refresh(inputs, level):
         inputs.itemById('thread').isVisible = screw
         if screw:
             _st.items['length'] = _length_items(fam, row)
-            cur = str(_st.length) if _st.length is not None else None
+            cur = fc.length_key(row, _st.length)
             _st.length = float(_fill(inputs.itemById('length'), _st.items['length'], cur))
         else:
             _st.length = None

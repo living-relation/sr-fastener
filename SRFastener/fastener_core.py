@@ -64,6 +64,17 @@ def fmt_mm(x):
     return ('%g' % x)
 
 
+def length_key(row, length):
+    """Dialog list key (str of the catalog value) for a remembered length, or None. Catalog lengths can be ints
+    (16) while the saved setting is a float (16.0), so match by value, not by text."""
+    if length is None:
+        return None
+    for L in row['lengths']:
+        if abs(float(L) - float(length)) < 1e-9:
+            return str(L)
+    return None
+
+
 def length_label(fam, length):
     return (fmt_in(length) + '"') if fam['system'] == 'inch' else (fmt_mm(length) + ' mm')
 
