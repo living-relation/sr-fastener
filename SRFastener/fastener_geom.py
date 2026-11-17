@@ -115,18 +115,33 @@ def build_body(fam, row, length):
 def build_part_body(fam, row):
     """Nut or washer as one temporary BRep body. z=0 is the seat face, body goes +z (see fastener_core.part_geometry).
     Simplified where the catalog has no dimension: nylon insert drawn as part of the hex, flange serrations and
-    lock-washer teeth not drawn, split-washer gap = thickness and flat (not helical)."""
+    lock-washer teeth not drawn, split-washer gap = thickness and flat (not helical), cap-nut dome a half sphere,
+    wing-nut wings a flat plate."""
     tbm = adsk.fusion.TemporaryBRepManager.get()
     g = fc.part_geometry(fam, row)
     diff = adsk.fusion.BooleanTypes.DifferenceBooleanType
     union = adsk.fusion.BooleanTypes.UnionBooleanType
-    if g['kind'] == 'nut':
+    inter = adsk.fusion.BooleanTypes.IntersectionBooleanType
+    bore_top = g['height'] + _EPS
+    if g['kind'] == 'nut' and g['shape'] == 'square':
+        s = g['across_flats']
+        body = _box(tbm, 0, 0, g['height'] / 2.0, s, s, g['height'])
+    elif g['kind'] == 'nut' and g['shape'] == 'cap':
+        body = _hex_prism(tbm, g['across_flats'], 0.0, g['hex_h'])
+        dome = tbm.createSphere(_p(0, 0, g['hex_h']), g['dome_r'])
+        tbm.booleanOperation(dome, _cyl(tbm, g['hex_h'] - _EPS, g['dome_r'], g['height'], g['dome_r']), inter)
+        tbm.booleanOperation(body, dome, union)
+        bore_top = g['bore_depth']
+    elif g['kind'] == 'nut' and g['shape'] == 'wing':
+        body = _cyl(tbm, 0.0, g['base_r'], g['base_h'], g['base_r'])
+        tbm.booleanOperation(body, _box(tbm, 0, 0, g['height'] / 2.0, g['wing_w'], g['wing_t'], g['height']), union)
+    elif g['kind'] == 'nut':
         body = _hex_prism(tbm, g['across_flats'], 0.0, g['height'])
         if g['shape'] == 'flange':
             tbm.booleanOperation(body, _cyl(tbm, 0.0, g['flange_r'], g['flange_t'], g['flange_r']), union)
     else:
         body = _cyl(tbm, 0.0, g['outer_r'], g['height'], g['outer_r'])
-    tbm.booleanOperation(body, _cyl(tbm, -_EPS, g['bore_r'], g['height'] + _EPS, g['bore_r']), diff)
+    tbm.booleanOperation(body, _cyl(tbm, -_EPS, g['bore_r'], bore_top, g['bore_r']), diff)
     if g.get('gap'):
         span = g['outer_r'] - g['bore_r'] + 2 * _EPS
         cx = (g['outer_r'] + g['bore_r']) / 2.0

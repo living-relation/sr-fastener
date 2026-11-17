@@ -22,8 +22,11 @@ def test_kinds_listed_separately():
     assert all(fc.kind(f) == 'screw' for f in screws)
     nuts = {f['code'] for f in fc.families(CAT, kind_='nut')}
     washers = {f['code'] for f in fc.families(CAT, kind_='washer')}
-    assert nuts == {'NHX-M', 'NTH-M', 'NNL-M', 'NFL-M', 'NSF-M', 'NHX-I', 'NTH-I', 'NNL-I'}
-    assert washers == {'WGP-M', 'WOV-M', 'WSL-M', 'WTE-M', 'WTI-M', 'WSA-I', 'WUS-I', 'WSL-I'}
+    assert nuts == {'NHX-M', 'NTH-M', 'NNL-M', 'NFL-M', 'NSF-M', 'NHX-I', 'NTH-I', 'NNL-I',
+                    'NFL-I', 'NSF-I', 'NTL-M', 'NTL-I', 'NTN-I', 'NCP-M', 'NCP-I', 'NCA-M', 'NCA-I',
+                    'NWG-M', 'NWG-I', 'NSQ-M', 'NSQ-I'}
+    assert washers == {'WGP-M', 'WOV-M', 'WSL-M', 'WTE-M', 'WTI-M', 'WSA-I', 'WUS-I', 'WSL-I',
+                       'WTK-M', 'WTE-I', 'WTI-I', 'WOV-I'}
 
 
 def test_mcmaster_names():
@@ -132,7 +135,9 @@ def test_geometry():
         for r in p['sizes']:
             g = fc.part_geometry(p, r)
             assert g['thickness'] > 0
-            if p['kind'] == 'nut':  # across flats clears the bore, flange wider than the hex
+            if p['kind'] == 'nut' and p['shape'] == 'wing':
+                assert g['wing_w'] > 2 * g['base_r'] > 2 * g['bore_r'], (p['code'], r['size'])
+            elif p['kind'] == 'nut':  # across flats clears the bore, flange wider than the hex
                 assert g['across_flats'] > 2 * g['bore_r'], (p['code'], r['size'])
                 if 'flange_r' in g:
                     assert 2 * g['flange_r'] > g['across_flats']

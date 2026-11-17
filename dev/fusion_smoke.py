@@ -82,6 +82,15 @@ PART_STACKS = [
     (1.0, [('NTH-I', '3/8', 'SS-BO', 'top'), ('WSL-I', '3/8', 'SS', 'bottom'), ('NHX-I', '3/8-24', 'SS-BO', 'bottom')]),
     (0.51, [('NHX-I', '#10-32', 'SS-BO', 'bottom'), ('WSL-I', '#10', 'SS-BO', 'top'), ('WSA-I', '#10', 'SS', 'top')]),
     (0.37, [('NHX-I', '#6', 'SS', 'bottom'), ('NNL-I', '#6-40', 'SS-BO', 'top')]),
+    (0.66, [('WTK-M', 'M6', 'SS', 'top'), ('NCA-M', 'M6', 'SS', 'bottom')]),
+    (0.55, [('NWG-M', 'M5', 'SS', 'top'), ('NSQ-M', 'M5', 'SS', 'bottom')]),
+    (0.66, [('NFL-I', '1/4', 'SS', 'top'), ('NSF-I', '1/4-28', 'SS', 'bottom')]),
+    (0.66, [('WTE-I', '1/4', 'SS-BO', 'top'), ('NTN-I', '1/4', 'SS-BO', 'top'), ('WTI-I', '1/4', 'SS', 'bottom'),
+            ('NTL-I', '1/4-28', 'SS', 'bottom')]),
+    (0.88, [('NTL-M', 'M8', 'SS', 'top'), ('NCP-M', 'M8', 'SS-BO', 'bottom')]),
+    (0.51, [('WOV-I', '#10', 'SS', 'top'), ('NCA-I', '#10-32', 'SS-BO', 'bottom')]),
+    (0.51, [('NWG-I', '#10', 'SS', 'top'), ('NSQ-I', '#10-32', 'SS', 'bottom')]),
+    (0.66, [('NCP-I', '1/4', 'SS', 'top')]),
 ]
 
 
@@ -128,7 +137,9 @@ def _parts(app, design, core, place, cat, check, report):
                       (bb.maxPoint.z - bb.minPoint.z, g['thickness']))
                 width = max(bb.maxPoint.x - bb.minPoint.x, bb.maxPoint.y - bb.minPoint.y)  # split gap cuts one side
                 want_w = 2 * g.get('flange_r', g.get('outer_r', 0)) if g['shape'] != 'hex' and g['shape'] != 'nylon' else None
-                if want_w:
+                if g['shape'] == 'wing':
+                    check('%s wing span' % tag, width >= g['wing_w'] - 1e-3, (width, g['wing_w']))
+                elif want_w:
                     check('%s outside diameter' % tag, abs(width - want_w) < 1e-3, (width, want_w))
                 else:
                     check('%s hex at least across flats' % tag, width >= g['across_flats'] - 1e-3, (width, g['across_flats']))
