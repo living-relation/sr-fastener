@@ -229,6 +229,18 @@ def test_remembered_length_matches_int_catalog_lengths():
     assert 'fc.length_key(row, _st.length)' in src
 
 
+def test_refresh_keeps_remembered_length_when_not_a_screw():
+    # Switching to (or opening on) a nut/washer must not wipe the last screw length.
+    src = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'SRFastener',
+                            'SRFastener.py'), encoding='utf-8').read()
+    start = src.index('def _refresh(')
+    end = src.index('def _bom_preview(')
+    body = src[start:end]
+    assert 'if screw:' in body
+    assert 'fc.length_key(row, _st.length)' in body
+    assert '_st.length = None' not in body
+
+
 def test_bom_fields_never_use_vendor_numbers():
     """Fusion part number, component name and description use only the shop smart scheme."""
     for fam in CAT['families'] + CAT.get('parts', []):

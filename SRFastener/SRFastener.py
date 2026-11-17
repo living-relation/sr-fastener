@@ -152,8 +152,8 @@ def _refresh(inputs, level):
             _st.items['length'] = _length_items(fam, row)
             cur = fc.length_key(row, _st.length)
             _st.length = float(_fill(inputs.itemById('length'), _st.items['length'], cur))
-        else:
-            _st.length = None
+        # Keep the last screw length when the dialog is on a nut or washer so
+        # switching back (or reopening on a nut, then choosing Screws) still lands on it.
         _st.items['finish'] = _finish_items(fam, row)
         _st.finish = _fill(inputs.itemById('finish'), _st.items['finish'], _st.finish)
     _bom_preview(inputs)
