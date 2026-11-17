@@ -9,7 +9,7 @@ CAT = fc.load_catalog()
 
 
 def test_finishes():
-    assert set(CAT['finishes']) == {'SS', 'SS-BO', 'ALLOY-BO'}
+    assert set(CAT['finishes']) == {'SS', 'SS-BO', 'ALLOY-BO', 'STL', 'ZN', 'GR8', 'CL10.9', 'CL10'}
     for fam in CAT['families']:
         for row in fam['sizes']:
             # Daniel's rule: every size in 18-8 SS and 18-8 SS-BO, whatever McMaster stocks
@@ -34,12 +34,13 @@ def test_part_numbers():
 def test_description_and_bom():
     fam = fc.family(CAT, 'SBH-M')
     bom = fc.bom_fields(CAT, fam, fc.size_row(fam, 'M4'), 12, 'SS-BO')
-    assert bom['description'] == 'Button head hex-drive screw, ISO 7380-1, M4 x 0.7 x 12 mm, 18-8 stainless steel, black oxide'
-    assert bom['material'] == 'Stainless Steel AISI 304'
+    assert bom['description'] == 'Button Head Hex-Drive Screw, M4 x 0.7, 18-8 Stainless Steel Black Oxide'
+    assert bom['material'] == 'Stainless Steel Black Oxide' and bom['base_material'] == 'Stainless Steel AISI 304'
     assert bom['part_number'] == 'SBH-M4-0.7 x 12 18-8 SS-BO'
     assert bom['appearance'] == 'Coating - Black Oxide'
     ss = fc.bom_fields(CAT, fam, fc.size_row(fam, 'M4'), 12, 'SS')
-    assert ss['material'] == 'Stainless Steel AISI 304' and ss['part_number'].endswith(' 18-8 SS')
+    assert ss['material'] == 'Stainless Steel' and ss['part_number'].endswith(' 18-8 SS')
+    assert ss['description'] == 'Button Head Hex-Drive Screw, M4 x 0.7, 18-8 Stainless Steel'
 
 
 def test_fmt_in():
@@ -98,16 +99,17 @@ def test_alloy_black_oxide_bom():
     fam = fc.family(CAT, 'SSH-M')
     bom = fc.bom_fields(CAT, fam, fc.size_row(fam, 'M5'), 16, 'ALLOY-BO')
     assert bom['part_number'] == 'SSH-M5-0.8 x 16 ALLOY-BO'
-    assert bom['description'].endswith('M5 x 0.8 x 16 mm, alloy steel, black oxide, class 12.9')
-    assert bom['material'] == 'Steel AISI 4142 400 QT' and bom['grade'] == 'class 12.9'
+    assert bom['description'] == 'Socket Head Screw, M5 x 0.8, Alloy Steel Black Oxide'
+    assert bom['material'] == 'Alloy Steel Black Oxide' and bom['grade'] == 'Class 12.9'
+    assert bom['base_material'] == 'Steel AISI 4142 400 QT'
     s = fc.family(CAT, 'SSF-M')
-    assert fc.bom_fields(CAT, s, fc.size_row(s, 'M6'), 8, 'ALLOY-BO')['material'] == 'Steel AISI 4142 475 QT'
+    assert fc.bom_fields(CAT, s, fc.size_row(s, 'M6'), 8, 'ALLOY-BO')['base_material'] == 'Steel AISI 4142 475 QT'
     lh = fc.family(CAT, 'SLH-M')
-    assert fc.bom_fields(CAT, lh, fc.size_row(lh, 'M6'), 16, 'ALLOY-BO')['material'] == 'Steel AISI 4340 350A QT'
+    assert fc.bom_fields(CAT, lh, fc.size_row(lh, 'M6'), 16, 'ALLOY-BO')['base_material'] == 'Steel AISI 4340 350A QT'
     inch = fc.family(CAT, 'SBH-I')
     bom = fc.bom_fields(CAT, inch, fc.size_row(inch, '#10-32'), 0.5, 'ALLOY-BO')
-    assert bom['part_number'] == 'SBH-10-32 x 0.5 ALLOY-BO' and bom['grade'] == 'ASTM F835'
-    assert '10-32 UNF' in bom['description']
+    assert bom['part_number'] == 'SBH-10-32 x 0.5 ALLOY-BO' and bom['grade'] == ''  # ASTM F835 is a standard
+    assert bom['description'] == 'Button Head Hex-Drive Screw, #10-32, Alloy Steel Black Oxide'
 
 
 def test_alloy_not_offered_where_makers_do_not_sell_it():
@@ -204,7 +206,7 @@ def test_names_follow_mcmaster():
             assert words.startswith({'F': 'flat-tip', 'C': 'cup-tip', 'N': 'cone-tip', 'E': 'extended-tip',
                                      'O': 'oval-tip'}[code[2]])
         elif code == 'HHB':  # Daniel's name for McMaster's Hex Head Screws
-            assert words == 'hex head screws' and fam['name'].startswith('Hex head bolt')
+            assert words == 'hex head screws' and fam['name'].startswith('Hex Head Bolt')
         elif code == 'SBF':  # button head, flanged
             assert words == 'flanged button head hex-drive screws'
         elif code == 'STP':  # sheet metal tapping screw, pan (rounded) head
@@ -253,10 +255,9 @@ def test_bom_fields_never_use_vendor_numbers():
                     assert pn == fc.part_number(fam, row, L, fk)
                     assert pn == fc.component_name(fam, row, L, fk)
                     assert pn.startswith(fam['code'].rsplit('-', 1)[0] + '-')
-                    assert pn.endswith(' ' + {'SS': '18-8 SS', 'SS-BO': '18-8 SS-BO', 'ALLOY-BO': 'ALLOY-BO'}[fk])
+                    assert pn.endswith(' ' + CAT['finishes'][fk]['code'])
                     for label, text in (
                         ('part_number', pn),
                         ('description', bom['description']),
-                        ('standard', bom['standard']),
                     ):
                         assert not fc.contains_vendor_number(text), (fam['code'], row['size'], label, text)

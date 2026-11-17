@@ -108,34 +108,59 @@ def finishes_for(cat, fam, row):
     return out
 
 
+def _num(x):
+    return ('%.4f' % x).rstrip('0').rstrip('.')
+
+
+def washer_od(fam, row):
+    """Washer outside diameter in catalog units (mm or in)."""
+    return row['dims']['d2']
+
+
 def part_number(fam, row, length, finish_key):
-    """Daniel's BOM code: 'SSH-M3-0.5 x 10 18-8 SS', 'SSH-1/4-20 x 1.5 18-8 SS-BO', 'SSH-4-40 x 0.25 18-8 SS'."""
+    """Daniel's BOM code. All dimensions live here, never in the description.
+    Screws: 'SSH-M3-0.5 x 10 18-8 SS', 'SSH-1/4-20 x 1.5 18-8 SS-BO', 'SSH-4-40 x 0.25 18-8 SS'.
+    Nuts: screw diameter and thread only: 'NHX-M5-0.8 18-8 SS', 'NHX-1/4-20 ZN'.
+    Washers: screw size and outside diameter: 'WGP-M5 x 10 18-8 SS', 'WSA-1/4 x 0.734 18-8 SS'."""
     code = fam['code'].rsplit('-', 1)[0]
-    if kind(fam) != 'screw':
-        if kind(fam) == 'washer':
-            body = nominal(row).lstrip('#') if fam['system'] == 'inch' else row['size']
-        elif fam['system'] == 'inch':
+    fin = _FIN_CODE.get(finish_key, finish_key)
+    if kind(fam) == 'washer':
+        if fam['system'] == 'inch':
+            body = '%s x %s' % (nominal(row).lstrip('#'), _num(washer_od(fam, row)))
+        else:
+            body = '%s x %g' % (row['size'], washer_od(fam, row))
+        return '%s-%s %s' % (code, body, fin)
+    if kind(fam) == 'nut':
+        if fam['system'] == 'inch':
             body = '%s-%d' % (nominal(row).lstrip('#'), row['tpi'])
         else:
             body = '%s-%g' % (row['size'], row['pitch'])
-        return '%s-%s %s' % (code, body, _FIN_CODE.get(finish_key, finish_key))
+        return '%s-%s %s' % (code, body, fin)
     if fam['system'] == 'inch':
-        body = '%s-%d x %s' % (nominal(row).lstrip('#'), row['tpi'], ('%.4f' % length).rstrip('0').rstrip('.'))
+        body = '%s-%d x %s' % (nominal(row).lstrip('#'), row['tpi'], _num(length))
     else:
         body = '%s-%g x %s' % (row['size'], row['pitch'], fmt_mm(length))
-    return '%s-%s %s' % (fam['code'].rsplit('-', 1)[0], body, _FIN_CODE.get(finish_key, finish_key))
+    return '%s-%s %s' % (code, body, fin)
 
 
-_FIN_CODE = {'SS': '18-8 SS', 'SS-BO': '18-8 SS-BO', 'ALLOY-BO': 'ALLOY-BO'}
+_FIN_CODE = {'SS': '18-8 SS', 'SS-BO': '18-8 SS-BO', 'ALLOY-BO': 'ALLOY-BO', 'STL': 'STL', 'ZN': 'ZN', 'GR8': 'GR8',
+             'CL10.9': 'CL10.9', 'CL10': 'CL10'}
 
 # McMaster-style catalog numbers (e.g. 94758A, 90313A108) and vendor names must never
 # appear in the Fusion part number, component name or description.
 _VENDOR_PN = re.compile(r'\b(?:McMaster|Fastenal)\b|\b\d{5,6}[A-Z]\d{0,6}\b', re.I)
 
+# Standards and material acronyms that must never show in a description, type name or material name.
+STANDARD_WORDS = re.compile(r'\b(?:ISO|DIN|ASME|ANSI|ASTM|SAE J\d+|IFI|AISI|JIS|EN \d+)\b')
+
 
 def contains_vendor_number(text):
     """True if text looks like, or contains, a McMaster or other vendor part number."""
     return bool(_VENDOR_PN.search(text or ''))
+
+
+def contains_standard(text):
+    return bool(STANDARD_WORDS.search(text or ''))
 
 
 def _reject_vendor(label, text):
@@ -144,67 +169,71 @@ def _reject_vendor(label, text):
 
 
 def grade(row, finish_key):
-    """Strength grade for this finish if the catalog gives one, e.g. 'class 12.9' or 'ASTM A574'."""
+    """Raw strength grade from the catalog for this finish, e.g. 'class 12.9' or 'ASTM A574' (internal: picks the
+    Fusion base material). Use grade_label() for anything shown to people."""
     return row.get('grade', {}).get(finish_key)
 
 
+def grade_label(g):
+    """Grade text with no standard names: 'class 12.9' -> 'Class 12.9', 'SAE J429 Grade 8' -> 'Grade 8',
+    'ASTM A574' -> '' (that is a standard, not a grade name)."""
+    if not g:
+        return ''
+    m = re.search(r'(?i)\b(class|grade)\s+([0-9.]+[A-Z]?)\b', g)
+    return ('%s %s' % (m.group(1).capitalize(), m.group(2))) if m else ''
+
+
+def desc_thread(fam, row):
+    """Screw size and thread for a description, no standard or series words: 'M4 x 0.7', '1/4-20', '#10-32'.
+    Washers: the screw size only ('M4', '#10', '1/4')."""
+    if kind(fam) == 'washer':
+        return row['size'] if fam['system'] == 'metric' else nominal(row)
+    if fam['system'] == 'inch':
+        return '%s-%d' % (nominal(row), row['tpi'])
+    return '%s x %g' % (row['size'], row['pitch'])
+
+
 def description(cat, fam, row, length, finish_key):
-    """'Socket head cap screw, ISO 4762, M3 x 0.5 x 10 mm, 18-8 stainless steel'
-    (alloy adds the grade: '..., alloy steel, black oxide, class 12.9')."""
-    if kind(fam) != 'screw':
-        return part_description(cat, fam, row, finish_key)
-    unit_len = length_label(fam, length)
-    text = '%s, %s, %s x %s, %s' % (fam['name'], fam['standard'], thread_label(fam, row), unit_len,
-                                    finish(cat, finish_key)['name'].lower())
-    g = grade(row, finish_key)
-    return text + (', ' + g if g else '')
-
-
-def _dim(fam, v):
-    return (('%.3f' % v).rstrip('0').rstrip('.') + '"') if fam['system'] == 'inch' else ('%g mm' % v)
+    """'Socket Head Screw, M4 x 0.7, 18-8 Stainless Steel'. Never a dimension (length, OD, thickness live in the
+    part number) and never a standard."""
+    return '%s, %s, %s' % (fam['name'], desc_thread(fam, row), finish(cat, finish_key)['name'])
 
 
 def part_description(cat, fam, row, finish_key):
-    """'Hex nut, DIN 934, M5 x 0.8, 8 mm wide x 4 mm high, 18-8 stainless steel'
-    'Split lock washer, DIN 127 B, M5, 5.4 mm ID x 9.2 mm OD x 1.2 mm thick, 18-8 stainless steel'"""
-    d = row['dims']
-    if kind(fam) == 'nut':
-        if fam['shape'] == 'wing':
-            size = '%s wide x %s high, %s base' % (_dim(fam, d['w']), _dim(fam, d['m']), _dim(fam, d['db']))
-        else:
-            size = '%s wide x %s high' % (_dim(fam, d['s']), _dim(fam, d['m']))
-        if 'dc' in d:
-            size += ', %s flange' % _dim(fam, d['dc'])
-    else:
-        size = '%s ID x %s OD x %s thick' % (_dim(fam, d['d1']), _dim(fam, d['d2']), _dim(fam, d['t']))
-    return '%s, %s, %s, %s, %s' % (fam['name'], fam['standard'], thread_label(fam, row), size,
-                                   finish(cat, finish_key)['name'].lower())
+    return description(cat, fam, row, None, finish_key)
 
 
 def component_name(fam, row, length, finish_key):
     return part_number(fam, row, length, finish_key)
 
 
+def base_material(cat, fam, row, finish_key):
+    """Fusion library material the physical properties come from (alloy picks by grade)."""
+    g = grade(row, finish_key)
+    f = finish(cat, finish_key)
+    if g and finish_key == 'ALLOY-BO':
+        return cat.get('alloy_materials', {}).get(g, f['base'])
+    return f['base']
+
+
 def bom_fields(cat, fam, row, length, finish_key):
     if finish_key not in finishes_for(cat, fam, row):
         raise ValueError('%s %s is not sold in %s' % (fam['code'], row['size'], finish_key))
     f = finish(cat, finish_key)
-    g = grade(row, finish_key)
-    material = cat.get('alloy_materials', {}).get(g, f['material']) if g else f['material']
     pn = part_number(fam, row, length, finish_key)
     desc = description(cat, fam, row, length, finish_key)
     _reject_vendor('part number', pn)
     _reject_vendor('component name', component_name(fam, row, length, finish_key))
     _reject_vendor('description', desc)
-    _reject_vendor('standard', fam['standard'])
     return {
         'part_number': pn,
         'description': desc,
-        'material': material,
+        'material': f['material'],
+        'base_material': base_material(cat, fam, row, finish_key),
         'appearance': f['appearance'],
         'finish': f['name'],
-        'grade': g or '',
-        'standard': fam['standard'],
+        'finish_key': finish_key,
+        'grade': grade_label(grade(row, finish_key)),
     }
 
 
@@ -425,3 +454,191 @@ def thread_spec(fam, row):
         return ('ANSI Unified Screw Threads',
                 '%s-%d %s' % (nominal(row).lstrip('#'), row['tpi'], row.get('series', 'UNC')), '3A')
     return 'ISO Metric profile', 'M%gx%g' % (row['d'], row['pitch']), '6g'
+
+
+# ---------- matching and compatibility (Daniel 2026-11-17) ----------
+# Screws size from the hole (its thread if tapped, else its diameter). Nuts and washers size from the screw's
+# diameter and thread first (a screw in the stack, or already in that hole), and only from the hole when there is
+# no screw. They never size from other nuts or washers.
+
+def _nom_key(system, nom):
+    nom = str(nom).strip()
+    return nom if system == 'metric' else nom.lstrip('#')
+
+
+def thread_ref(fam, row):
+    """Size and thread of a screw, nut or washer row: {'system', 'nominal', 'pitch' or 'tpi' (None for washers),
+    'label'}."""
+    ref = {'system': fam['system'], 'nominal': _nom_key(fam['system'], nominal(row) if fam['system'] == 'inch'
+                                                         else row['size']), 'pitch': None, 'tpi': None}
+    if kind(fam) != 'washer':
+        if fam['system'] == 'inch':
+            ref['tpi'] = row['tpi']
+        else:
+            ref['pitch'] = row['pitch']
+    ref['label'] = desc_thread(fam, row)
+    return ref
+
+
+_METRIC_DES = re.compile(r'^\s*M\s*(\d+(?:\.\d+)?)\s*(?:[xX\u00d7]\s*(\d+(?:\.\d+)?))?')
+_INCH_DES = re.compile(r'^\s*#?\s*(\d+/\d+|\d+(?:\.\d+)?)\s*-\s*(\d+)')
+
+
+def ref_from_designation(designation):
+    """Fusion thread designation of a tapped hole -> ref. 'M6x1' -> M6 pitch 1; '1/4-20 UNC' -> 1/4 20 tpi;
+    '10-32 UNF' -> 10 32 tpi. None if it cannot be read."""
+    d = (designation or '').strip()
+    m = _METRIC_DES.match(d)
+    if m:
+        return {'system': 'metric', 'nominal': 'M%g' % float(m.group(1)),
+                'pitch': float(m.group(2)) if m.group(2) else None, 'tpi': None, 'label': d}
+    m = _INCH_DES.match(d)
+    if m:
+        return {'system': 'inch', 'nominal': m.group(1), 'pitch': None, 'tpi': int(m.group(2)), 'label': d}
+    return None
+
+
+def same_thread(a, b):
+    """True when two refs are the same diameter and thread. A washer ref (no thread) only checks the diameter."""
+    if a is None or b is None:
+        return True
+    if a['system'] != b['system'] or a['nominal'] != b['nominal']:
+        return False
+    if a['system'] == 'metric':
+        return a['pitch'] is None or b['pitch'] is None or abs(a['pitch'] - b['pitch']) < 1e-6
+    return a['tpi'] is None or b['tpi'] is None or a['tpi'] == b['tpi']
+
+
+def row_for_ref(fam, ref):
+    """Size key in `fam` matching ref's diameter and thread (washers: diameter only), or None."""
+    if ref is None or fam['system'] != ref['system']:
+        return None
+    for row in fam['sizes']:
+        if same_thread(thread_ref(fam, row), ref):
+            return row['size']
+    return None
+
+
+def size_for(cat, fam, screw_ref=None, hole_thread=None, hole_diameter_cm=None):
+    """Size key for `fam` following Daniel's order. screw_ref: thread_ref of the screw in the stack or in the hole.
+    hole_thread: the hole's thread designation if tapped. Returns None when nothing fits."""
+    if kind(fam) != 'screw' and screw_ref is not None:
+        return row_for_ref(fam, screw_ref)
+    if hole_thread:
+        ref = ref_from_designation(hole_thread)
+        size = row_for_ref(fam, ref)
+        if size or ref is not None:
+            return size
+    if hole_diameter_cm:
+        return suggest_size(cat, fam, hole_diameter_cm)
+    return None
+
+
+def match_group(cat, finish_key):
+    f = cat['finishes'].get(finish_key, {})
+    return f.get('match', finish_key)
+
+
+def matching_finish(cat, fam, row, finish_key):
+    """finish_key if this size is sold in it, else a finish of the same material group (Class 10 for a Class
+    10.9 screw), else None."""
+    offered = finishes_for(cat, fam, row)
+    if finish_key in offered:
+        return finish_key
+    g = match_group(cat, finish_key)
+    for k in offered:
+        if match_group(cat, k) == g:
+            return k
+    return None
+
+
+def item(cat, code, size, finish_key, length=None):
+    """A stack item dict from catalog keys."""
+    fam = family(cat, code)
+    return {'fam': fam, 'row': size_row(fam, size), 'finish': finish_key, 'length': length, 'kind': kind(fam)}
+
+
+def item_label(cat, it):
+    return '%s %s (%s)' % (it['fam']['name'], desc_thread(it['fam'], it['row']), finish(cat, it['finish'])['name'])
+
+
+def material_mismatch(cat, items):
+    """Items whose material differs from the screw's (or, with no screw, from the first item's)."""
+    if not items:
+        return []
+    ref = next((i for i in items if i['kind'] == 'screw'), items[0])
+    g = match_group(cat, ref['finish'])
+    return [i for i in items if match_group(cat, i['finish']) != g]
+
+
+def _hole_text(fam, hole_diameter_cm):
+    if fam['system'] == 'inch':
+        return '%.3f in' % (hole_diameter_cm / 2.54)
+    return '%.2f mm' % (hole_diameter_cm * 10)
+
+
+def compat_warnings(cat, items, hole_thread=None, hole_diameter_cm=None):
+    """Plain-language warnings for hardware that does not go together: a nut or washer whose size or thread does
+    not match the screw, a screw (or, with no screw, a nut) that does not match a tapped hole, a screw bigger than
+    a plain hole, and mixed materials. items: stack items (new and already placed) on one hole."""
+    out = []
+    screw = next((i for i in items if i['kind'] == 'screw'), None)
+    hole_ref = ref_from_designation(hole_thread) if hole_thread else None
+    if screw is not None:
+        sref = thread_ref(screw['fam'], screw['row'])
+        if hole_ref is None and hole_diameter_cm and screw['row'].get('d'):
+            ratio = hole_diameter_cm / to_cm(screw['fam'], screw['row']['d'])
+            if ratio < 0.98:
+                out.append('%s is bigger than the %s hole, which is not tapped'
+                           % (item_label(cat, screw), _hole_text(screw['fam'], hole_diameter_cm)))
+        if hole_ref is not None and not same_thread(sref, hole_ref):
+            out.append('%s does not fit the tapped hole (%s)' % (item_label(cat, screw), hole_thread))
+        for i in items:
+            if i is screw or i['kind'] == 'screw':
+                continue
+            if not same_thread(thread_ref(i['fam'], i['row']), sref):
+                out.append('%s does not fit %s (different size or thread)' % (item_label(cat, i), item_label(cat, screw)))
+        for i in items:
+            if i['kind'] == 'screw' and i is not screw:
+                out.append('two screws in one hole: %s and %s' % (item_label(cat, screw), item_label(cat, i)))
+    elif hole_ref is not None:
+        for i in items:
+            if not same_thread(thread_ref(i['fam'], i['row']), hole_ref):
+                out.append('%s does not fit the tapped hole (%s)' % (item_label(cat, i), hole_thread))
+    odd = material_mismatch(cat, items)
+    if odd:
+        ref = next((i for i in items if i['kind'] == 'screw'), items[0])
+        out.append('mixed materials: %s vs %s' % (finish(cat, ref['finish'])['name'],
+                                                  ', '.join(sorted({finish(cat, i['finish'])['name'] for i in odd}))))
+    return out
+
+
+# ---------- stack list edits (pure, so they are unit-tested) ----------
+
+def stack_add(stack, row, uid):
+    """Append a row (dict) tagged with its add order; returns the new row's index."""
+    row = dict(row)
+    row['uid'] = uid
+    stack.append(row)
+    return len(stack) - 1
+
+
+def stack_remove(stack, selected=None):
+    """'-' button: remove the highlighted row, or the most recently added one when none is highlighted.
+    Returns the removed row, or None if the stack is empty."""
+    if not stack:
+        return None
+    if selected is None or not (0 <= selected < len(stack)):
+        selected = max(range(len(stack)), key=lambda i: stack[i].get('uid', 0))
+    return stack.pop(selected)
+
+
+def stack_move(stack, selected, step):
+    """Move the highlighted row up (step -1) or down (+1). Returns its new index (unchanged at the ends)."""
+    if selected is None or not (0 <= selected < len(stack)):
+        return selected
+    j = selected + step
+    if 0 <= j < len(stack):
+        stack[selected], stack[j] = stack[j], stack[selected]
+        return j
+    return selected

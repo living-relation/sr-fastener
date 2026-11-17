@@ -1,7 +1,11 @@
 """Reads a picked hole edge, makes or reuses the screw, nut or washer component, places it and joins it (Fusion API).
 
-Stacking: a nut, washer or screw head placed at a hole edge sits on top of any SR nuts and washers already
-placed at that edge (same axis, touching), so pick the same edge for a washer and then a screw or nut."""
+Every placed fastener is a real component with a solid body saved in the design, so anyone can open the design
+without the add-in. data/catalog.json is only the size table the add-in builds new parts from.
+
+Stacks: place_stack() puts a screw (or a lone nut or washer) plus any number of nuts and washers on the near side
+(the picked edge, under the screw head) and the far side (the other end of a through hole), in the order given,
+each sitting on the one before. Parts already placed at that edge are stacked on too."""
 import adsk.core
 import adsk.fusion
 
@@ -19,11 +23,38 @@ class Hole:
         self.edge, self.centre, self.into, self.radius, self.thread = edge, centre, into, radius, thread
 
 
+def _hole_feature_thread(native, comp):
+    """Designation from a tapped Hole feature whose side faces include this face (Fusion Hole command, Tapped)."""
+    try:
+        for hf in comp.features.holeFeatures:
+            try:
+                faces = hf.sideFaces
+                hit = any(faces.item(i).tempId == native.tempId for i in range(faces.count))
+                if not hit:
+                    continue
+                for name in ('tappedHoleInfo', 'threadInfo'):
+                    try:
+                        ti = getattr(hf, name, None)
+                    except Exception:  # not a tapped hole
+                        ti = None
+                    if ti is not None and getattr(ti, 'threadDesignation', None):
+                        return ti.threadDesignation
+            except Exception:
+                continue
+    except Exception:
+        pass
+    return None
+
+
 def _thread_designation(face):
-    """Designation of a thread feature on this face, if any (e.g. 'M3x0.5')."""
+    """Designation of a thread on this hole face, if any (e.g. 'M3x0.5'): a Thread feature, or a tapped Hole
+    feature. None means a plain (untapped) hole."""
     try:
         native = face.nativeObject or face
         comp = native.body.parentComponent
+        des = _hole_feature_thread(native, comp)
+        if des:
+            return des
         for tf in comp.features.threadFeatures:
             try:
                 faces = tf.faces
@@ -133,7 +164,7 @@ def _find_component(design, pn):
     return None
 
 
-def _material(app, name):
+def _library_material(app, name):
     for libname in ('Fusion Material Library',):
         lib = app.materialLibraries.itemByName(libname)
         if lib:
@@ -143,16 +174,40 @@ def _material(app, name):
     return None
 
 
+def _material(app, design, name, base, notes):
+    """A design material called `name` (Daniel's plain material name, e.g. 'Stainless Steel'), copied from the
+    library material `base` so mass and stiffness are right. Made once per design and reused."""
+    try:
+        m = design.materials.itemByName(name)
+        if m:
+            return m
+    except Exception:
+        pass
+    src = _library_material(app, base)
+    if src is None:
+        notes.append('material not found: %s' % base)
+        return None
+    try:
+        return design.materials.addByCopy(src, name)
+    except Exception as e:
+        notes.append('could not make material "%s" (%s); used %s' % (name, e, base))
+        return src
+
+
+APPEARANCE_FALLBACK = {'Steel - Galvanized (Small)': ['Steel - Galvanized (Small)', 'Steel - Satin']}
+
+
 def _appearance(app, design, name):
-    a = design.appearances.itemByName(name)
-    if a:
-        return a
-    for libname in ('Fusion Appearance Library', 'Fusion Material Library'):
-        lib = app.materialLibraries.itemByName(libname)
-        if lib:
-            src = lib.appearances.itemByName(name)
-            if src:
-                return design.appearances.addByCopy(src, name)
+    for want in APPEARANCE_FALLBACK.get(name, [name]):
+        a = design.appearances.itemByName(want)
+        if a:
+            return a
+        for libname in ('Fusion Appearance Library', 'Fusion Material Library'):
+            lib = app.materialLibraries.itemByName(libname)
+            if lib:
+                src = lib.appearances.itemByName(want)
+                if src:
+                    return design.appearances.addByCopy(src, want)
     return None
 
 
@@ -223,6 +278,28 @@ def _apply_thread(comp, fam, row, length, notes):
         notes.append('cosmetic thread skipped: %s' % e)
 
 
+# True while the dialog's live preview is placing parts. Preview parts are tagged so hardware_at() does not
+# mistake them for parts already in the hole (Fusion keeps the preview on screen while inputs change).
+PREVIEW = False
+
+
+def _mark_preview(occ):
+    # on the occurrence: a preview often reuses a component that is already in the design
+    if PREVIEW:
+        try:
+            occ.attributes.add(ATTR, 'preview', '1')
+        except Exception:
+            pass
+
+
+def _is_preview(occ):
+    try:
+        native = occ.nativeObject or occ
+        return native.attributes.itemByName(ATTR, 'preview') is not None
+    except Exception:
+        return False
+
+
 def make_component(app, design, parent, cat, fam, row, length, finish_key, matrix, thread=True, notes=None):
     """Create (or reuse) the screw component and add an occurrence at `matrix` (parent-local)."""
     notes = notes if notes is not None else []
@@ -230,8 +307,11 @@ def make_component(app, design, parent, cat, fam, row, length, finish_key, matri
     pn = bom['part_number']
     existing = _find_component(design, pn)
     if existing is not None:
-        return parent.occurrences.addExistingComponent(existing, matrix), notes
+        occ = parent.occurrences.addExistingComponent(existing, matrix)
+        _mark_preview(occ)
+        return occ, notes
     occ = parent.occurrences.addNewComponent(matrix)
+    _mark_preview(occ)
     comp = occ.component
     comp.name = pn
     comp.partNumber = pn
@@ -248,18 +328,16 @@ def make_component(app, design, parent, cat, fam, row, length, finish_key, matri
         comp.bRepBodies.add(body)
     b = comp.bRepBodies.item(0)
     b.name = pn
-    mat = _material(app, bom['material'])
+    mat = _material(app, design, bom['material'], bom['base_material'], notes)
     if mat:
         comp.material = mat
         b.material = mat
-    else:
-        notes.append('material not found: %s' % bom['material'])
     ap = _appearance(app, design, bom['appearance'])
     if ap:
         b.appearance = ap
     else:
         notes.append('appearance not found: %s' % bom['appearance'])
-    for k in ('part_number', 'description', 'finish', 'grade', 'standard'):
+    for k in ('part_number', 'description', 'finish', 'finish_key', 'grade'):
         comp.attributes.add(ATTR, k, str(bom[k]))
     comp.attributes.add(ATTR, 'family', fam['code'])
     comp.attributes.add(ATTR, 'size', row['size'])
@@ -339,26 +417,157 @@ def join(design, parent, occ, hole, world_m, local_m, notes, offset=0.0):
 _STACKS = ('cap', 'button', 'flbutton', 'pan', 'cheese', 'hex')  # screw heads that sit on a washer (not flat or set screws)
 
 
-def place(app, design, cat, fam, row, length, finish_key, edges, flip=False, thread=True, stack=True):
-    """Place one screw, nut or washer per picked edge, stacked on SR nuts/washers already at that edge.
-    Returns (occurrences, notes)."""
-    parent = design.activeComponent
+def far_side(hole):
+    """The other end of the hole (exit edge of a through hole), as a Hole whose `into` points back into the part.
+    None for a blind hole."""
+    axis = hole.into
+    best = None
+    try:
+        edges = hole.edge.body.edges
+    except Exception:
+        return None
+    for e in edges:
+        c = adsk.core.Circle3D.cast(e.geometry)
+        if c is None:
+            continue
+        n = c.normal.copy()
+        n.normalize()
+        if abs(n.dotProduct(axis)) < 0.999:
+            continue
+        v = hole.centre.vectorTo(c.center)
+        along = v.dotProduct(axis)
+        if along <= _TOL:
+            continue
+        if max(v.dotProduct(v) - along * along, 0.0) > 1e-6:
+            continue
+        exit_face = False
+        for i in range(e.faces.count):
+            f = e.faces.item(i)
+            if f.geometry.surfaceType != adsk.core.SurfaceTypes.PlaneSurfaceType:
+                continue
+            ok, normal = f.evaluator.getNormalAtPoint(f.pointOnFace)
+            if ok and normal.dotProduct(axis) > 0.99:
+                exit_face = True
+        if not exit_face:
+            continue
+        key = (round(along, 5), c.radius)
+        if best is None or key[0] > best[0][0] + 1e-5 or (abs(key[0] - best[0][0]) < 1e-5 and key[1] < best[0][1]):
+            best = (key, e, c)
+    if best is None:
+        return None
+    _, e, c = best
+    into = axis.copy()
+    into.scaleBy(-1)
+    return Hole(e, c.center, into, c.radius, hole.thread)
+
+
+def _finish_from_pn(pn):
+    for key, code in sorted(fc._FIN_CODE.items(), key=lambda kv: -len(kv[1])):
+        if (pn or '').endswith(' ' + code):
+            return key
+    return None
+
+
+def hardware_at(design, hole, reach=15.0):
+    """SR screws, nuts and washers already on this hole's axis (either side, within `reach` cm):
+    [{'code', 'size', 'finish', 'length', 'kind', 'along'}]."""
+    out = []
+    axis = hole.into
+    for occ in design.rootComponent.allOccurrences:
+        comp = occ.component
+        k = _attr(comp, 'kind')
+        if k not in ('screw', 'nut', 'washer') or _is_preview(occ):
+            continue
+        origin, _, _, z = occ.transform2.getAsCoordinateSystem()
+        if abs(z.dotProduct(axis)) < 0.999:
+            continue
+        v = hole.centre.vectorTo(origin)
+        along = v.dotProduct(axis)
+        if abs(along) > reach or max(v.dotProduct(v) - along * along, 0.0) > 1e-6:
+            continue
+        fin = _attr(comp, 'finish_key') or _finish_from_pn(_attr(comp, 'part_number'))
+        try:
+            length = float(_attr(comp, 'length')) if _attr(comp, 'length') else None
+        except ValueError:
+            length = None
+        out.append({'code': _attr(comp, 'family'), 'size': _attr(comp, 'size'), 'finish': fin, 'length': length,
+                    'kind': k, 'along': along})
+    return out
+
+
+def existing_items(cat, design, hole):
+    """hardware_at() as fastener_core stack items (unknown types are skipped)."""
+    items = []
+    for h in hardware_at(design, hole):
+        try:
+            it = fc.item(cat, h['code'], h['size'], h['finish'], h['length'])
+        except (KeyError, TypeError):
+            continue
+        it['existing'] = True
+        items.append(it)
+    return items
+
+
+def _local(design, wm):
+    local = wm.copy()
     active_occ = design.activeOccurrence
+    if active_occ is not None:
+        inv = active_occ.transform2.copy()
+        inv.invert()
+        local.transformBy(inv)
+    return local
+
+
+def _place_one(app, design, cat, it, hole, off, thread, notes):
+    parent = design.activeComponent
+    wm = world_matrix(hole, off)
+    local = _local(design, wm)
+    occ, notes = make_component(app, design, parent, cat, it['fam'], it['row'], it.get('length'), it['finish'],
+                                local, thread and it['kind'] == 'screw', notes)
+    join(design, parent, occ, hole, wm, local, notes, off)
+    return occ
+
+
+def _thickness(it):
+    return fc.part_geometry(it['fam'], it['row'])['thickness']
+
+
+def place_stack(app, design, cat, main, rows, edges, flip=False, thread=True):
+    """Place `main` (a screw, nut or washer item, or None) and the stack `rows` on every picked edge.
+    rows: items with 'side' 'near' (picked edge side, under the screw head) or 'far' (other end of the hole), each
+    side listed from the part outward. Returns (occurrences, notes)."""
     occs, notes = [], []
     for edge in edges:
         hole = read_hole(edge, flip)
         if hole is None:
             notes.append('skipped a non-circular edge')
             continue
-        stacks = stack and (fc.kind(fam) != 'screw' or fam.get('head') in _STACKS)
-        off = stack_offset(design, hole) if stacks else 0.0
-        wm = world_matrix(hole, off)
-        local = wm.copy()
-        if active_occ is not None:
-            inv = active_occ.transform2.copy()
-            inv.invert()
-            local.transformBy(inv)
-        occ, notes = make_component(app, design, parent, cat, fam, row, length, finish_key, local, thread, notes)
-        join(design, parent, occ, hole, wm, local, notes, off)
-        occs.append(occ)
+        near = [r for r in rows if r.get('side', 'near') == 'near']
+        far = [r for r in rows if r.get('side') == 'far']
+        off = stack_offset(design, hole)
+        if main is not None and main['kind'] == 'screw' and main['fam'].get('head') not in _STACKS and near:
+            notes.append('near-side nuts/washers skipped: a %s screw does not sit on a washer' % main['fam']['head'])
+            near = []
+        for it in near:
+            occs.append(_place_one(app, design, cat, it, hole, off, thread, notes))
+            off += _thickness(it)
+        if main is not None:
+            stacks = main['kind'] != 'screw' or main['fam'].get('head') in _STACKS
+            occs.append(_place_one(app, design, cat, main, hole, off if stacks else 0.0, thread, notes))
+        if far:
+            fh = far_side(hole)
+            if fh is None:
+                notes.append('far-side nuts/washers skipped: no far side found (blind hole?)')
+            else:
+                off2 = stack_offset(design, fh)
+                for it in far:
+                    occs.append(_place_one(app, design, cat, it, fh, off2, thread, notes))
+                    off2 += _thickness(it)
     return occs, notes
+
+
+def place(app, design, cat, fam, row, length, finish_key, edges, flip=False, thread=True, stack=True):
+    """One screw, nut or washer per picked edge, stacked on SR nuts/washers already at that edge (used by the
+    smoke test). Returns (occurrences, notes)."""
+    main = {'fam': fam, 'row': row, 'length': length, 'finish': finish_key, 'kind': fc.kind(fam)}
+    return place_stack(app, design, cat, main, [], edges, flip, thread)

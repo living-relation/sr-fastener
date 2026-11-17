@@ -279,7 +279,10 @@ def main(keep=False, out=None):
                 if ws.toolbarPanels.itemById(s['panel']) is not None
                 and ws.toolbarPanels.itemById(s['panel']).controls.itemById(main_mod.CMD_ID) is not None]
         check('stop removes every button', not left, left)
-        check('stop removes the empty SR Tools panel', ws.toolbarPanels.itemById('SRToolsPanel') is None)
+        srp = ws.toolbarPanels.itemById('SRToolsPanel')
+        # other SR add-ins may still have buttons there; the panel only goes once it is empty
+        check('stop removes the SR Tools panel once empty', srp is None or srp.controls.count > 0,
+              srp.controls.count if srp else None)
         check('stop removes the command', ui.commandDefinitions.itemById(main_mod.CMD_ID) is None)
         report['bom'] = [{'pn': o.component.partNumber, 'desc': o.component.description,
                           'material': o.component.material.name if o.component.material else None}

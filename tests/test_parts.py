@@ -91,15 +91,15 @@ def test_washers_inch():  # McMaster SAE 1/4 .281/.625; USS 1/4 .312/.750; split
 
 def test_black_oxide_only_where_stocked():
     fin = lambda c, s: fc.finishes_for(CAT, fc.family(CAT, c), row(c, s))  # noqa: E731
-    assert fin('NHX-M', 'M6') == ['SS', 'SS-BO']
+    assert fin('NHX-M', 'M6')[:2] == ['SS', 'SS-BO']
     # Daniel's rule: every nut and washer size in 18-8 SS and 18-8 SS-BO, even where McMaster has no black oxide
-    assert fin('NHX-M', 'M8') == ['SS', 'SS-BO']
-    assert fin('NHX-I', '#4-48') == ['SS', 'SS-BO']
-    assert fin('WSL-M', 'M4') == ['SS', 'SS-BO']
+    assert fin('NHX-M', 'M8')[:2] == ['SS', 'SS-BO']
+    assert fin('NHX-I', '#4-48')[:2] == ['SS', 'SS-BO']
+    assert fin('WSL-M', 'M4')[:2] == ['SS', 'SS-BO']
     for p in CAT['parts']:
-        assert p['finishes'] == ['SS', 'SS-BO'], p['code']
+        assert p['finishes'][:2] == ['SS', 'SS-BO'], p['code']
         for r in p['sizes']:
-            assert r['finishes'] == ['SS', 'SS-BO'], (p['code'], r['size'])
+            assert r['finishes'][:2] == ['SS', 'SS-BO'], (p['code'], r['size'])
 
 
 def test_part_numbers_and_descriptions():
@@ -109,11 +109,14 @@ def test_part_numbers_and_descriptions():
     assert bom('NHX-M', 'M5')['part_number'] == 'NHX-M5-0.8 18-8 SS'
     assert bom('NHX-I', '1/4', 'SS-BO')['part_number'] == 'NHX-1/4-20 18-8 SS-BO'
     assert bom('NNL-I', '#10-32')['part_number'] == 'NNL-10-32 18-8 SS'
-    assert bom('WGP-M', 'M5')['part_number'] == 'WGP-M5 18-8 SS'
-    assert bom('WSA-I', '#10')['part_number'] == 'WSA-10 18-8 SS'
-    assert bom('NHX-M', 'M5')['description'] == 'Hex nut, DIN 934, M5 x 0.8, 8 mm wide x 4 mm high, 18-8 stainless steel'
-    assert bom('WSL-M', 'M6')['description'] == ('Split lock washer, DIN 127 B, M6, 6.5 mm ID x 11.8 mm OD x 1.6 mm thick, '
-                                                 '18-8 stainless steel')
+    # washers: screw size and OD in the part number (Daniel 2026-11-17); ISO 7089 M5 OD 10, SAE #10 OD 0.438
+    assert bom('WGP-M', 'M5')['part_number'] == 'WGP-M5 x 10 18-8 SS'
+    assert bom('WSA-I', '#10')['part_number'] == 'WSA-10 x %s 18-8 SS' % fc._num(row('WSA-I', '#10')['dims']['d2'])
+    assert bom('NHX-M', 'M5')['description'] == 'Hex Nut, M5 x 0.8, 18-8 Stainless Steel'
+    assert bom('WSL-M', 'M6')['description'] == 'Split Lock Washer, M6, 18-8 Stainless Steel'
+    assert bom('WSL-M', 'M6')['part_number'] == 'WSL-M6 x 11.8 18-8 SS'
+    assert bom('NHX-I', '1/4', 'GR8')['description'] == 'Hex Nut, 1/4-20, Grade 8 Steel'
+    assert bom('NHX-M', 'M6', 'CL10')['part_number'] == 'NHX-M6-1 CL10'
     assert bom('NHX-M', 'M8', 'SS-BO')['part_number'] == 'NHX-M8-1.25 18-8 SS-BO'
     try:
         bom('NHX-M', 'M8', 'ALLOY-BO')

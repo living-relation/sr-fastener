@@ -1,7 +1,9 @@
-"""SR Fastener: pick a screw, nut or washer (type, size, length, finish), click hole edges, and it is placed,
-joined and BOM-filled. Nuts and washers stack: pick a hole edge for a washer, then the same edge for the screw or nut.
+"""SR Fastener: pick a screw, nut or washer (type, size, length, material), click hole edges, and it is placed,
+joined and BOM-filled. Tick 'Stack nuts/washers' to add any number of nuts and washers on either side of the screw
+(or of the hole); one Insert places the whole stack on every picked hole.
 
-Library parts are made by this add-in from data/catalog.json. Nobody opens or inserts a library file by hand.
+Each placed part is a real component with a solid body saved in the design. data/catalog.json is only the size
+table the add-in builds new parts from; nobody opens or inserts a library file by hand.
 """
 import json
 import os
@@ -18,16 +20,16 @@ from . import panels as sp  # noqa: E402
 
 CMD_ID = 'srFastenerInsertCmd'
 CMD_NAME = 'SR Fastener'
-CMD_TIP = ('Insert a screw (socket, button, flat, low-profile, pan or cheese head, or a cup-tip or flat-tip set screw), a hex head bolt, '
-           'a nut (hex, thin-profile, nylon-insert lock, flange) or a washer (flat, SAE, USS, oversized, split lock, '
-           'tooth lock) at hole edges. Pick type, size, length and finish (stainless, stainless black oxide or alloy '
-           'black oxide); parts stack on washers and nuts already at the edge and BOM fields fill in.')
+CMD_TIP = ('Insert screws, bolts, nuts and washers at hole edges. Sizes match the hole (screws) or the screw '
+           '(nuts and washers). Tick Stack nuts/washers to add any number of nuts and washers on either side; one '
+           'Insert places the whole stack on every picked hole. Warns about mismatched size, thread or material.')
 SYSTEMS = [('metric', 'Metric'), ('inch', 'Inch')]
 SETTINGS_DIR = os.path.join(os.environ.get('APPDATA') or os.path.expanduser('~'), 'SRFastener')
 SETTINGS_FILE = os.path.join(SETTINGS_DIR, 'settings.json')
 PANELS_FILE = os.path.join(SETTINGS_DIR, 'panels.json')  # where the button goes (see panels.py)
 
 _handlers = []
+_last = {}       # the open command and its inputs (live tests drive the dialog through these)
 _placed = []    # (workspace id, panel id, created the panel) for every control this add-in added
 _cat = None
 
@@ -95,6 +97,11 @@ class _State:
         self.length = None
         self.finish = 'SS'
         self.items = {}
+        self.stack = []   # [{'side', 'kind', 'code', 'size', 'finish', 'uid'}], each side listed from the part out
+        self.uid = 0      # order rows were added (the '-' button removes the newest when none is highlighted)
+        self.sel = None   # highlighted stack row
+        self.gen = 0      # table rebuild counter (keeps input ids unique)
+        self.hole = None
 
     def family(self):
         return fc.family(_catalog(), self.code)
@@ -110,7 +117,7 @@ _st = _State()
 
 
 def _family_items(system, kind):
-    return [(f['code'], '%s (%s)' % (f['name'], f['standard'])) for f in fc.families(_catalog(), system, kind)]
+    return [(f['code'], f['name']) for f in fc.families(_catalog(), system, kind)]
 
 
 def _size_items(fam):
@@ -127,7 +134,7 @@ def _finish_items(fam, row):
     items = []
     for k in fc.finishes_for(cat, fam, row):
         label = cat['finishes'][k]['name']
-        g = fc.grade(row, k)
+        g = fc.grade_label(fc.grade(row, k))
         items.append((k, label + (' (%s)' % g if g else '')))
     return items
 
@@ -157,6 +164,7 @@ def _refresh(inputs, level):
         _st.items['finish'] = _finish_items(fam, row)
         _st.finish = _fill(inputs.itemById('finish'), _st.items['finish'], _st.finish)
     _bom_preview(inputs)
+    _resize_stack(inputs)
 
 
 def _bom_preview(inputs):
@@ -164,8 +172,7 @@ def _bom_preview(inputs):
     bom = fc.bom_fields(_catalog(), fam, row, _st.length, _st.finish)
     inputs.itemById('pn').text = bom['part_number']
     inputs.itemById('desc').text = bom['description']
-    inputs.itemById('mat').text = '%s%s  (appearance: %s)' % (bom['material'], (', ' + bom['grade']) if bom['grade'] else '',
-                                                              bom['appearance'])
+    inputs.itemById('mat').text = bom['material']
 
 
 def _edges(inputs):
@@ -173,40 +180,387 @@ def _edges(inputs):
     return [sel.selection(i).entity for i in range(sel.selectionCount)]
 
 
-def _hole_note(inputs):
-    """Describe the first picked hole and auto-pick the size if it is threaded or an obvious fit."""
+class _Hole:
+    """What the dialog knows about the first picked hole."""
+
+    def __init__(self, hole=None, screw=None, existing=()):
+        self.hole, self.screw, self.existing = hole, screw, list(existing)
+
+    @property
+    def thread(self):
+        return self.hole.thread if self.hole else None
+
+    @property
+    def dia(self):
+        return self.hole.radius * 2.0 if self.hole else None
+
+
+def _first_hole(inputs):
     edges = _edges(inputs)
+    if not edges:
+        return _Hole()
+    hole = fp.read_hole(edges[0], inputs.itemById('flip').value)
+    if hole is None:
+        return _Hole()
+    design = adsk.fusion.Design.cast(_app().activeProduct)
+    existing = fp.existing_items(_catalog(), design, hole)
+    screw = next((i for i in existing if i['kind'] == 'screw'), None)
+    return _Hole(hole, screw, existing)
+
+
+def _screw_ref(h):
+    """Thread of the screw the nuts and washers must fit: the screw being inserted, else a screw already in the
+    first hole. None means size from the hole."""
+    if _st.is_screw() and _st.code and _st.size:
+        return fc.thread_ref(_st.family(), _st.row())
+    if h.screw is not None:
+        return fc.thread_ref(h.screw['fam'], h.screw['row'])
+    return None
+
+
+def _hole_note(inputs):
+    """Describe the first picked hole, auto-pick sizes (screw from the hole; nuts and washers from the screw first,
+    the hole only when there is no screw) and show warnings."""
     box = inputs.itemById('holeinfo')
+    edges = _edges(inputs)
     if not edges:
         box.text = ('Pick circular hole edges on the side the part goes: the top edge (or countersink) for a screw '
                     'or a washer under its head, the bottom edge of a through hole for a nut.')
+        _st.hole = _Hole()
+        _refresh_stack(inputs)
         return
     try:
-        hole = fp.read_hole(edges[0], inputs.itemById('flip').value)
-        dia = hole.radius * 2.0
+        h = _first_hole(inputs)
+        _st.hole = h
         fam = _st.family()
-        size = fc.size_from_designation(fam, hole.thread) if hole.thread else fc.suggest_size(_catalog(), fam, dia)
-        unit = '%.3f in' % (dia / 2.54) if fam['system'] == 'inch' else '%.2f mm' % (dia * 10)
-        msg = '%d hole(s). First hole: %s%s.' % (len(edges), unit, (', thread ' + hole.thread) if hole.thread else '')
-        if size and size != _st.size and inputs.itemById('auto').value:
-            _st.size = size
-            inputs.itemById('size').listItems.clear()
-            _refresh(inputs, 'family')
-            msg += ' Size set to %s.' % size
-        elif not size:
-            msg += ' No size in this type fits that hole; check it.'
+        unit = ('%.3f in' % (h.dia / 2.54) if fam['system'] == 'inch' else '%.2f mm' % (h.dia * 10)) if h.dia else '?'
+        msg = '%d hole(s). First hole: %s, %s.' % (len(edges), unit,
+                                                   ('tapped ' + h.thread) if h.thread else 'not tapped')
+        if h.screw is not None:
+            msg += ' Already has %s.' % fc.item_label(_catalog(), h.screw)
+        if inputs.itemById('auto').value:
+            sref = None if _st.is_screw() else _screw_ref(h)
+            size = fc.size_for(_catalog(), fam, sref, h.thread, h.dia)
+            if size and size != _st.size:
+                _st.size = size
+                _refresh(inputs, 'family')
+                msg += ' Size set to %s.' % size
+            elif not size:
+                msg += ' No size in this type fits; check it.'
         box.text = msg
     except Exception as e:
         box.text = 'Could not read that edge: %s' % e
+    _refresh_stack(inputs)
 
 
-def _run_place(inputs):
+# ---------- stack (nuts and washers on either side) ----------
+
+SIDES = [('near', 'Near side'), ('far', 'Far side')]
+PARTS = [('nut', 'Nut'), ('washer', 'Washer')]
+
+
+def _stack_ref():
+    """Ref the stack rows size from: the screw (inserted or already in the hole), else the hole's thread, else
+    None (rows then size from the hole diameter)."""
+    h = getattr(_st, 'hole', None) or _Hole()
+    ref = _screw_ref(h)
+    if ref is None and h.thread:
+        ref = fc.ref_from_designation(h.thread)
+    if ref is None and h.hole is None and _st.code and _st.size:
+        ref = fc.thread_ref(_st.family(), _st.row())  # nothing picked yet: follow the dialog's size for now
+    return ref, h
+
+
+def _row_size(fam, ref, h):
+    if ref is not None:
+        return fc.row_for_ref(fam, ref)
+    return fc.suggest_size(_catalog(), fam, h.dia) if h.dia else None
+
+
+def _type_choices(kind, ref, h):
+    """[(code, name, size)] of the types of this part that have a size matching the screw (or hole)."""
+    out = []
+    for f in fc.families(_catalog(), _st.system, kind):
+        size = _row_size(f, ref, h)
+        if size:
+            out.append((f['code'], f['name'], size))
+    return out
+
+
+def _target_finish():
+    h = getattr(_st, 'hole', None) or _Hole()
+    if _st.is_screw() or h.screw is None:
+        return _st.finish
+    return h.screw['finish']
+
+
+def _settle_row(r, ref, h):
+    """Fix a row's type, size and material so they fit; returns the type choices."""
+    choices = _type_choices(r['kind'], ref, h)
+    codes = [c for c, _, _ in choices]
+    if r.get('code') not in codes:
+        r['code'] = codes[0] if codes else None
+    r['size'] = next((sz for c, _, sz in choices if c == r['code']), None)
+    if r['code'] and r['size']:
+        fam = fc.family(_catalog(), r['code'])
+        row = fc.size_row(fam, r['size'])
+        offered = fc.finishes_for(_catalog(), fam, row)
+        if r.get('finish') not in offered:
+            r['finish'] = fc.matching_finish(_catalog(), fam, row, _target_finish()) or offered[0]
+    return choices
+
+
+STACK_BUTTONS = ('stk_add', 'stk_del', 'stk_up', 'stk_dn')
+
+
+def _stack_table(inputs):
+    return inputs.itemById('stk_tbl')
+
+
+def _refresh_stack(inputs):
+    """Rebuild the stack table from _st.stack (rows are re-created so ids stay unique)."""
+    table = _stack_table(inputs)
+    if table is None:
+        return
+    on = inputs.itemById('stack').value
+    table.isVisible = on
+    for bid in STACK_BUTTONS:  # Fusion keeps toolbar buttons on screen when only the table is hidden
+        btn = inputs.itemById(bid)
+        if btn is not None:
+            btn.isVisible = on
+            btn.isEnabled = on
+    if not on:
+        _show_warnings(inputs)
+        return
+    ref, h = _stack_ref()
+    while table.rowCount > 0:
+        table.deleteRow(0)
+    ci = table.commandInputs
+    _st.gen += 1
+    g = _st.gen
+    for c, head in enumerate(('Side', 'Part', 'Type', 'Size', 'Material')):
+        table.addCommandInput(ci.addTextBoxCommandInput('stk%d_h%d' % (g, c), '', '<b>%s</b>' % head, 1, True), 0, c)
+    for i, r in enumerate(_st.stack):
+        choices = _settle_row(r, ref, h)
+        rid = 'stk%d_%d_' % (g, i)
+        side = ci.addDropDownCommandInput(rid + 'side', '', adsk.core.DropDownStyles.TextListDropDownStyle)
+        _fill(side, SIDES, r['side'])
+        part = ci.addDropDownCommandInput(rid + 'kind', '', adsk.core.DropDownStyles.TextListDropDownStyle)
+        _fill(part, PARTS, r['kind'])
+        typ = ci.addDropDownCommandInput(rid + 'code', '', adsk.core.DropDownStyles.TextListDropDownStyle)
+        _fill(typ, [(c, n) for c, n, _ in choices], r['code'])
+        size_txt = '-'
+        fin_items = []
+        if r['code'] and r['size']:
+            fam = fc.family(_catalog(), r['code'])
+            row = fc.size_row(fam, r['size'])
+            size_txt = fc.desc_thread(fam, row)
+            fin_items = _finish_items(fam, row)
+        size = ci.addTextBoxCommandInput(rid + 'size', '', size_txt, 1, True)
+        fin = ci.addDropDownCommandInput(rid + 'finish', '', adsk.core.DropDownStyles.TextListDropDownStyle)
+        _fill(fin, fin_items, r.get('finish'))
+        for c, inp in enumerate((side, part, typ, size, fin)):
+            table.addCommandInput(inp, i + 1, c)
+    _resize_stack(inputs)
+    if _st.sel is not None and 0 <= _st.sel < len(_st.stack):
+        try:
+            table.selectedRow = _st.sel + 1
+        except Exception:
+            pass
+    _show_warnings(inputs)
+
+
+def _resize_stack(inputs):
+    table = _stack_table(inputs)
+    if table is None:
+        return
+    n = max(2, len(_st.stack) + 1)
+    # Fusion rejects min > max, so grow the max first and shrink the min first
+    order = ('maximumVisibleRows', 'minimumVisibleRows') if n >= table.maximumVisibleRows else \
+        ('minimumVisibleRows', 'maximumVisibleRows')
+    for name in order:
+        try:
+            setattr(table, name, n)
+        except Exception:
+            pass
+
+
+def _selected_index(inputs):
+    table = _stack_table(inputs)
+    try:
+        r = table.selectedRow - 1
+    except Exception:
+        r = -1
+    return r if 0 <= r < len(_st.stack) else None
+
+
+def _stack_button(inputs, cid):
+    sel = _selected_index(inputs)
+    if cid == 'stk_add':
+        last = _st.stack[-1] if _st.stack else None
+        _st.uid += 1
+        _st.sel = fc.stack_add(_st.stack, {'side': last['side'] if last else 'near',
+                                           'kind': last['kind'] if last else 'washer', 'code': None,
+                                           'finish': _target_finish()}, _st.uid)
+    elif cid == 'stk_del':
+        fc.stack_remove(_st.stack, sel)
+        _st.sel = None
+    elif cid in ('stk_up', 'stk_dn'):
+        _st.sel = fc.stack_move(_st.stack, sel, -1 if cid == 'stk_up' else 1)
+    _refresh_stack(inputs)
+
+
+def _stack_row_changed(inputs, cid):
+    """A dropdown inside the table changed: stk<gen>_<row>_<field>."""
+    try:
+        head, i, field = cid.split('_', 2)
+        i = int(i)
+    except ValueError:
+        return
+    if not (0 <= i < len(_st.stack)):
+        return
+    r = _st.stack[i]
+    dd = inputs.itemById(cid)
+    if dd is None or dd.selectedItem is None:
+        return
+    label = dd.selectedItem.name
+    if field == 'side':
+        r['side'] = next(k for k, n in SIDES if n == label)
+    elif field == 'kind':
+        r['kind'] = next(k for k, n in PARTS if n == label)
+        r['code'] = None
+    elif field == 'code':
+        ref, h = _stack_ref()
+        r['code'] = next((c for c, n, _ in _type_choices(r['kind'], ref, h) if n == label), r['code'])
+    elif field == 'finish':
+        fam = fc.family(_catalog(), r['code'])
+        r['finish'] = next((k for k, n in _finish_items(fam, fc.size_row(fam, r['size'])) if n == label), r['finish'])
+    _st.sel = i
+    _later_refresh_stack()
+
+
+# A dropdown inside the table must not delete its own row while Fusion is still handling its change (that
+# crashed Fusion in live testing), so row edits rebuild the table from a custom event after the handler returns.
+REFRESH_EVENT = 'srFastenerStackRefresh'
+_refresh_event = {}
+
+
+class _RefreshHandler(adsk.core.CustomEventHandler):
+    def notify(self, args):
+        try:
+            cmd = _last.get('cmd')
+            if cmd is not None and getattr(cmd, 'isValid', True):
+                _refresh_stack(cmd.commandInputs)
+        except Exception:
+            pass
+
+
+def _later_refresh_stack():
+    try:
+        if not _refresh_event:
+            ev = _app().registerCustomEvent(REFRESH_EVENT)
+            h = _RefreshHandler()
+            ev.add(h)
+            _refresh_event.update(event=ev, handler=h)
+        _app().fireCustomEvent(REFRESH_EVENT, '')
+    except Exception:
+        pass
+
+
+def _drop_refresh_event():
+    if _refresh_event:
+        try:
+            _refresh_event['event'].remove(_refresh_event['handler'])
+            _app().unregisterCustomEvent(REFRESH_EVENT)
+        except Exception:
+            pass
+        _refresh_event.clear()
+
+
+def _main_item():
+    if not (_st.code and _st.size):
+        return None
+    if _st.is_screw() and _st.length is None:
+        return None
+    return fc.item(_catalog(), _st.code, _st.size, _st.finish, _st.length if _st.is_screw() else None)
+
+
+def _stack_items(inputs):
+    if not inputs.itemById('stack').value:
+        return []
+    out = []
+    for r in _st.stack:
+        if r.get('code') and r.get('size') and r.get('finish'):
+            it = fc.item(_catalog(), r['code'], r['size'], r['finish'])
+            it['side'] = r['side']
+            out.append(it)
+    return out
+
+
+def _warnings(inputs, h=None):
+    h = h or getattr(_st, 'hole', None) or _Hole()
+    main = _main_item()
+    items = list(h.existing) + ([main] if main else []) + _stack_items(inputs)
+    return fc.compat_warnings(_catalog(), items, h.thread, h.dia) if items else []
+
+
+def _show_warnings(inputs):
+    box = inputs.itemById('warn')
+    if box is None:
+        return
+    w = _warnings(inputs)
+    box.text = ('Check: ' + '; '.join(w)) if w else 'Hardware matches.'
+
+
+def _run_place(inputs, main=None, rows=None):
     app = _app()
     design = adsk.fusion.Design.cast(app.activeProduct)
-    fam, row = _st.family(), _st.row()
-    return fp.place(app, design, _catalog(), fam, row, _st.length, _st.finish, _edges(inputs),
-                    flip=inputs.itemById('flip').value, thread=inputs.itemById('thread').value and _st.is_screw(),
-                    stack=inputs.itemById('stack').value)
+    main = _main_item() if main is None else main
+    rows = _stack_items(inputs) if rows is None else rows
+    return fp.place_stack(app, design, _catalog(), main, rows, _edges(inputs),
+                          flip=inputs.itemById('flip').value, thread=inputs.itemById('thread').value)
+
+
+def _material_prompt(inputs):
+    """If the new parts' materials differ from each other or from parts already in the first hole, ask whether to
+    switch the new parts to match. Returns (main, rows) to place, or None to go back to the dialog."""
+    cat = _catalog()
+    h = _first_hole(inputs)
+    main, rows = _main_item(), _stack_items(inputs)
+    new = ([main] if main else []) + rows
+    items = list(h.existing) + new
+    if not new or not fc.material_mismatch(cat, items):
+        return main, rows
+    target = (h.screw['finish'] if h.screw is not None else
+              (main['finish'] if main and main['kind'] == 'screw' else
+               (h.existing[0]['finish'] if h.existing else new[0]['finish'])))
+    tname = cat['finishes'][target]['name']
+    names = sorted({cat['finishes'][i['finish']]['name'] for i in items})
+    res = _ui().messageBox('These parts are different materials: %s.\n\nYes: switch the new parts to %s where that '
+                           'material is sold.\nNo: insert them as picked.\nCancel: back to the dialog.'
+                           % (', '.join(names), tname), CMD_NAME,
+                           adsk.core.MessageBoxButtonTypes.YesNoCancelButtonType,
+                           adsk.core.MessageBoxIconTypes.QuestionIconType)
+    if res == adsk.core.DialogResults.DialogCancel:
+        return None
+    if res == adsk.core.DialogResults.DialogYes:
+        kept = []
+        for it in new:
+            k = fc.matching_finish(cat, it['fam'], it['row'], target)
+            if k:
+                it['finish'] = k
+            else:
+                kept.append(fc.item_label(cat, it))
+        # remember the switched materials for next time
+        if main:
+            _st.finish = main['finish']
+        for r in _st.stack:
+            if r.get('code') and r.get('size'):
+                fam = fc.family(cat, r['code'])
+                r['finish'] = fc.matching_finish(cat, fam, fc.size_row(fam, r['size']), target) or r['finish']
+        if kept:
+            _ui().messageBox('Not sold in %s, left as picked: %s' % (tname, ', '.join(kept)), CMD_NAME)
+    return main, rows
 
 
 # ---------- event handlers ----------
@@ -221,14 +575,20 @@ class _Created(adsk.core.CommandCreatedEventHandler):
             s = _load_settings()
             _st.system = s.get('system', 'metric')
             _st.kind = s.get('kind', 'screw')
-            screw_len = s.get('length')
             _st.code = s.get('family')
             _st.size = s.get('size')
-            _st.length = screw_len
+            _st.length = s.get('length')
             _st.finish = s.get('finish', 'SS')
+            _st.stack, _st.uid, _st.sel, _st.hole = [], 0, None, None
+            for r in s.get('stack_rows') or []:
+                if r.get('side') in ('near', 'far') and r.get('kind') in ('nut', 'washer'):
+                    _st.uid += 1
+                    _st.stack.append({'side': r['side'], 'kind': r['kind'], 'code': r.get('code'),
+                                      'finish': r.get('finish', _st.finish), 'uid': _st.uid})
             cmd = args.command
+            _last['cmd'] = cmd
             cmd.okButtonText = 'Insert'
-            cmd.setDialogInitialSize(460, 520)
+            cmd.setDialogInitialSize(520, 560)
             inputs = cmd.commandInputs
             sysdd = inputs.addDropDownCommandInput('system', 'Units', adsk.core.DropDownStyles.TextListDropDownStyle)
             _st.system = _fill(sysdd, SYSTEMS, _st.system)
@@ -237,22 +597,38 @@ class _Created(adsk.core.CommandCreatedEventHandler):
             inputs.addDropDownCommandInput('family', 'Type', adsk.core.DropDownStyles.TextListDropDownStyle)
             inputs.addDropDownCommandInput('size', 'Size', adsk.core.DropDownStyles.TextListDropDownStyle)
             inputs.addDropDownCommandInput('length', 'Length', adsk.core.DropDownStyles.TextListDropDownStyle)
-            inputs.addDropDownCommandInput('finish', 'Finish', adsk.core.DropDownStyles.TextListDropDownStyle)
+            inputs.addDropDownCommandInput('finish', 'Material', adsk.core.DropDownStyles.TextListDropDownStyle)
             sel = inputs.addSelectionInput('holes', 'Holes', 'Pick circular hole edges')
             sel.addSelectionFilter('CircularEdges')
             sel.setSelectionLimits(1, 0)
-            inputs.addBoolValueInput('auto', 'Match size to first hole', True, '', bool(s.get('auto', True)))
+            # Daniel 2026-11-17: on by default every time the dialog opens
+            inputs.addBoolValueInput('auto', 'Match size to first hole', True, '', True)
             inputs.addBoolValueInput('flip', 'Flip direction', True, '', False)
             inputs.addBoolValueInput('thread', 'Cosmetic thread', True, '', bool(s.get('thread', True)))
-            inputs.addBoolValueInput('stack', 'Stack on nuts/washers', True, '', bool(s.get('stack', True)))
+            inputs.addBoolValueInput('stack', 'Stack nuts/washers', True, '', bool(s.get('stack_on', False)))
+            table = inputs.addTableCommandInput('stk_tbl', 'Stack', 5, '2:2:4:2:3')
+            table.tablePresentationStyle = adsk.core.TablePresentationStyles.itemBorderTablePresentationStyle
+            ti = table.commandInputs
+            for bid, label, tip in (('stk_add', '+', 'Add a nut or washer'),
+                                    ('stk_del', '\u2212', 'Remove the highlighted row (or the newest one)'),
+                                    ('stk_up', 'Up', 'Move the highlighted row up'),
+                                    ('stk_dn', 'Down', 'Move the highlighted row down')):
+                btn = ti.addBoolValueInput(bid, label, False, '', False)
+                btn.tooltip = tip
+                table.addToolbarCommandInput(btn)
+            inputs.addTextBoxCommandInput('stk_help', '', 'Near side = the picked edge (under the screw head). Far '
+                                          'side = the other end of the hole. Each side stacks from the part out, '
+                                          'top row first.', 2, True)
             inputs.addTextBoxCommandInput('holeinfo', 'Hole', '', 2, True)
+            inputs.addTextBoxCommandInput('warn', 'Warnings', '', 2, True)
             grp = inputs.addGroupCommandInput('bom', 'BOM')
             gi = grp.children
             gi.addTextBoxCommandInput('pn', 'Part number', '', 1, True)
-            gi.addTextBoxCommandInput('desc', 'Description', '', 3, True)
-            gi.addTextBoxCommandInput('mat', 'Material', '', 2, True)
+            gi.addTextBoxCommandInput('desc', 'Description', '', 2, True)
+            gi.addTextBoxCommandInput('mat', 'Material', '', 1, True)
             _refresh(inputs, 'system')
-            _hole_note(inputs)
+            inputs.itemById('stk_help').isVisible = inputs.itemById('stack').value
+            _hole_note(inputs)  # also hides the stack table (and its buttons) while the checkbox is off
             for ev, h in ((cmd.inputChanged, _Changed()), (cmd.executePreview, _Preview()),
                           (cmd.execute, _Execute()), (cmd.validateInputs, _Validate()),
                           (cmd.destroy, _Destroy())):
@@ -262,69 +638,109 @@ class _Created(adsk.core.CommandCreatedEventHandler):
             _ui().messageBox('SR Fastener failed to open:\n' + traceback.format_exc(), CMD_NAME)
 
 
+def _root_inputs(args):
+    try:
+        return args.firingEvent.sender.commandInputs
+    except Exception:
+        return args.inputs
+
+
 class _Changed(adsk.core.InputChangedEventHandler):
     def notify(self, args):
         try:
-            inputs = args.inputs
+            inputs = _root_inputs(args)
             cid = args.input.id
             if cid == 'system':
                 _st.system = _sel_key(inputs.itemById('system'), SYSTEMS)
                 _refresh(inputs, 'system')
+                _hole_note(inputs)
             elif cid == 'kind':
                 _st.kind = _sel_key(inputs.itemById('kind'), list(fc.KINDS))
                 _st.code = None
                 _refresh(inputs, 'system')
+                _hole_note(inputs)
             elif cid == 'family':
                 _st.code = _sel_key(inputs.itemById('family'), _st.items['family'])
                 _refresh(inputs, 'family')
+                _hole_note(inputs)
             elif cid == 'size':
                 _st.size = _sel_key(inputs.itemById('size'), _st.items['size'])
                 _refresh(inputs, 'size')
+                _refresh_stack(inputs)
             elif cid == 'length':
                 _st.length = float(_sel_key(inputs.itemById('length'), _st.items['length']))
                 _bom_preview(inputs)
+                _show_warnings(inputs)
             elif cid == 'finish':
                 _st.finish = _sel_key(inputs.itemById('finish'), _st.items['finish'])
                 _bom_preview(inputs)
+                _show_warnings(inputs)
             elif cid in ('holes', 'flip', 'auto'):
                 _hole_note(inputs)
+            elif cid == 'stack':
+                inputs.itemById('stk_help').isVisible = args.input.value
+                _refresh_stack(inputs)
+                _show_warnings(inputs)
+            elif cid in STACK_BUTTONS:
+                _stack_button(inputs, cid)
+            elif cid.startswith('stk') and '_' in cid:
+                _stack_row_changed(inputs, cid)
         except Exception:
             _ui().messageBox('SR Fastener:\n' + traceback.format_exc(), CMD_NAME)
 
 
 class _Validate(adsk.core.ValidateInputsEventHandler):
     def notify(self, args):
-        args.areInputsValid = bool(_edges(args.inputs)) and (_st.length is not None or not _st.is_screw())
+        inputs = args.inputs
+        args.areInputsValid = bool(_edges(inputs)) and (_main_item() is not None or bool(_stack_items(inputs)))
 
 
 class _Preview(adsk.core.CommandEventHandler):
     def notify(self, args):
+        fp.PREVIEW = True
         try:
             _run_place(args.command.commandInputs)
         except Exception:
             pass
+        finally:
+            fp.PREVIEW = False
 
 
 class _Execute(adsk.core.CommandEventHandler):
     def notify(self, args):
         try:
             inputs = args.command.commandInputs
-            occs, notes = _run_place(inputs)
+            picked = _material_prompt(inputs)
+            if picked is None:
+                args.executeFailed = True
+                args.executeFailedMessage = 'Insert cancelled: pick matching materials and try again.'
+                return
+            main, rows = picked
+            warns = []
+            for edge in _edges(inputs):
+                hole = fp.read_hole(edge, inputs.itemById('flip').value)
+                if hole is None:
+                    continue
+                design = adsk.fusion.Design.cast(_app().activeProduct)
+                items = fp.existing_items(_catalog(), design, hole) + ([main] if main else []) + rows
+                warns += fc.compat_warnings(_catalog(), items, hole.thread, 2 * hole.radius)
+            occs, notes = _run_place(inputs, main, rows)
             old = _load_settings()
             _save_settings({'system': _st.system, 'kind': _st.kind, 'family': _st.code, 'size': _st.size,
                             'length': _st.length if _st.is_screw() else old.get('length'),
-                            'finish': _st.finish, 'auto': inputs.itemById('auto').value,
-                            'thread': inputs.itemById('thread').value, 'stack': inputs.itemById('stack').value})
-            if notes:
-                uniq = sorted(set(notes))
-                _ui().messageBox('Placed %d part(s). Notes:\n- %s' % (len(occs), '\n- '.join(uniq)), CMD_NAME)
+                            'finish': _st.finish, 'thread': inputs.itemById('thread').value,
+                            'stack_on': inputs.itemById('stack').value,
+                            'stack_rows': [{k: r.get(k) for k in ('side', 'kind', 'code', 'finish')} for r in _st.stack]})
+            msgs = sorted(set(warns)) + sorted(set(notes))
+            if msgs:
+                _ui().messageBox('Placed %d part(s).\n\nCheck:\n- %s' % (len(occs), '\n- '.join(msgs)), CMD_NAME)
         except Exception:
             _ui().messageBox('SR Fastener failed:\n' + traceback.format_exc(), CMD_NAME)
 
 
 class _Destroy(adsk.core.CommandEventHandler):
     def notify(self, args):
-        pass
+        _last.pop('cmd', None)
 
 
 # ---------- add-in entry points ----------
@@ -400,6 +816,7 @@ def stop(context):
         cdef = ui.commandDefinitions.itemById(CMD_ID)
         if cdef:
             cdef.deleteMe()
+        _drop_refresh_event()
         _handlers.clear()
     except Exception:
         pass
