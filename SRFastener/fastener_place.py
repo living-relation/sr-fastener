@@ -259,7 +259,7 @@ def make_component(app, design, parent, cat, fam, row, length, finish_key, matri
         b.appearance = ap
     else:
         notes.append('appearance not found: %s' % bom['appearance'])
-    for k in ('part_number', 'description', 'finish', 'grade', 'vendor_pn', 'standard', 'source'):
+    for k in ('part_number', 'description', 'finish', 'grade', 'standard'):
         comp.attributes.add(ATTR, k, str(bom[k]))
     comp.attributes.add(ATTR, 'family', fam['code'])
     comp.attributes.add(ATTR, 'size', row['size'])
