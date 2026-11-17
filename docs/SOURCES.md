@@ -71,6 +71,23 @@ Every size is offered in 18-8 SS and 18-8 SS-BO; McMaster is used for dimensions
 | WTI-I | Tooth Lock Washers (internal) | ASME B18.21.1 | #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 | mcm_tooth_i | Thickness is the middle of McMaster's range. Teeth are not modelled. |
 | WOV-I | Oversized Washers | McMaster 90313A | #6, #8, #10, 1/4, 5/16, 3/8 | mcm_fender_i | No inch standard; one McMaster 90313A1xx (fender) washer per size: 90313A101, A102, A104, A108, A111, A115. Thickness is the middle of McMaster's range. |
 
+## Short inch set screw socket depths
+
+These McMaster lengths are shorter than Holo-Krome Table 13 column B and are not in Table 14. The socket uses the size's standard depth (Table 13 TH), cut back only where it would leave less than 0.25 x nominal diameter of metal above the point. Depth source: hk_tech Table 13 (copied, not a published value for these lengths).
+
+| Type | Size | Length (in) | Table 13 TH (in) | Depth used (in) |
+|---|---|---|---|---|
+| SSE-I | #2 | 0.125 | 0.060 | 0.060 |
+| SSE-I | 3/8 | 0.375 | 0.188 | 0.153 (cut back for the point) |
+| SSE-I | 3/8-24 | 0.375 | 0.188 | 0.142 (cut back for the point) |
+| SSN-I | #2 | 0.125 | 0.060 | 0.060 |
+| SSN-I | #6 | 0.1875 | 0.080 | 0.080 |
+| SSN-I | 3/8 | 0.375 | 0.188 | 0.188 |
+| SSN-I | 3/8-24 | 0.375 | 0.188 | 0.182 (cut back for the point) |
+| SSN-I | 5/16 | 0.375 | 0.156 | 0.156 |
+| SSN-I | 5/16-24 | 0.375 | 0.156 | 0.156 |
+| SSO-I | #6 | 0.1875 | 0.080 | 0.080 |
+
 ## Source keys
 
 | Key | Source |

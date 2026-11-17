@@ -1,3 +1,4 @@
+import math
 """Writes SRFastener/data/catalog.json from the tables below.
 
 Every number here comes from the cited source (checked 2026-11-16). Each family lists the
@@ -375,7 +376,8 @@ FAMILIES = [
              alloy=every(I_ALL, 'ASTM F912'), unf=I_ALL)),
 
 ]
-# Set screws below Holo-Krome Table 13 column B that Table 14 does not list are dropped (no key depth source).
+PT_CODE = {'cone': 'SSN-I', 'dog': 'SSE-I', 'oval': 'SSO-I'}
+# Cup and flat point set screws below Holo-Krome Table 13 column B that Table 14 does not list are dropped.
 _SET_B = {'#2': 0.125, '#4': 0.1875, '#6': 0.1875, '#8': 0.1875, '#10': 0.1875, '1/4': 0.25, '5/16': 0.3125,
           '3/8': 0.375, '1/2': 0.5}
 for _fam in FAMILIES:
@@ -490,7 +492,7 @@ _HK14 = {
     '3/8': {0.25: (0.090, 0.075), 0.31: (0.115, 0.105)},
     '1/2': {0.38: (0.130, 0.130), 0.44: (0.155, 0.155), 0.50: (0.195, 0.195)}}
 _TWO = {0.0625: 0.06, 0.09375: 0.09, 0.125: 0.13, 0.15625: 0.16, 0.1875: 0.19, 0.25: 0.25, 0.3125: 0.31,
-        0.375: 0.38, 0.4375: 0.44, 0.5: 0.50}
+        0.375: 0.38, 0.4375: 0.44, 0.5: 0.50, 0.625: 0.63}
 # ISO 4027 / ISO 4028 / ISO 4026 socket: s nom, t min (short lengths), t min (other lengths)
 _ISO_SET = {'M2': (0.9, 0.8, 1.7), 'M2.5': (1.3, 1.2, 2.0), 'M3': (1.5, 1.2, 2.0), 'M4': (2.0, 1.5, 2.5),
             'M5': (2.5, 2.0, 3.0), 'M6': (3.0, 2.0, 3.5), 'M8': (4.0, 3.0, 5.0), 'M10': (5.0, 4.0, 6.0),
@@ -501,13 +503,36 @@ _ISO4027_DT = {'M2': 0.5, 'M2.5': 0.65, 'M3': 0.75, 'M4': 1.0, 'M5': 1.25, 'M6':
 
 def _inch_t(nom, L, point):
     """Key engagement for an inch set screw: Table 13 TH at or above column B, else the Table 14 value for this
-    length; None if neither table covers the length (that length is not offered)."""
+    length; None if neither table covers the length (see _short_t)."""
     j, th, r, b_co, b_hd = _HK13[nom]
     b = b_hd if point == 'dog' else b_co
     if _TWO.get(L, round(L, 2)) >= b - 1e-9:
         return th
     v = _HK14.get(nom, {}).get(_TWO.get(L))
     return v and v[1 if point == 'dog' else 0]
+
+
+# Short lengths McMaster stocks that neither Holo-Krome table covers: the socket uses the size's standard depth
+# (Table 13 TH; the socket depth is the same for every length of a size), cut back only where it would leave
+# less than a quarter of the nominal diameter of solid metal above the point (Daniel, 2026-11-16).
+SHORT_T = []  # filled by _set_rows: (point, size, L, TH, depth used)
+
+
+def _point_h(point, d, tpi, it, R):
+    """Point height (in) as fastener_core.geometry draws it: cone and dog points start at the thread root."""
+    root_r = (d - 1.082532 / tpi) / 2.0
+    if point == 'cone':
+        return root_r / math.tan(math.radians(it[1] / 2.0))
+    if point == 'dog':
+        return it[2] + root_r - it[1] / 2.0
+    return R - math.sqrt(R * R - (d / 2.0) ** 2)  # oval
+
+
+def _short_t(point, size, d, tpi, it, th, R):
+    cap = math.floor((it[0] - _point_h(point, d, tpi, it, R) - 0.25 * d) * 1000.0) / 1000.0
+    t = min(th, cap)
+    SHORT_T.append((point, size, it[0], th, t))
+    return t
 
 
 def _key(size):
@@ -548,7 +573,7 @@ def _set_rows(table, point):
                 L = float(it[0])
                 t = _inch_t(nom, L, point)
                 if t is None:
-                    continue  # no key engagement source for this short length
+                    t = _short_t(point, row['size'], d, tpi, (L,) + tuple(it[1:]), th, R)
                 if point == 'cone':
                     row['dims'].setdefault('angle_by_length', {})['%g' % L] = it[1]
                     row['dims']['tip_d'] = 0.0
@@ -1034,6 +1059,14 @@ def sources_md():
         out.append('| %s | %s | %s | %s | %s | %s |' % (
             p['code'], p['mcmaster'], p['standard'], ', '.join(r['size'] for r in p['sizes']),
             ', '.join(p['sources']['dims']), p['notes'] or ''))
+    out += ['', '## Short inch set screw socket depths', '',
+            'These McMaster lengths are shorter than Holo-Krome Table 13 column B and are not in Table 14. The '
+            'socket uses the size\'s standard depth (Table 13 TH), cut back only where it would leave less than '
+            '0.25 x nominal diameter of metal above the point. Depth source: hk_tech Table 13 (copied, not a '
+            'published value for these lengths).', '',
+            '| Type | Size | Length (in) | Table 13 TH (in) | Depth used (in) |', '|---|---|---|---|---|']
+    out += ['| %s | %s | %g | %.3f | %.3f%s |' % (fam, s, L, th, t, ' (cut back for the point)' if t < th else '')
+            for fam, s, L, th, t in sorted({(PT_CODE[p], s, L, th, t) for p, s, L, th, t in SHORT_T})]
     out += ['', '## Source keys', '', '| Key | Source |', '|---|---|']
     out += ['| %s | %s |' % (k, v) for k, v in SRC.items()]
     out += ['', 'Lengths with no length source use the preferred series trimmed to an unverified range (TBD).',
