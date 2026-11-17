@@ -12,11 +12,8 @@ def test_finishes():
     assert set(CAT['finishes']) == {'SS', 'SS-BO', 'ALLOY-BO'}
     for fam in CAT['families']:
         for row in fam['sizes']:
-            # 18-8 everywhere; black oxide only where McMaster sells it (the newer families list it per size)
-            fins = set(fc.finishes_for(CAT, fam, row))
-            assert 'SS' in fins, (fam['code'], row['size'])
-            if fam['code'][:3] not in ('SSN', 'SSE', 'SSO', 'SBF', 'STP'):  # these are sold in 18-8 only
-                assert 'SS-BO' in fins, (fam['code'], row['size'])
+            # Daniel's rule: every size in 18-8 SS and 18-8 SS-BO, whatever McMaster stocks
+            assert {'SS', 'SS-BO'} <= set(fc.finishes_for(CAT, fam, row)), (fam['code'], row['size'])
     alloy = CAT['finishes']['ALLOY-BO']
     assert alloy['appearance'] == 'Coating - Black Oxide'
     for fam in CAT['families']:

@@ -48,7 +48,7 @@ def test_mcmaster_spot_checks():
     # sheet metal: McMaster No. 8 0.322 x 0.115, 15 threads per inch; B18.6.3 recess M 0.175
     s = row('STP-I', '#8')
     assert (s['dims']['dk'], s['dims']['k'], s['tpi'], s['dims']['m']) == (0.322, 0.115, 15, 0.175)
-    assert s['finishes'] == ['SS', 'SS-BO'] and row('STP-I', '#4')['finishes'] == ['SS']
+    assert fc.finishes_for(CAT, fam('STP-I'), row('STP-I', '#4')) == ['SS', 'SS-BO']
     sm = row('STP-M', 'M4.2')
     assert (sm['dims']['dk'], sm['dims']['k'], sm['pitch'], sm['dims']['tip']) == (8.2, 3.1, 1.4, 3.7)
 
@@ -71,7 +71,7 @@ def test_bom_text():
     assert fc.thread_spec(fam('STP-M'), row('STP-M', 'M4.2')) is None
     for code in NEW:
         for r in fam(code)['sizes']:
-            assert 'ALLOY-BO' not in fc.finishes_for(CAT, fam(code), r)
+            assert fc.finishes_for(CAT, fam(code), r) == ['SS', 'SS-BO']
 
 
 def test_geometry_fits_every_length():

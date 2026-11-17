@@ -57,8 +57,7 @@ Names and codes follow McMaster-Carr's category names (checked on mcmaster.com 2
 | Phillips rounded head sheet metal screw, inch | STP | ASME B18.6.3 head | #2 to #12 |
 | Phillips rounded head sheet metal screw, metric | STP | ISO 7049 | M2.2, M2.9, M3.5, M4.2, M4.8, M5.5 |
 
-The newer types (SSN, SSE, SSO, SBF, STP) are sold by McMaster in 18-8 stainless only, so they have no alloy
-black oxide, and black-oxide 18-8 only on sheet metal screws #6 to #12. Their lengths are exactly the lengths
+The newer types (SSN, SSE, SSO, SBF, STP) have no alloy black oxide. Their lengths are exactly the lengths
 McMaster stocks. A few short inch set screws are left out where Holo-Krome's key engagement tables give no
 socket depth. Sheet metal screws get no cosmetic thread (Fusion has no tapping-screw thread), and the inch
 tip is drawn one diameter long (its length is not in the sources). Cone and extended tips start at the thread
@@ -77,42 +76,43 @@ tabled length from the tip; shorter ones are threaded to the head).
 
 Names and codes follow McMaster-Carr's category names. Dimensions are what McMaster lists for its 18-8
 stainless stock, cross-checked with the standard or a maker data sheet (see [docs/SOURCES.md](docs/SOURCES.md)).
+Every size comes in 18-8 SS and 18-8 SS-BO (black oxide uses the same dimensions as plain 18-8).
 
-| Type (McMaster name) | Code | Standard | Sizes | Black oxide (SS-BO) |
-|---|---|---|---|---|
-| Hex nut, metric | NHX | DIN 934 | M3 to M20 | M3 to M6 |
-| Thin-profile hex nut, metric | NTH | DIN 439 B | M3 to M16 | all |
-| Nylon-insert locknut, metric | NNL | DIN 985 | M3 to M20 | M3 to M12 |
-| Flange nut, metric | NFL | ISO 4161 (M5 to M12), McMaster (M3, M4) | M3 to M12 | no |
-| Serrated flange nut, metric | NSF | ISO 4161 / DIN 6923 | M3 to M12 | no |
-| General purpose washer, metric | WGP | ISO 7089 | M3 to M20 | M3 to M8 |
-| Oversized washer, metric | WOV | ISO 7093-1 | M3 to M20 | no |
-| Split lock washer, metric | WSL | DIN 127 B | M3 to M20 | all but M4 |
-| External-tooth lock washer, metric | WTE | DIN 6797 A | M3 to M20 | no |
-| Internal-tooth lock washer, metric | WTI | DIN 6797 J | M3 to M10 | no |
-| Hex nut, inch | NHX | ASME B18.2.2 | #2 to 1/2, UNC and UNF | all UNC; UNF #6 and up |
-| Thin-profile hex nut, inch | NTH | ASME B18.2.2 (jam) | 1/4 to 1/2, UNC and UNF | all |
-| Nylon-insert locknut, inch | NNL | IFI 100/107 | #2 to 1/2 UNC, #6 to 1/2 UNF | all |
-| SAE washer, inch | WSA | ASME B18.21.1 (SAE) | #2 to 1/2 | all |
-| USS washer, inch | WUS | USS | 1/4 to 1/2 | all |
-| Split lock washer, inch | WSL | ASME B18.21.1 | #2 to 1/2 | all |
-| Flange nut, inch | NFL | McMaster 94758A | #4 to 1/2 UNC, #10 to 1/2 UNF | no |
-| Serrated flange nut, inch | NSF | McMaster 93776A | #6 to 1/2 UNC, #10 to 3/8 UNF | no |
-| Top-lock distorted-thread locknut, metric | NTL | McMaster 90045A | M4 to M16 | no |
-| Top-lock distorted-thread locknut, inch | NTL | McMaster 90045A | #6 to 1/2 UNC, #10 to 1/2 UNF | no |
-| Thin-profile nylon-insert locknut, inch | NTN | McMaster 90101A | #4 to 1/2 UNC, #10 to 1/2 UNF | UNC 1/4 to 1/2; UNF 3/8, 1/2 |
-| Coupling nut, metric | NCP | DIN 6334 | M3 to M20 | M3 to M12 |
-| Coupling nut, inch | NCP | McMaster 90268A | #4 to 1/2 UNC, #10 to 1/2 UNF | no |
-| Cap nut, metric | NCA | DIN 1587 | M3 to M20 | no |
-| Cap nut, inch | NCA | McMaster 91855A | #6 to 1/2 UNC, #10 to 1/2 UNF | all UNC; #10-32 |
-| Wing nut, metric | NWG | DIN 315 (McMaster 94545A) | M3 to M20 | no |
-| Wing nut, inch | NWG | McMaster 92001A (Style 1) | #6 to 1/2 UNC, #10 to 5/16 UNF | no |
-| Square nut, metric | NSQ | DIN 557 | M5 to M16 | no |
-| Square nut, inch | NSQ | ASME B18.2.2 | #2 to 1/2 UNC, #10 to 3/8 UNF | no |
-| Thick washer, metric | WTK | DIN 7349 | M3 to M20 | no |
-| External-tooth lock washer, inch | WTE | ASME B18.21.1 | #2 to 1/2 | #6 to 3/8 |
-| Internal-tooth lock washer, inch | WTI | ASME B18.21.1 | #4 to 1/2 | no |
-| Oversized washer, inch | WOV | McMaster 90313A | #6 to 3/8 | no |
+| Type (McMaster name) | Code | Standard | Sizes |
+|---|---|---|---|
+| Hex nut, metric | NHX | DIN 934 | M3 to M20 |
+| Thin-profile hex nut, metric | NTH | DIN 439 B | M3 to M16 |
+| Nylon-insert locknut, metric | NNL | DIN 985 | M3 to M20 |
+| Flange nut, metric | NFL | ISO 4161 (M5 to M12), McMaster (M3, M4) | M3 to M12 |
+| Serrated flange nut, metric | NSF | ISO 4161 / DIN 6923 | M3 to M12 |
+| General purpose washer, metric | WGP | ISO 7089 | M3 to M20 |
+| Oversized washer, metric | WOV | ISO 7093-1 | M3 to M20 |
+| Split lock washer, metric | WSL | DIN 127 B | M3 to M20 |
+| External-tooth lock washer, metric | WTE | DIN 6797 A | M3 to M20 |
+| Internal-tooth lock washer, metric | WTI | DIN 6797 J | M3 to M10 |
+| Hex nut, inch | NHX | ASME B18.2.2 | #2 to 1/2, UNC and UNF |
+| Thin-profile hex nut, inch | NTH | ASME B18.2.2 (jam) | 1/4 to 1/2, UNC and UNF |
+| Nylon-insert locknut, inch | NNL | IFI 100/107 | #2 to 1/2 UNC, #6 to 1/2 UNF |
+| SAE washer, inch | WSA | ASME B18.21.1 (SAE) | #2 to 1/2 |
+| USS washer, inch | WUS | USS | 1/4 to 1/2 |
+| Split lock washer, inch | WSL | ASME B18.21.1 | #2 to 1/2 |
+| Flange nut, inch | NFL | McMaster 94758A | #4 to 1/2 UNC, #10 to 1/2 UNF |
+| Serrated flange nut, inch | NSF | McMaster 93776A | #6 to 1/2 UNC, #10 to 3/8 UNF |
+| Top-lock distorted-thread locknut, metric | NTL | McMaster 90045A | M4 to M16 |
+| Top-lock distorted-thread locknut, inch | NTL | McMaster 90045A | #6 to 1/2 UNC, #10 to 1/2 UNF |
+| Thin-profile nylon-insert locknut, inch | NTN | McMaster 90101A | #4 to 1/2 UNC, #10 to 1/2 UNF |
+| Coupling nut, metric | NCP | DIN 6334 | M3 to M20 |
+| Coupling nut, inch | NCP | McMaster 90268A | #4 to 1/2 UNC, #10 to 1/2 UNF |
+| Cap nut, metric | NCA | DIN 1587 | M3 to M20 |
+| Cap nut, inch | NCA | McMaster 91855A | #6 to 1/2 UNC, #10 to 1/2 UNF |
+| Wing nut, metric | NWG | DIN 315 (McMaster 94545A) | M3 to M20 |
+| Wing nut, inch | NWG | McMaster 92001A (Style 1) | #6 to 1/2 UNC, #10 to 5/16 UNF |
+| Square nut, metric | NSQ | DIN 557 | M5 to M16 |
+| Square nut, inch | NSQ | ASME B18.2.2 | #2 to 1/2 UNC, #10 to 3/8 UNF |
+| Thick washer, metric | WTK | DIN 7349 | M3 to M20 |
+| External-tooth lock washer, inch | WTE | ASME B18.21.1 | #2 to 1/2 |
+| Internal-tooth lock washer, inch | WTI | ASME B18.21.1 | #4 to 1/2 |
+| Oversized washer, inch | WOV | McMaster 90313A | #6 to 3/8 |
 
 Alloy steel black oxide is not offered for nuts and washers. Part numbers have no length:
 `NHX-M5-0.8 18-8 SS`, `NHX-1/4-20 18-8 SS-BO`, `NNL-10-32 18-8 SS`, `WGP-M5 18-8 SS`, `WSA-1/4 18-8 SS`.
@@ -136,6 +136,11 @@ metric hex nuts are DIN 934 (ISO 4032 is taller from M5 and narrower at M10/M12)
 | `18-8 SS` | 18-8 stainless steel | Stainless Steel AISI 304 | Stainless Steel - Satin |
 | `18-8 SS-BO` | 18-8 stainless steel, black oxide | Stainless Steel AISI 304 | Coating - Black Oxide |
 | `ALLOY-BO` (made-up code) | alloy steel, black oxide | Steel AISI 4142 400 QT (12.9, A574, F835), 4340 350A QT (10.9, Grade 8), 4142 475 QT (45H, F912) | Coating - Black Oxide |
+
+Every screw, nut and washer size is offered in `18-8 SS` and `18-8 SS-BO`. McMaster-Carr is used to check
+dimensions, sizes, styles and descriptions, not which finishes it stocks. Alloy black oxide stays only where it
+was already offered; special materials (nylon, Grade 8, class 10.9 zinc, brass, aluminum and so on) are not
+generated.
 
 `ALLOY-BO` is offered only for sizes a maker sells in alloy steel black oxide, and the description
 carries the grade, e.g. `Socket head screw, ISO 4762, M5 x 0.8 x 16 mm, alloy steel, black oxide, class 12.9`.
