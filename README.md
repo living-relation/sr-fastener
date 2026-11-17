@@ -1,8 +1,9 @@
 # SR Fastener
 
-A Fusion add-in that places screws, set screws, nuts and washers. Pick a type, size, length and finish, click
+A Fusion add-in that places screws, set screws, nuts and washers. Pick a type, size, length and material, click
 the hole edges, and SR Fastener builds the part, puts it on the hole with a rigid joint, and fills in the
-BOM part number, description and material.
+BOM part number, description and material. One insert can place a screw with any number of nuts and washers
+on both sides of every picked hole.
 
 ![SR Fastener button in the Insert panel](docs/screenshots/button.png)
 
@@ -13,20 +14,43 @@ BOM part number, description and material.
 - **Toolbar button** "SR Fastener" on more than one panel: by default the Design workspace Solid tab **Insert**
   panel, an **SR Tools** panel on the Solid tab, and Utilities > Add-ins. The panel list is configurable (see
   [Where the buttons go](#where-the-buttons-go)).
-- **Dialog:** Units, Part (screws, nuts or washers), Type, Size, Length (screws only), Finish, hole selection,
-  "Match size to first hole", "Flip direction", "Cosmetic thread" (screws only), "Stack on nuts/washers", and a
+- **Dialog:** Units, Part (screws, nuts or washers), Type, Size, Length (screws only), Material, hole selection,
+  "Match size to first hole" (on every time the dialog opens), "Flip direction", "Cosmetic thread" (screws
+  only), "Stack nuts/washers", a Hole line (size, tapped or not, what is already in it), a Warnings line and a
   read-only BOM preview.
 - **Placing:** pick one or more circular hole edges (the top edge of a hole or of a countersink).
   Each screw is centred on the hole, points into the material, and gets a rigid joint to the hole edge.
-- **Nuts and washers:** pick the hole edge on the side where the part goes (top edge for a washer under a
-  screw head, bottom edge of a through hole for a washer and nut on the thread end). Parts placed on the same
-  edge stack: a washer first, then the screw or nut sits on top of it. Place the washer before the screw.
+- **Nuts and washers alone:** pick Nuts or Washers as the Part and pick the hole edge on the side where the
+  part goes (bottom edge of a through hole for a nut on the thread end). Parts placed on the same edge stack
+  on top of the ones already there.
+- **Stack:** tick "Stack nuts/washers" to get a small table with **+**, **−**, **Up** and **Down** buttons.
+  Each row has Side (near = the picked edge, under the screw head; far = the other end of the hole), Part
+  (nut or washer), Type, the matching size, and Material. **+** adds a row, **−** removes the highlighted row
+  (or the newest one if none is highlighted), Up and Down reorder. Each side stacks from the part outward, top
+  row first. The table grows and shrinks with the rows (the dialog window keeps its height and scrolls).
+  Insert places the screw and the whole stack on every picked hole. The rows are remembered for next time.
 - **One component per part number:** the same screw used twice is two occurrences of one component, so
   the BOM counts quantity.
 - **BOM fields:** part number, description and Fusion material are set on the component.
 
-The screw geometry is generated from `SRFastener/data/catalog.json`. That way library screws only
-come in through this tool, always with the right size, finish and BOM data.
+The geometry is generated from `SRFastener/data/catalog.json` on your PC. Each part becomes a normal component
+inside the design you are working in: nothing is read from or written to a cloud library, the Standard
+Components project or any shared folder. To use the tool on another PC, install it from GitHub (see
+[Install](#install)).
+
+## Sizing, warnings and matching materials
+
+- **Screws** take their size from the first picked hole: the hole's thread if it is tapped (a Fusion thread
+  feature or a Hole feature set to Tapped), otherwise a clearance or tap-drill fit to its diameter.
+- **Nuts and washers** take their size from the screw first, whether the screw is in the dialog or already in
+  the hole. Only with no screw do they size from the hole. They never size from other nuts or washers. Stack
+  rows only offer types that come in the screw's size.
+- **Warnings** (shown live and again after Insert): a nut or washer that does not match the screw's size or
+  thread, a screw that does not match a tapped hole's thread, a screw bigger than a plain hole, two screws in
+  one hole, and mixed materials.
+- **Mixed materials:** if the new parts' materials differ from each other or from parts already in the hole,
+  Insert asks: Yes switches the new parts to the screw's material where that material is sold, No inserts them
+  as picked, Cancel goes back to the dialog.
 
 ## Screw types
 
@@ -79,7 +103,8 @@ tabled length from the tip; shorter ones are threaded to the head).
 
 Names and codes follow McMaster-Carr's category names. Dimensions are what McMaster lists for its 18-8
 stainless stock, cross-checked with the standard or a maker data sheet (see [docs/SOURCES.md](docs/SOURCES.md)).
-Every size comes in 18-8 SS and 18-8 SS-BO (black oxide uses the same dimensions as plain 18-8).
+Every size comes in 18-8 SS and 18-8 SS-BO (black oxide uses the same dimensions as plain 18-8). Other
+materials per type are listed under [Materials](#materials).
 
 | Type (McMaster name) | Code | Standard | Sizes |
 |---|---|---|---|
@@ -117,9 +142,10 @@ Every size comes in 18-8 SS and 18-8 SS-BO (black oxide uses the same dimensions
 | Internal-tooth lock washer, inch | WTI | ASME B18.21.1 | #4 to 1/2 |
 | Oversized washer, inch | WOV | inch fender | #6 to 3/8 |
 
-Alloy steel black oxide is not offered for nuts and washers. Part numbers have no length:
-`NHX-M5-0.8 18-8 SS`, `NHX-1/4-20 18-8 SS-BO`, `NNL-10-32 18-8 SS`, `WGP-M5 18-8 SS`, `WSA-1/4 18-8 SS`.
-Descriptions carry the size, e.g. `Split lock washer, DIN 127 B, M6, 6.5 mm ID x 11.8 mm OD x 1.6 mm thick, 18-8 stainless steel`.
+Alloy steel black oxide is not offered for nuts and washers. Nut part numbers carry only the screw size and
+thread: `NHX-M5-0.8 18-8 SS`, `NHX-1/4-20 GR8`. Washer part numbers carry the screw size and the outside
+diameter: `WGP-M5 x 10 18-8 SS`, `WSA-1/4 x 0.625 ZN`. Descriptions have no dimensions or standards, e.g.
+`Split Lock Washer, M6, 18-8 Stainless Steel`.
 
 Simplified in the model: nut bores are the nominal diameter (no cosmetic thread), the nylon insert is drawn as
 part of the hex, the top-lock distortion is not drawn, flange serrations and lock-washer teeth are not drawn,
@@ -132,41 +158,30 @@ metric hex nuts are DIN 934 (ISO 4032 is taller from M5 and narrower at M10/M12)
 
 ![Live test: washers and nuts stacked on screws and holes](docs/screenshots/nuts-washers.png)
 
-## Finishes
+## Materials
 
-| Code | Name | Fusion material | Appearance |
-|---|---|---|---|
-| `18-8 SS` | 18-8 stainless steel | Stainless Steel AISI 304 | Stainless Steel - Satin |
-| `18-8 SS-BO` | 18-8 stainless steel, black oxide | Stainless Steel AISI 304 | Coating - Black Oxide |
-| `ALLOY-BO` (made-up code) | alloy steel, black oxide | Steel AISI 4142 400 QT (12.9, A574, F835), 4340 350A QT (10.9, Grade 8), 4142 475 QT (45H, F912) | Coating - Black Oxide |
+| Code | Name | Fusion material (custom, named) | Copied from | Appearance |
+|---|---|---|---|---|
+| `18-8 SS` | 18-8 Stainless Steel | Stainless Steel | Stainless Steel AISI 304 | Stainless Steel - Satin |
+| `18-8 SS-BO` | 18-8 Stainless Steel Black Oxide | Stainless Steel Black Oxide | Stainless Steel AISI 304 | Coating - Black Oxide |
+| `ALLOY-BO` | Alloy Steel Black Oxide | Alloy Steel Black Oxide | a quenched-and-tempered Fusion steel for the grade | Coating - Black Oxide |
+| `STL` | Plain Steel | Plain Steel | Steel | Steel - Satin |
+| `ZN` | Zinc Plated Steel | Zinc Plated | Steel | Steel - Galvanized (Small) |
+| `GR8` (inch only) | Grade 8 Steel | Grade 8 Steel | Steel AISI 4340 350A QT | Steel - Satin |
+| `CL10.9` (metric screws) | Class 10.9 Steel | Class 10.9 Steel | Steel AISI 4340 350A QT | Steel - Satin |
+| `CL10` (metric nuts) | Class 10 Steel | Class 10 Steel | Steel | Steel - Satin |
 
-Every screw, nut and washer size is offered in `18-8 SS` and `18-8 SS-BO`. McMaster-Carr is used to check
-dimensions, sizes, styles and descriptions, not which finishes it stocks. Alloy black oxide stays only where it
-was already offered; special materials (nylon, Grade 8, class 10.9 zinc, brass, aluminum and so on) are not
-generated.
+The Fusion material is a named copy made in the design the first time it is used, so the material name has no
+alloy numbers or other codes. `STL`, `ZN`, `GR8`, `CL10.9` and `CL10` are made-up codes, like `ALLOY-BO`.
 
-`ALLOY-BO` is offered only for sizes a maker sells in alloy steel black oxide, and the description
-carries the grade, e.g. `Socket head screw, ISO 4762, M5 x 0.8 x 16 mm, alloy steel, black oxide, class 12.9`.
+Which types get which extra materials was checked against McMaster-Carr's category filters (2026-11-17). Combinations
+McMaster does not sell are left off on purpose (for example Grade 8 socket screws, Class 10.9 set screws,
+classes on washers, and Class 10.9 nuts, which are sold as Class 10); the full list and the source pages are in
+[docs/SOURCES.md](docs/SOURCES.md). Whether every size of a type is stocked in every material was not checked.
 
-| Type | Alloy black oxide | Grade | Who sells it |
-|---|---|---|---|
-| Socket head, metric | all sizes | class 12.9 | Holo-Krome HK.M.SHCS.12.9.BO |
-| Button head, metric | M3 to M12; M16 | class 12.9; class 10.9 | Holo-Krome; IMS (M16) |
-| Flat head, metric | M3 to M16 (not M20) | class 12.9 | Holo-Krome HK.M.FHSCS.10642.12.9.BO |
-| Low head, metric (DIN 7984) | all sizes | class 10.9 | Brighton-Best (stocked in thermal black oxide) |
-| Flat-tip set screw, metric | all sizes | class 45H | Fastener Solutions, Fastenal |
-| Cup-tip set screw, metric | all sizes | class 45H | Holo-Krome metric cup point (tech manual) |
-| Socket head, inch | all sizes | ASTM A574 | Holo-Krome |
-| Button head, inch | all sizes | ASTM F835 | Holo-Krome |
-| Flat head, inch | #4 to 1/2 (not #2) | ASTM F835 | Holo-Krome |
-| Low head, inch | #8 to 1/2 (not #4, #6) | ASTM A574 | Holo-Krome |
-| Hex head bolt, inch | all sizes | SAE J429 Grade 8 | Raptor Supplies listing |
-| Flat-tip set screw, inch | all sizes | ASTM F912 | Fastenal |
-| Cup-tip set screw, inch | all sizes | ASTM F912 | Holo-Krome alloy cup point, black finish (tech manual) |
-| Hex head bolt, metric (ISO 4017) | **not offered** | | only plain or "tempered black" found, not black oxide |
+`ALLOY-BO` is offered only for sizes a maker sells in alloy steel black oxide; the Material list shows the
+grade, e.g. `Alloy Steel Black Oxide (Class 12.9)`.
 
-Fusion has no plain "alloy steel" material, and the makers do not name the alloy, so the material is a
-quenched-and-tempered Fusion steel whose hardness falls in the grade's range (same density and stiffness).
 ## Part numbers
 
 These follow the shop's basic hardware codes, which end with the finish:
@@ -177,6 +192,11 @@ These follow the shop's basic hardware codes, which end with the finish:
 - `SFH-8-32 x 0.5 18-8 SS-BO`
 - `SBH-10-32 x 0.5 ALLOY-BO` (UNF)
 - `SSH-M5-0.8 x 16 ALLOY-BO`
+- `HHB-1/4-20 x 1 GR8`, `SSH-M6-1 x 20 CL10.9`, `SSH-M5-0.8 x 16 ZN`
+- nuts: `NHX-M6-1 18-8 SS` (size and thread only); washers: `WGP-M6 x 12 18-8 SS` (screw size x outside diameter)
+
+Descriptions are `Type, size and thread, material` with capitalized words and no standards or dimensions,
+e.g. `Socket Head Screw, M4 x 0.7, 18-8 Stainless Steel`.
 
 Codes: screws are S + head letter + H, which is the shop's existing SSH/SBH/SFH/SLH pattern; the external hex
 is a hex head bolt, HHB (Daniel's name; McMaster sells it as Hex Head Screws);
@@ -186,7 +206,7 @@ Nuts are N + two letters (NHX hex, NTH thin-profile, NNL nylon-insert locknut, N
 flange, NTL top-lock, NTN thin nylon-insert locknut, NCP coupling, NCA cap, NWG wing, NSQ square); washers are
 W + two letters (WGP general purpose, WSA SAE, WUS USS, WOV oversized, WSL split lock, WTE/WTI external/internal
 tooth lock, WTK thick).
-Codes not in the shop list yet: `HHB` (named by Daniel), `SSC`, `SSF`, `SPH`, `SCH`, `SSN`, `SSE`, `SSO`, `SBF`, `STP`, all the nut and washer codes, and the finish `ALLOY-BO`.
+Codes not in the shop list yet: `HHB` (named by Daniel), `SSC`, `SSF`, `SPH`, `SCH`, `SSN`, `SSE`, `SSO`, `SBF`, `STP`, all the nut and washer codes, and the finishes `ALLOY-BO`, `STL`, `ZN`, `GR8`, `CL10.9` and `CL10`.
 The Fusion part number, component name and description always use this smart scheme, never a
 McMaster or other vendor number. McMaster catalog numbers stay in [docs/SOURCES.md](docs/SOURCES.md)
 as the dimension source only.
@@ -201,7 +221,10 @@ as the dimension source only.
    `%APPDATA%\Autodesk\Autodesk Fusion 360\API\AddIns\` and restart Fusion.
 3. The button shows up in the Insert panel, the SR Tools panel and Utilities > Add-ins.
 
-Settings (last type, size, length, finish) are saved in `%APPDATA%\SRFastener\settings.json`.
+Settings (last type, size, length, material and stack rows) are saved in `%APPDATA%\SRFastener\settings.json`.
+
+To share it with the team, each person clones `https://github.com/living-relation/sr-fastener` and adds the
+`SRFastener` folder as above; `git pull` and Stop/Run the add-in to update.
 
 ## Where the buttons go
 
@@ -234,13 +257,13 @@ empty (other SR add-ins can share the SR Tools panel).
   could not be read; lengths come from the standards' preferred-length tables (or a maker's maximum length)
   where cited, and are marked unverified in [docs/SOURCES.md](docs/SOURCES.md) where not. Vendor part numbers are `TBD`.
 - **Screw, nut and washer types not yet in the tool:** see [docs/MISSING-SCREWS.md](docs/MISSING-SCREWS.md).
-- **Stacking under a screw already placed:** a washer added after its screw does not push the screw up; place
-  the washer first.
+- **Stacking under a screw already placed:** a washer added after its screw does not push the screw up; put
+  the washer in the stack with the screw, or place it first.
 - **Thread detail:** threads are cosmetic (Fusion thread feature), not modelled.
 - **Phillips recess:** shown as two crossed slots sized from ISO 7045 (`m` and mean gauge penetration); the
   true ISO 4757 wing shape is not modeled. Cheese head sides are straight (ISO 1207 allows up to 5 deg taper).
-- **Hand test:** clicking through the dialog by hand has not been done yet. The live test drives the
-  same placement code from a script.
+- **Dialog test:** the dialog was driven live in Fusion from a script (the same events a click fires:
+  hole picks, the stack buttons and row dropdowns, the material prompt and Insert); not clicked by hand.
 
 ## Development
 
@@ -257,6 +280,10 @@ button, and that partial cosmetic threads have the tabled length and start at th
 17 holes gets every nut and washer type, stacked under screw heads and on the thread end, and checks the seat
 height of each stacked part, its direction, thickness, outside size and joint. Then it closes the design
 without saving.
+
+`dev/fusion_stack_smoke.py` is a second live test for sizing and stacks: a plate with a clearance hole, a
+tapped hole and a small plain hole; it checks tapped-hole detection, sizing from the hole and from the screw,
+far-side placement, a four-part stack, the warnings, nut-alone and washer-alone inserts and the materials.
 
 ![Live test plate: one screw of each type](docs/screenshots/test-plate.png)
 

@@ -52,14 +52,34 @@ IN_LENGTHS = [0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5, 0.625, 0.75, 0.87
               1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.5, 4.0]
 
 # Finish codes follow Daniel's BOM part-number rule (ends with 18-8 SS or 18-8 SS-BO).
-# ALLOY-BO is a made-up code: his list has no code for alloy steel black oxide.
+# ALLOY-BO, STL, ZN, GR8, CL10.9 and CL10 are made-up codes: his list has no code for them.
+# name: the words used in the description (Daniel 2026-11-17: 'Socket Head Screw, M4 x 0.7, 18-8 Stainless Steel').
+# material: the Fusion material name shown on the part. Daniel: just the material name, no standard or alloy
+#   acronym (no 'AISI 304'). The add-in makes a design material with this name, copied from `base` so mass and
+#   stiffness stay right.
+# base: the Fusion Material Library material the physical properties come from.
+# match: finishes with the same match key count as the same material when checking a stack (a Class 10 nut is
+#   the mating nut for a Class 10.9 screw).
+# system: only offered for that unit system (Grade 8 is an inch grade, Class 10.9 and Class 10 are metric).
 FINISHES = {
-    'SS': {'code': '18-8 SS', 'name': '18-8 stainless steel', 'material': 'Stainless Steel AISI 304',
-           'appearance': 'Stainless Steel - Satin'},
-    'SS-BO': {'code': '18-8 SS-BO', 'name': '18-8 stainless steel, black oxide',
-              'material': 'Stainless Steel AISI 304', 'appearance': 'Coating - Black Oxide'},
-    'ALLOY-BO': {'code': 'ALLOY-BO', 'name': 'alloy steel, black oxide', 'material': 'Steel AISI 4142 400 QT',
-                 'appearance': 'Coating - Black Oxide', 'made_up_code': True},
+    'SS': {'code': '18-8 SS', 'name': '18-8 Stainless Steel', 'material': 'Stainless Steel',
+           'base': 'Stainless Steel AISI 304', 'appearance': 'Stainless Steel - Satin', 'match': 'SS'},
+    'SS-BO': {'code': '18-8 SS-BO', 'name': '18-8 Stainless Steel Black Oxide', 'material': 'Stainless Steel Black Oxide',
+              'base': 'Stainless Steel AISI 304', 'appearance': 'Coating - Black Oxide', 'match': 'SS-BO'},
+    'ALLOY-BO': {'code': 'ALLOY-BO', 'name': 'Alloy Steel Black Oxide', 'material': 'Alloy Steel Black Oxide',
+                 'base': 'Steel AISI 4142 400 QT', 'appearance': 'Coating - Black Oxide', 'made_up_code': True,
+                 'match': 'ALLOY-BO'},
+    'STL': {'code': 'STL', 'name': 'Plain Steel', 'material': 'Plain Steel', 'base': 'Steel',
+            'appearance': 'Steel - Satin', 'made_up_code': True, 'match': 'STL'},
+    'ZN': {'code': 'ZN', 'name': 'Zinc Plated Steel', 'material': 'Zinc Plated', 'base': 'Steel',
+           'appearance': 'Steel - Galvanized (Small)', 'made_up_code': True, 'match': 'ZN'},
+    'GR8': {'code': 'GR8', 'name': 'Grade 8 Steel', 'material': 'Grade 8 Steel', 'base': 'Steel AISI 4340 350A QT',
+            'appearance': 'Steel - Satin', 'made_up_code': True, 'match': 'GR8', 'system': 'inch'},
+    'CL10.9': {'code': 'CL10.9', 'name': 'Class 10.9 Steel', 'material': 'Class 10.9 Steel',
+               'base': 'Steel AISI 4340 350A QT', 'appearance': 'Steel - Satin', 'made_up_code': True,
+               'match': 'CL10', 'system': 'metric'},
+    'CL10': {'code': 'CL10', 'name': 'Class 10 Steel', 'material': 'Class 10 Steel', 'base': 'Steel',
+             'appearance': 'Steel - Satin', 'made_up_code': True, 'match': 'CL10', 'system': 'metric'},
 }
 # Fusion has no generic 'alloy steel' material. The makers do not name the alloy (ASTM A574 and ISO 898-1
 # allow several, e.g. 4037, 4140, 8740), so the material is a quenched-and-tempered Fusion steel whose
@@ -1019,6 +1039,91 @@ for _p in PARTS:
     _p['mcmaster_url'] = _p['source'].split(' ')[0]
 
 
+# ---------- Extra materials (Daniel 2026-11-17) ----------
+# Plain Steel, Zinc Plated, Grade 8 (inch only) and Class 10.9 (metric only), plus Class 10 for the metric nuts
+# that mate with Class 10.9 screws. A type gets a material only where McMaster-Carr sells that type in it,
+# checked 2026-11-17 on McMaster category pages filtered by finish or strength grade (see MATERIAL_SOURCES and
+# docs/SOURCES.md). The check is per type, not per size. Types left off a material are listed in
+# docs/SOURCES.md with the reason.
+MCM = 'https://www.mcmaster.com/products/'
+MATERIAL_SOURCES = {
+    'STL': [MCM + 'hex-head-screws/finish~unfinished/', MCM + 'hex-nuts/finish~unfinished/',
+            MCM + 'washers/finish~unfinished/'],
+    'ZN': [MCM + 'socket-head-screws/finish~zinc-plated/', MCM + 'socket-head-screws/finish~zinc-plated/socket-head-profile~low/',
+           MCM + 'rounded-head-screws/finish~zinc-plated/', MCM + 'hex-head-screws/finish~zinc-plated/',
+           MCM + 'set-screws/finish~zinc-plated/tip-type~cup/', MCM + 'set-screws/finish~zinc-plated/tip-type~cone/',
+           MCM + 'tapping-screws/finish~zinc-plated/', MCM + 'hex-nuts/finish~zinc-plated/',
+           MCM + 'lock-nuts/finish~zinc-plated/', MCM + 'flange-nuts/finish~zinc-plated/',
+           MCM + 'coupling-nuts/finish~zinc-plated/', MCM + 'cap-nuts/finish~zinc-plated/',
+           MCM + 'wing-nuts/finish~zinc-plated/', MCM + 'square-nuts/finish~zinc-plated/',
+           MCM + 'washers/finish~zinc-plated/', MCM + 'lock-washers/finish~zinc-plated/'],
+    'GR8': [MCM + 'hex-head-screws/fastener-strength-grade-class~sae-grade-8/',
+            MCM + 'hex-nuts/fastener-strength-grade-class~sae-grade-8/',
+            MCM + 'lock-nuts/fastener-strength-grade-class~sae-grade-8/',
+            MCM + 'flange-nuts/fastener-strength-grade-class~sae-grade-8/',
+            MCM + 'washers/fastener-strength-grade-class~sae-grade-8/'],
+    'CL10.9': [MCM + 'hex-head-screws/fastener-strength-grade-class~class-10-9/',
+               MCM + 'socket-head-screws/fastener-strength-grade-class~class-10-9/',
+               MCM + 'flat-head-screws/fastener-strength-grade-class~class-10-9/'],
+    'CL10': [MCM + 'hex-nuts/fastener-strength-grade-class~class-10/'],
+}
+EXTRA_FINISHES = {
+    # screws
+    'SSH': ['ZN', 'CL10.9'], 'SBH': ['ZN', 'CL10.9'], 'SFH': ['ZN', 'CL10.9'], 'SLH': ['ZN'],
+    'HHB': ['STL', 'ZN', 'GR8', 'CL10.9'], 'SSC': ['ZN'], 'SSN': ['ZN'], 'SPH': ['ZN'], 'SCH': ['ZN'],
+    'SBF': ['ZN'], 'STP': ['ZN'],
+    # nuts
+    'NHX': ['STL', 'ZN', 'GR8', 'CL10'], 'NTH': ['STL', 'ZN'], 'NNL': ['ZN', 'GR8'], 'NTN': ['ZN', 'GR8'],
+    'NTL': ['ZN'], 'NFL': ['ZN', 'GR8', 'CL10'], 'NSF': ['ZN', 'GR8', 'CL10'], 'NCP': ['ZN', 'GR8', 'CL10'],
+    'NCA': ['ZN'], 'NWG': ['ZN'], 'NSQ': ['ZN'],
+    # washers
+    'WGP': ['STL', 'ZN'], 'WSA': ['STL', 'ZN', 'GR8'], 'WUS': ['STL', 'ZN', 'GR8'], 'WOV': ['STL', 'ZN', 'GR8'],
+    'WSL': ['ZN'], 'WTE': ['ZN'], 'WTI': ['ZN'],
+}
+# Left off on purpose (reason shown in docs/SOURCES.md).
+LEFT_OFF = [
+    ('Grade 8 on socket, button, flat and low-profile screws, set screws, pan, cheese and sheet metal screws',
+     'Grade 8 is a hex bolt grade; McMaster lists no Grade 8 socket or machine screws (the Grade 8 filter does not exist on those pages).'),
+    ('Class 10.9 on set screws, low-profile socket head, pan, cheese and sheet metal screws',
+     'Not found on McMaster with a Class 10.9 filter (set screws are hardness rated, 45H).'),
+    ('Class 10.9 and Class 10 on washers', 'Washers are not rated in property classes.'),
+    ('Class 10.9 on nuts', 'Nuts use Class 10 (offered instead) to mate with Class 10.9 screws.'),
+    ('Plain Steel on socket, button, flat and low-profile screws, set screws, pan, cheese and sheet metal screws',
+     'McMaster sells those in alloy steel (black oxide or zinc) or stainless; unfinished plain steel only for hex bolts, hex nuts and flat washers.'),
+    ('Zinc Plated on flat-tip, extended-tip and oval-tip set screws',
+     'McMaster zinc-plated flat-tip set screws are magnetic-tip only; no zinc extended-tip or oval-tip found.'),
+    ('Zinc Plated on thick washers (DIN 7349)', 'Not checked on McMaster.'),
+    ('Grade 8 on thin hex nuts and top-lock nuts', 'Not listed under the McMaster Grade 8 filter.'),
+    ('Plain Steel on locknuts, flange, coupling, cap, wing and square nuts, lock washers', 'Not checked on McMaster.'),
+]
+
+
+def _apply_extra_finishes():
+    for fam in FAMILIES + PARTS:
+        extra = [k for k in EXTRA_FINISHES.get(fam['code'].rsplit('-', 1)[0], [])
+                 if FINISHES[k].get('system') in (None, fam['system'])]
+        fam['finishes'] = list(fam['finishes']) + [k for k in extra if k not in fam['finishes']]
+        for row in fam['sizes']:
+            if 'finishes' in row:
+                row['finishes'] = list(row['finishes']) + [k for k in extra if k not in row['finishes']]
+
+
+# Daniel 2026-11-17: type names with nouns capitalized and no standards in them (the standard stays in the
+# 'standard' field for docs/SOURCES.md only). Flat head angle is dropped from the name: metric is always 90 and
+# inch always 82, and the name must not carry dimensions.
+def title_name(name):
+    name = name.replace(', 90 deg', '').replace(', 82 deg', '')
+    out = []
+    for word in name.split(' '):
+        out.append('-'.join(w[:1].upper() + w[1:] for w in word.split('-')))
+    return ' '.join(out)
+
+
+_apply_extra_finishes()
+for _f in FAMILIES + PENDING + PARTS:
+    _f['name'] = title_name(_f['name'])
+
+
 def build():
     return {
         'schema': 2,
@@ -1071,6 +1176,16 @@ def sources_md():
             '| Type | Size | Length (in) | Table 13 TH (in) | Depth used (in) |', '|---|---|---|---|---|']
     out += ['| %s | %s | %g | %.3f | %.3f%s |' % (fam, s, L, th, t, ' (cut back for the point)' if t < th else '')
             for fam, s, L, th, t in sorted({(PT_CODE[p], s, L, th, t) for p, s, L, th, t in SHORT_T})]
+    out += ['', '## Materials', '',
+            'Materials offered per type (checked on McMaster-Carr 2026-11-17, per type, not per size). Codes are the '
+            'shop part number finish codes; STL, ZN, GR8, CL10.9, CL10 and ALLOY-BO are made-up codes.', '',
+            '| Code | Description words | Fusion material name | Physical properties from |', '|---|---|---|---|']
+    out += ['| %s | %s | %s | %s |' % (v['code'], v['name'], v['material'], v['base']) for v in FINISHES.values()]
+    out += ['', '| Type | Extra materials |', '|---|---|']
+    out += ['| %s | %s |' % (k, ', '.join(v)) for k, v in EXTRA_FINISHES.items()]
+    out += ['', 'McMaster pages used:', '']
+    out += ['- %s: %s' % (k, ' , '.join(v)) for k, v in MATERIAL_SOURCES.items()]
+    out += ['', 'Left off:', ''] + ['- %s. %s' % (a, b) for a, b in LEFT_OFF]
     out += ['', '## Source keys', '', '| Key | Source |', '|---|---|']
     out += ['| %s | %s |' % (k, v) for k, v in SRC.items()]
     out += ['', 'Lengths with no length source use the preferred series trimmed to an unverified range (TBD).',

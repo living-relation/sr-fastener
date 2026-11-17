@@ -83,22 +83,76 @@
  "finishes": {
   "SS": {
    "code": "18-8 SS",
-   "name": "18-8 stainless steel",
-   "material": "Stainless Steel AISI 304",
-   "appearance": "Stainless Steel - Satin"
+   "name": "18-8 Stainless Steel",
+   "material": "Stainless Steel",
+   "base": "Stainless Steel AISI 304",
+   "appearance": "Stainless Steel - Satin",
+   "match": "SS"
   },
   "SS-BO": {
    "code": "18-8 SS-BO",
-   "name": "18-8 stainless steel, black oxide",
-   "material": "Stainless Steel AISI 304",
-   "appearance": "Coating - Black Oxide"
+   "name": "18-8 Stainless Steel Black Oxide",
+   "material": "Stainless Steel Black Oxide",
+   "base": "Stainless Steel AISI 304",
+   "appearance": "Coating - Black Oxide",
+   "match": "SS-BO"
   },
   "ALLOY-BO": {
    "code": "ALLOY-BO",
-   "name": "alloy steel, black oxide",
-   "material": "Steel AISI 4142 400 QT",
+   "name": "Alloy Steel Black Oxide",
+   "material": "Alloy Steel Black Oxide",
+   "base": "Steel AISI 4142 400 QT",
    "appearance": "Coating - Black Oxide",
-   "made_up_code": true
+   "made_up_code": true,
+   "match": "ALLOY-BO"
+  },
+  "STL": {
+   "code": "STL",
+   "name": "Plain Steel",
+   "material": "Plain Steel",
+   "base": "Steel",
+   "appearance": "Steel - Satin",
+   "made_up_code": true,
+   "match": "STL"
+  },
+  "ZN": {
+   "code": "ZN",
+   "name": "Zinc Plated Steel",
+   "material": "Zinc Plated",
+   "base": "Steel",
+   "appearance": "Steel - Galvanized (Small)",
+   "made_up_code": true,
+   "match": "ZN"
+  },
+  "GR8": {
+   "code": "GR8",
+   "name": "Grade 8 Steel",
+   "material": "Grade 8 Steel",
+   "base": "Steel AISI 4340 350A QT",
+   "appearance": "Steel - Satin",
+   "made_up_code": true,
+   "match": "GR8",
+   "system": "inch"
+  },
+  "CL10.9": {
+   "code": "CL10.9",
+   "name": "Class 10.9 Steel",
+   "material": "Class 10.9 Steel",
+   "base": "Steel AISI 4340 350A QT",
+   "appearance": "Steel - Satin",
+   "made_up_code": true,
+   "match": "CL10",
+   "system": "metric"
+  },
+  "CL10": {
+   "code": "CL10",
+   "name": "Class 10 Steel",
+   "material": "Class 10 Steel",
+   "base": "Steel",
+   "appearance": "Steel - Satin",
+   "made_up_code": true,
+   "match": "CL10",
+   "system": "metric"
   }
  },
  "alloy_materials": {
@@ -113,7 +167,7 @@
  "families": [
   {
    "code": "SSH-M",
-   "name": "Socket head screw",
+   "name": "Socket Head Screw",
    "standard": "ISO 4762",
    "system": "metric",
    "head": "cap",
@@ -121,7 +175,9 @@
    "finishes": [
     "SS",
     "SS-BO",
-    "ALLOY-BO"
+    "ALLOY-BO",
+    "ZN",
+    "CL10.9"
    ],
    "source": "https://cdn.standards.iteh.ai/samples/34460/06335046afaf46fb8e84d91a3eda001d/ISO-4762-2004.pdf (ISO 4762:2004 Table 1: dk, k, s, t, b, lengths, ls/lg)",
    "sources": {
@@ -483,7 +539,7 @@
   },
   {
    "code": "SBH-M",
-   "name": "Button head hex-drive screw",
+   "name": "Button Head Hex-Drive Screw",
    "standard": "ISO 7380-1",
    "system": "metric",
    "head": "button",
@@ -491,7 +547,9 @@
    "finishes": [
     "SS",
     "SS-BO",
-    "ALLOY-BO"
+    "ALLOY-BO",
+    "ZN",
+    "CL10.9"
    ],
    "source": "https://cdn.standards.iteh.ai/samples/53671/84df01c5fcce4a91896ac3b0c55ca128/ISO-7380-1-2011.pdf (ISO 7380-1:2011 Table 1: dk, k, rf, s, t, b, lengths, ls/lg)",
    "sources": {
@@ -796,7 +854,7 @@
   },
   {
    "code": "SFH-M",
-   "name": "Hex-drive flat head screw, 90 deg",
+   "name": "Hex-Drive Flat Head Screw",
    "standard": "ISO 10642",
    "system": "metric",
    "head": "flat",
@@ -805,7 +863,9 @@
    "finishes": [
     "SS",
     "SS-BO",
-    "ALLOY-BO"
+    "ALLOY-BO",
+    "ZN",
+    "CL10.9"
    ],
    "source": "https://cdn.standards.iteh.ai/samples/34454/32dec7e84d974361b85f744935ab2175/ISO-10642-2004.pdf (ISO 10642:2004 Table 1: dk theor. max, k, s, t, b, lengths, ls/lg)",
    "sources": {
@@ -1134,7 +1194,7 @@
   },
   {
    "code": "SLH-M",
-   "name": "Low-profile socket head screw",
+   "name": "Low-Profile Socket Head Screw",
    "standard": "DIN 7984",
    "system": "metric",
    "head": "cap",
@@ -1142,7 +1202,8 @@
    "finishes": [
     "SS",
     "SS-BO",
-    "ALLOY-BO"
+    "ALLOY-BO",
+    "ZN"
    ],
    "source": "https://www.brightonbest.com/download/pds/PDS_Metric_Socket_Low_Head_Cap_Screws.pdf (Brighton-Best DIN 7984 data sheet: dk, k, s, t min; stocked 10.9 thermal black oxide and A2-70)",
    "sources": {
@@ -1429,14 +1490,17 @@
   },
   {
    "code": "HHB-M",
-   "name": "Hex head bolt, fully threaded",
+   "name": "Hex Head Bolt, Fully Threaded",
    "standard": "ISO 4017",
    "system": "metric",
    "head": "hex",
    "drive": "none",
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "STL",
+    "ZN",
+    "CL10.9"
    ],
    "source": "https://cdn.standards.iteh.ai/samples/72585/1179998ddd594550a909d6e13c416f3e/ISO-4017-2022.pdf (ISO 4017:2022 Table 1: s max, k nom)",
    "sources": {
@@ -1682,7 +1746,7 @@
   },
   {
    "code": "SSF-M",
-   "name": "Flat-tip set screw",
+   "name": "Flat-Tip Set Screw",
    "standard": "ISO 4026",
    "system": "metric",
    "head": "set",
@@ -1915,7 +1979,7 @@
   },
   {
    "code": "SSC-M",
-   "name": "Cup-tip set screw",
+   "name": "Cup-Tip Set Screw",
    "standard": "ISO 4029",
    "system": "metric",
    "head": "set",
@@ -1924,7 +1988,8 @@
    "finishes": [
     "SS",
     "SS-BO",
-    "ALLOY-BO"
+    "ALLOY-BO",
+    "ZN"
    ],
    "source": "https://cdn.standards.iteh.ai/samples/36433/631453640d214e7682ed5a23ddee05b5/ISO-4029-2003.pdf (ISO 4029:2003 Table 1: dz, s, t min short/long, lengths)",
    "sources": {
@@ -2148,14 +2213,15 @@
   },
   {
    "code": "SPH-M",
-   "name": "Pan head Phillips screw",
+   "name": "Pan Head Phillips Screw",
    "standard": "ISO 7045",
    "system": "metric",
    "head": "pan",
    "drive": "phillips",
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://cdn.standards.iteh.ai/samples/57372/fafe91d8504049fc8953281401736c79/ISO-7045-2011.pdf (ISO 7045:2011 Table 1: dk, k, rf, recess H no., m, penetration, b, lengths)",
    "sources": {
@@ -2427,14 +2493,15 @@
   },
   {
    "code": "SCH-M",
-   "name": "Cheese head slotted screw",
+   "name": "Cheese Head Slotted Screw",
    "standard": "ISO 1207",
    "system": "metric",
    "head": "cheese",
    "drive": "slot",
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://cdn.standards.iteh.ai/samples/54039/15c540b697434b5d85128ca34672939c/ISO-1207-2011.pdf (ISO 1207:2011 Table 1: dk, k, n, t, b, lengths)",
    "sources": {
@@ -2693,7 +2760,7 @@
   },
   {
    "code": "SSH-I",
-   "name": "Socket head screw",
+   "name": "Socket Head Screw",
    "standard": "ASME B18.3",
    "system": "inch",
    "head": "cap",
@@ -2701,7 +2768,8 @@
    "finishes": [
     "SS",
     "SS-BO",
-    "ALLOY-BO"
+    "ALLOY-BO",
+    "ZN"
    ],
    "source": "https://www.holo-krome.com/uploads/7/2/7/5/72754089/hk.usa.shcs.alloy.bo.pdf (Holo-Krome HK.USA.SHCS.ALLOY.BO: ASTM A574 alloy, black oxide; A, H, J, T, LT)",
    "sources": {
@@ -3485,7 +3553,7 @@
   },
   {
    "code": "SBH-I",
-   "name": "Button head hex-drive screw",
+   "name": "Button Head Hex-Drive Screw",
    "standard": "ASME B18.3",
    "system": "inch",
    "head": "button",
@@ -3493,7 +3561,8 @@
    "finishes": [
     "SS",
     "SS-BO",
-    "ALLOY-BO"
+    "ALLOY-BO",
+    "ZN"
    ],
    "source": "https://www.holo-krome.com/uploads/7/2/7/5/72754089/button_head_socket_cap_screws.pdf (Holo-Krome HK.BHSCS.ALLOY.BO: ASTM F835 alloy, black oxide; A, H, S, J, T, max length)",
    "sources": {
@@ -4001,7 +4070,7 @@
   },
   {
    "code": "SFH-I",
-   "name": "Hex-drive flat head screw, 82 deg",
+   "name": "Hex-Drive Flat Head Screw",
    "standard": "ASME B18.3",
    "system": "inch",
    "head": "flat",
@@ -4010,7 +4079,8 @@
    "finishes": [
     "SS",
     "SS-BO",
-    "ALLOY-BO"
+    "ALLOY-BO",
+    "ZN"
    ],
    "source": "https://www.holo-krome.com/uploads/7/2/7/5/72754089/flat_head_socket_cap_screws.pdf (Holo-Krome HK.FHSCS.ALLOY.BO: ASTM F835 alloy, black oxide, 82 deg; A, H, J, T)",
    "sources": {
@@ -4777,7 +4847,7 @@
   },
   {
    "code": "SLH-I",
-   "name": "Low-profile socket head screw",
+   "name": "Low-Profile Socket Head Screw",
    "standard": "ASME B18.3",
    "system": "inch",
    "head": "cap",
@@ -4785,7 +4855,8 @@
    "finishes": [
     "SS",
     "SS-BO",
-    "ALLOY-BO"
+    "ALLOY-BO",
+    "ZN"
    ],
    "source": "https://www.holo-krome.com/uploads/7/2/7/5/72754089/low_head_socket_cap_screws.pdf (Holo-Krome low head, ASTM A574 material, black oxide, #8 to 1/2; A, H, J, T)",
    "sources": {
@@ -5262,7 +5333,7 @@
   },
   {
    "code": "HHB-I",
-   "name": "Hex head bolt",
+   "name": "Hex Head Bolt",
    "standard": "ASME B18.2.1",
    "system": "inch",
    "head": "hex",
@@ -5270,7 +5341,10 @@
    "finishes": [
     "SS",
     "SS-BO",
-    "ALLOY-BO"
+    "ALLOY-BO",
+    "STL",
+    "ZN",
+    "GR8"
    ],
    "source": "https://www.fastenersetcinc.com/ (Brighton-Best inch hex cap screw table per ASME B18.2.1: F max, H max, LT)",
    "sources": {
@@ -5437,7 +5511,7 @@
   },
   {
    "code": "SSF-I",
-   "name": "Flat-tip set screw",
+   "name": "Flat-Tip Set Screw",
    "standard": "ASME B18.3",
    "system": "inch",
    "head": "set",
@@ -6024,7 +6098,7 @@
   },
   {
    "code": "SSC-I",
-   "name": "Cup-tip set screw",
+   "name": "Cup-Tip Set Screw",
    "standard": "ASME B18.3",
    "system": "inch",
    "head": "set",
@@ -6033,7 +6107,8 @@
    "finishes": [
     "SS",
     "SS-BO",
-    "ALLOY-BO"
+    "ALLOY-BO",
+    "ZN"
    ],
    "source": "https://www.holo-krome.com/uploads/7/2/7/5/72754089/hk_consolidated_tech_manual_full_2015.pdf (Holo-Krome technical manual: Table 2 SHCS grip lengths, Table 9 FHCS grip lengths, Tables 13-14 set screws)",
    "sources": {
@@ -6611,7 +6686,7 @@
   },
   {
    "code": "SSN-M",
-   "name": "Cone-tip set screw",
+   "name": "Cone-Tip Set Screw",
    "standard": "ISO 4027",
    "system": "metric",
    "head": "set",
@@ -6619,7 +6694,8 @@
    "drive": "hex",
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://cdn.standards.iteh.ai/samples/36430/dfcea24c694e460ea6b659cfc216c6c1/ISO-4027-2003.pdf (ISO 4027:2003 Table 1: dt max, s, t min short/long)",
    "sources": {
@@ -6942,7 +7018,7 @@
   },
   {
    "code": "SSN-I",
-   "name": "Cone-tip set screw",
+   "name": "Cone-Tip Set Screw",
    "standard": "ASME B18.3",
    "system": "inch",
    "head": "set",
@@ -6950,7 +7026,8 @@
    "drive": "hex",
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.holo-krome.com/uploads/7/2/7/5/72754089/hk_consolidated_tech_manual_full_2015.pdf (Holo-Krome technical manual: Table 2 SHCS grip lengths, Table 9 FHCS grip lengths, Tables 13-14 set screws)",
    "sources": {
@@ -7498,7 +7575,7 @@
   },
   {
    "code": "SSE-M",
-   "name": "Extended-tip set screw",
+   "name": "Extended-Tip Set Screw",
    "standard": "ISO 4028",
    "system": "metric",
    "head": "set",
@@ -7805,7 +7882,7 @@
   },
   {
    "code": "SSE-I",
-   "name": "Extended-tip set screw",
+   "name": "Extended-Tip Set Screw",
    "standard": "ASME B18.3 (half dog)",
    "system": "inch",
    "head": "set",
@@ -8349,7 +8426,7 @@
   },
   {
    "code": "SSO-I",
-   "name": "Oval-tip set screw",
+   "name": "Oval-Tip Set Screw",
    "standard": "ASME B18.3",
    "system": "inch",
    "head": "set",
@@ -8507,14 +8584,15 @@
   },
   {
    "code": "SBF-M",
-   "name": "Flanged button head hex-drive screw",
+   "name": "Flanged Button Head Hex-Drive Screw",
    "standard": "ISO 7380-2",
    "system": "metric",
    "head": "flbutton",
    "drive": "hex",
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://cdn.standards.iteh.ai/samples/53672/801ec2c66dfc4359ba76493e3d01d97f/ISO-7380-2-2011.pdf (ISO 7380-2:2011 Table 1: c max, dc, dk, k, rf max, s, t min)",
    "sources": {
@@ -8700,7 +8778,7 @@
   },
   {
    "code": "STP-I",
-   "name": "Phillips rounded head sheet metal screw",
+   "name": "Phillips Rounded Head Sheet Metal Screw",
    "standard": "ASME B18.6.3 head",
    "system": "inch",
    "head": "pan",
@@ -8708,7 +8786,8 @@
    "thread_form": "tapping",
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/tapping-screws/material~18-8-stainless-steel/stainless-steel-phillips-rounded-head-screws-for-sheet-metal~~/ (McMaster 18-8 and black-oxide 18-8 Phillips rounded head sheet metal screws: lengths, head dia, head height, threads per inch, drive size)",
    "sources": {
@@ -8910,7 +8989,7 @@
   },
   {
    "code": "STP-M",
-   "name": "Phillips rounded head sheet metal screw",
+   "name": "Phillips Rounded Head Sheet Metal Screw",
    "standard": "ISO 7049",
    "system": "metric",
    "head": "pan",
@@ -8918,7 +8997,8 @@
    "thread_form": "tapping",
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://cdn.standards.iteh.ai/samples/54046/cdf129d179c645d7b5c43390e21e0811/ISO-7049-2011.pdf (ISO 7049:2011 Table 1: P, rf, recess no., Type H m and penetration, y Type C)",
    "sources": {
@@ -9077,7 +9157,7 @@
    "code": "NHX-M",
    "kind": "nut",
    "shape": "hex",
-   "name": "Hex nut",
+   "name": "Hex Nut",
    "standard": "DIN 934",
    "system": "metric",
    "sizes": [
@@ -9091,7 +9171,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9104,7 +9187,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9117,7 +9203,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9130,7 +9219,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9143,7 +9235,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9156,7 +9251,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9169,7 +9267,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9182,7 +9283,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9195,13 +9299,19 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "CL10"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "STL",
+    "ZN",
+    "CL10"
    ],
    "source": "https://www.mcmaster.com/products/hex-nuts/material~18-8-stainless-steel/system-of-measurement~metric/hex-nuts-3~~/ (McMaster 18-8 metric hex nuts, DIN 934: width, height)",
    "sources": {
@@ -9220,7 +9330,7 @@
    "code": "NTH-M",
    "kind": "nut",
    "shape": "hex",
-   "name": "Thin-profile hex nut",
+   "name": "Thin-Profile Hex Nut",
    "standard": "DIN 439 B",
    "system": "metric",
    "sizes": [
@@ -9234,7 +9344,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9247,7 +9359,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9260,7 +9374,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9273,7 +9389,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9286,7 +9404,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9299,7 +9419,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9312,7 +9434,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9325,13 +9449,17 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "STL",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/hex-nuts/finish~black-oxide/material~18-8-stainless-steel/thin-profile-hex-nuts-2~~/ (McMaster black-oxide 18-8 thin-profile hex nuts, DIN 439 B: width, height)",
    "sources": {
@@ -9351,7 +9479,7 @@
    "code": "NNL-M",
    "kind": "nut",
    "shape": "nylon",
-   "name": "Nylon-insert locknut",
+   "name": "Nylon-Insert Locknut",
    "standard": "DIN 985",
    "system": "metric",
    "sizes": [
@@ -9365,7 +9493,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -9378,7 +9507,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -9391,7 +9521,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -9404,7 +9535,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -9417,7 +9549,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -9430,7 +9563,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -9443,7 +9577,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -9456,7 +9591,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -9469,13 +9605,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/system-of-measurement~metric/nylon-insert-locknuts-2~~/ (McMaster 18-8 and black-oxide 18-8 metric nylon-insert locknuts: width, height)",
    "sources": {
@@ -9495,7 +9633,7 @@
    "code": "NFL-M",
    "kind": "nut",
    "shape": "flange",
-   "name": "Flange nut",
+   "name": "Flange Nut",
    "standard": "ISO 4161 (DIN 6923)",
    "system": "metric",
    "sizes": [
@@ -9511,7 +9649,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9526,7 +9666,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9541,7 +9683,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9556,7 +9700,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9571,7 +9717,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9586,7 +9734,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9601,13 +9751,17 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN",
+    "CL10"
    ],
    "source": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~metric/flange-nuts-1~~/ (McMaster 18-8 metric flange nuts: width, height, flange dia, flange thk)",
    "sources": {
@@ -9625,7 +9779,7 @@
    "code": "NSF-M",
    "kind": "nut",
    "shape": "flange",
-   "name": "Serrated flange nut",
+   "name": "Serrated Flange Nut",
    "standard": "ISO 4161 (DIN 6923)",
    "system": "metric",
    "sizes": [
@@ -9641,7 +9795,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9656,7 +9812,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9671,7 +9829,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9686,7 +9846,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9701,7 +9863,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9716,7 +9880,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -9731,13 +9897,17 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN",
+    "CL10"
    ],
    "source": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/serrated-flange-nuts-1~~/ (McMaster 18-8 serrated flange nuts: width, height, flange dia, flange thk)",
    "sources": {
@@ -9756,7 +9926,7 @@
    "code": "WGP-M",
    "kind": "washer",
    "shape": "flat",
-   "name": "General purpose washer",
+   "name": "General Purpose Washer",
    "standard": "ISO 7089",
    "system": "metric",
    "sizes": [
@@ -9770,7 +9940,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9783,7 +9955,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9796,7 +9970,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9809,7 +9985,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9822,7 +10000,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9835,7 +10015,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9848,7 +10030,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9861,7 +10045,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9874,13 +10060,17 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "STL",
+    "ZN"
    ],
    "source": "https://cdn.standards.iteh.ai/samples/13666/bd926567c06846afbe5fef5c514ba406/ISO-7089-2000.pdf (ISO 7089:2000 Table 1: d1, d2, h)",
    "sources": {
@@ -9900,7 +10090,7 @@
    "code": "WOV-M",
    "kind": "washer",
    "shape": "flat",
-   "name": "Oversized washer",
+   "name": "Oversized Washer",
    "standard": "ISO 7093-1",
    "system": "metric",
    "sizes": [
@@ -9914,7 +10104,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9927,7 +10119,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9940,7 +10134,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9953,7 +10149,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9966,7 +10164,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9979,7 +10179,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -9992,7 +10194,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -10005,7 +10209,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -10018,13 +10224,17 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "STL",
+    "ZN"
    ],
    "source": "https://cdn.standards.iteh.ai/samples/13677/a0dc4c7265a048bcb627747f4d7cadf2/ISO-7093-1-2000.pdf (ISO 7093-1:2000 Table 1: d1, d2, h)",
    "sources": {
@@ -10042,7 +10252,7 @@
    "code": "WSL-M",
    "kind": "washer",
    "shape": "split",
-   "name": "Split lock washer",
+   "name": "Split Lock Washer",
    "standard": "DIN 127 B",
    "system": "metric",
    "sizes": [
@@ -10056,7 +10266,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10069,7 +10280,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10082,7 +10294,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10095,7 +10308,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10108,7 +10322,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10121,7 +10336,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10134,7 +10350,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10147,7 +10364,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10160,13 +10378,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/split-lock-washers-2~~/ (McMaster 18-8 split lock washers: ID, OD, thk)",
    "sources": {
@@ -10186,7 +10406,7 @@
    "code": "WTE-M",
    "kind": "washer",
    "shape": "tooth",
-   "name": "External-tooth lock washer",
+   "name": "External-Tooth Lock Washer",
    "standard": "DIN 6797 A",
    "system": "metric",
    "sizes": [
@@ -10200,7 +10420,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10213,7 +10434,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10226,7 +10448,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10239,7 +10462,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10252,7 +10476,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10265,7 +10490,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10278,7 +10504,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10291,7 +10518,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10304,13 +10532,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/system-of-measurement~metric/tooth-lock-washers-2~~/ (McMaster 18-8 metric tooth lock washers, DIN 6797 A and J: ID, OD, thk)",
    "sources": {
@@ -10328,7 +10558,7 @@
    "code": "WTI-M",
    "kind": "washer",
    "shape": "tooth",
-   "name": "Internal-tooth lock washer",
+   "name": "Internal-Tooth Lock Washer",
    "standard": "DIN 6797 J",
    "system": "metric",
    "sizes": [
@@ -10342,7 +10572,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10355,7 +10586,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10368,7 +10600,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10381,7 +10614,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10394,7 +10628,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -10407,13 +10642,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/system-of-measurement~metric/tooth-lock-washers-2~~/ (McMaster 18-8 metric tooth lock washers, DIN 6797 A and J: ID, OD, thk)",
    "sources": {
@@ -10431,7 +10668,7 @@
    "code": "NHX-I",
    "kind": "nut",
    "shape": "hex",
-   "name": "Hex nut",
+   "name": "Hex Nut",
    "standard": "ASME B18.2.2",
    "system": "inch",
    "sizes": [
@@ -10447,7 +10684,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10462,7 +10702,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10477,7 +10720,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10492,7 +10738,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10507,7 +10756,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10522,7 +10774,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10537,7 +10792,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10552,7 +10810,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10567,7 +10828,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10582,7 +10846,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10597,7 +10864,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10612,7 +10882,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10627,7 +10900,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10642,7 +10918,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10657,7 +10936,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10672,7 +10954,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10687,7 +10972,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10702,13 +10990,19 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "STL",
+    "ZN",
+    "GR8"
    ],
    "source": "https://www.mcmaster.com/products/hex-nuts/material~18-8-stainless-steel/hex-nuts-3~~/ (McMaster 18-8 inch hex nuts, ASME B18.2.2 / ASTM F594: width, height)",
    "sources": {
@@ -10728,7 +11022,7 @@
    "code": "NTH-I",
    "kind": "nut",
    "shape": "hex",
-   "name": "Thin-profile hex nut",
+   "name": "Thin-Profile Hex Nut",
    "standard": "ASME B18.2.2 (jam)",
    "system": "inch",
    "sizes": [
@@ -10744,7 +11038,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -10759,7 +11055,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -10774,7 +11072,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -10789,7 +11089,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -10804,7 +11106,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -10819,7 +11123,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -10834,7 +11140,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     },
     {
@@ -10849,13 +11157,17 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "STL",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/hex-nuts/finish~black-oxide/material~18-8-stainless-steel/thin-profile-hex-nuts-2~~/ (McMaster black-oxide 18-8 thin-profile hex nuts, DIN 439 B: width, height)",
    "sources": {
@@ -10874,7 +11186,7 @@
    "code": "NNL-I",
    "kind": "nut",
    "shape": "nylon",
-   "name": "Nylon-insert locknut",
+   "name": "Nylon-Insert Locknut",
    "standard": "IFI 100/107",
    "system": "inch",
    "sizes": [
@@ -10890,7 +11202,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10905,7 +11219,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10920,7 +11236,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10935,7 +11253,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10950,7 +11270,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10965,7 +11287,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10980,7 +11304,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -10995,7 +11321,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11010,7 +11338,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11025,7 +11355,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11040,7 +11372,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11055,7 +11389,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11070,7 +11406,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11085,7 +11423,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11100,7 +11440,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11115,13 +11457,17 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN",
+    "GR8"
    ],
    "source": "https://www.mcmaster.com/products/locknuts/finish~black-oxide/material~18-8-stainless-steel/nylon-insert-locknuts-2~~/ (McMaster black-oxide 18-8 nylon-insert locknuts, inch: width, height)",
    "sources": {
@@ -11140,7 +11486,7 @@
    "code": "WSA-I",
    "kind": "washer",
    "shape": "flat",
-   "name": "SAE washer",
+   "name": "SAE Washer",
    "standard": "ASME B18.21.1 (SAE)",
    "system": "inch",
    "sizes": [
@@ -11155,7 +11501,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11169,7 +11518,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11183,7 +11535,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11197,7 +11552,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11211,7 +11569,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11225,7 +11586,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11239,7 +11603,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11253,7 +11620,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11267,13 +11637,19 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "STL",
+    "ZN",
+    "GR8"
    ],
    "source": "https://www.mcmaster.com/products/washers/finish~black-oxide/material~18-8-stainless-steel/sae-washers-1~~/ (McMaster black-oxide 18-8 SAE washers: ID, OD, thk)",
    "sources": {
@@ -11293,7 +11669,7 @@
    "code": "WUS-I",
    "kind": "washer",
    "shape": "flat",
-   "name": "USS washer",
+   "name": "USS Washer",
    "standard": "USS",
    "system": "inch",
    "sizes": [
@@ -11308,7 +11684,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11322,7 +11701,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11336,7 +11718,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11350,13 +11735,19 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "STL",
+    "ZN",
+    "GR8"
    ],
    "source": "https://www.mcmaster.com/products/washers/finish~black-oxide/material~18-8-stainless-steel/uss-washers-2~~/ (McMaster black-oxide 18-8 USS washers: ID, OD, thk)",
    "sources": {
@@ -11376,7 +11767,7 @@
    "code": "WSL-I",
    "kind": "washer",
    "shape": "split",
-   "name": "Split lock washer",
+   "name": "Split Lock Washer",
    "standard": "ASME B18.21.1",
    "system": "inch",
    "sizes": [
@@ -11391,7 +11782,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -11405,7 +11797,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -11419,7 +11812,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -11433,7 +11827,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -11447,7 +11842,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -11461,7 +11857,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -11475,7 +11872,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -11489,7 +11887,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -11503,13 +11902,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/split-lock-washers-2~~/ (McMaster 18-8 split lock washers: ID, OD, thk)",
    "sources": {
@@ -11529,7 +11930,7 @@
    "code": "NFL-I",
    "kind": "nut",
    "shape": "flange",
-   "name": "Flange nut",
+   "name": "Flange Nut",
    "standard": "inch flange",
    "system": "inch",
    "sizes": [
@@ -11547,7 +11948,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11564,7 +11967,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11581,7 +11986,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11598,7 +12005,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11615,7 +12024,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11632,7 +12043,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11649,7 +12062,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11666,7 +12081,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11683,7 +12100,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11700,7 +12119,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11717,7 +12138,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11734,7 +12157,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11751,13 +12176,17 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN",
+    "GR8"
    ],
    "source": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~inch/flange-nuts-1~~/ (McMaster 18-8 inch flange nuts: width, height, flange dia, flange thk)",
    "sources": {
@@ -11774,7 +12203,7 @@
    "code": "NSF-I",
    "kind": "nut",
    "shape": "flange",
-   "name": "Serrated flange nut",
+   "name": "Serrated Flange Nut",
    "standard": "inch serrated flange",
    "system": "inch",
    "sizes": [
@@ -11792,7 +12221,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11809,7 +12240,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11826,7 +12259,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11843,7 +12278,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11860,7 +12297,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11877,7 +12316,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11894,7 +12335,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11911,7 +12354,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11928,7 +12373,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11945,7 +12392,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -11962,13 +12411,17 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN",
+    "GR8"
    ],
    "source": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~inch/serrated-flange-nuts-1~~/ (McMaster 18-8 inch serrated flange nuts: width, height, flange dia, flange thk)",
    "sources": {
@@ -11985,7 +12438,7 @@
    "code": "NTL-M",
    "kind": "nut",
    "shape": "hex",
-   "name": "Top-lock distorted-thread locknut",
+   "name": "Top-Lock Distorted-Thread Locknut",
    "standard": "metric top-lock",
    "system": "metric",
    "sizes": [
@@ -11999,7 +12452,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12012,7 +12466,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12025,7 +12480,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12038,7 +12494,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12051,7 +12508,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12064,7 +12522,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12077,13 +12536,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/top-lock-distorted-thread-locknuts~~/ (McMaster 18-8 top-lock distorted-thread locknuts, inch and metric: width, height)",
    "sources": {
@@ -12100,7 +12561,7 @@
    "code": "NTL-I",
    "kind": "nut",
    "shape": "hex",
-   "name": "Top-lock distorted-thread locknut",
+   "name": "Top-Lock Distorted-Thread Locknut",
    "standard": "inch top-lock",
    "system": "inch",
    "sizes": [
@@ -12116,7 +12577,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12131,7 +12593,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12146,7 +12609,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12161,7 +12625,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12176,7 +12641,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12191,7 +12657,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12206,7 +12673,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12221,7 +12689,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12236,7 +12705,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12251,7 +12721,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12266,7 +12737,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12281,13 +12753,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/top-lock-distorted-thread-locknuts~~/ (McMaster 18-8 top-lock distorted-thread locknuts, inch and metric: width, height)",
    "sources": {
@@ -12304,7 +12778,7 @@
    "code": "NTN-I",
    "kind": "nut",
    "shape": "nylon",
-   "name": "Thin-profile nylon-insert locknut",
+   "name": "Thin-Profile Nylon-Insert Locknut",
    "standard": "inch thin nylon-insert",
    "system": "inch",
    "sizes": [
@@ -12320,7 +12794,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12335,7 +12811,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12350,7 +12828,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12365,7 +12845,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12380,7 +12862,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12395,7 +12879,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12410,7 +12896,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12425,7 +12913,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12440,7 +12930,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12455,7 +12947,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12470,7 +12964,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12485,7 +12981,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12500,13 +12998,17 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN",
+    "GR8"
    ],
    "source": "https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/thin-profile-nylon-insert-locknuts-2~~/ (McMaster 18-8 and black-oxide 18-8 thin-profile nylon-insert locknuts, inch: width, height)",
    "sources": {
@@ -12525,7 +13027,7 @@
    "code": "NCP-M",
    "kind": "nut",
    "shape": "hex",
-   "name": "Coupling nut",
+   "name": "Coupling Nut",
    "standard": "DIN 6334",
    "system": "metric",
    "sizes": [
@@ -12539,7 +13041,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -12552,7 +13056,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -12565,7 +13071,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -12578,7 +13086,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -12591,7 +13101,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -12604,7 +13116,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -12617,7 +13131,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -12630,7 +13146,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     },
     {
@@ -12643,13 +13161,17 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "CL10"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN",
+    "CL10"
    ],
    "source": "https://www.mcmaster.com/products/coupling-nuts/material~18-8-stainless-steel/coupling-nuts-2~~/ (McMaster 18-8 and black-oxide 18-8 coupling nuts, fully threaded: length, width)",
    "sources": {
@@ -12668,7 +13190,7 @@
    "code": "NCP-I",
    "kind": "nut",
    "shape": "hex",
-   "name": "Coupling nut",
+   "name": "Coupling Nut",
    "standard": "inch coupling",
    "system": "inch",
    "sizes": [
@@ -12684,7 +13206,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12699,7 +13223,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12714,7 +13240,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12729,7 +13257,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12744,7 +13274,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12759,7 +13291,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12774,7 +13308,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12789,7 +13325,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12804,7 +13342,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12819,7 +13359,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12834,7 +13376,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12849,7 +13393,9 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -12864,13 +13410,17 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN",
+      "GR8"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN",
+    "GR8"
    ],
    "source": "https://www.mcmaster.com/products/coupling-nuts/material~18-8-stainless-steel/coupling-nuts-2~~/ (McMaster 18-8 and black-oxide 18-8 coupling nuts, fully threaded: length, width)",
    "sources": {
@@ -12887,7 +13437,7 @@
    "code": "NCA-M",
    "kind": "nut",
    "shape": "cap",
-   "name": "Cap nut",
+   "name": "Cap Nut",
    "standard": "DIN 1587",
    "system": "metric",
    "sizes": [
@@ -12902,7 +13452,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12916,7 +13467,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12930,7 +13482,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12944,7 +13497,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12958,7 +13512,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12972,7 +13527,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -12986,7 +13542,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13000,7 +13557,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13014,13 +13572,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/cap-nuts/material~18-8-stainless-steel/ (McMaster 18-8 and black-oxide 18-8 cap nuts: thread depth, width, height; inch 91855A, metric 94000A)",
    "sources": {
@@ -13037,7 +13597,7 @@
    "code": "NCA-I",
    "kind": "nut",
    "shape": "cap",
-   "name": "Cap nut",
+   "name": "Cap Nut",
    "standard": "inch cap",
    "system": "inch",
    "sizes": [
@@ -13054,7 +13614,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13070,7 +13631,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13086,7 +13648,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13102,7 +13665,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13118,7 +13682,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13134,7 +13699,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13150,7 +13716,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13166,7 +13733,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13182,7 +13750,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13198,7 +13767,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13214,7 +13784,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13230,13 +13801,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/cap-nuts/material~18-8-stainless-steel/ (McMaster 18-8 and black-oxide 18-8 cap nuts: thread depth, width, height; inch 91855A, metric 94000A)",
    "sources": {
@@ -13255,7 +13828,7 @@
    "code": "NWG-M",
    "kind": "nut",
    "shape": "wing",
-   "name": "Wing nut",
+   "name": "Wing Nut",
    "standard": "DIN 315",
    "system": "metric",
    "sizes": [
@@ -13271,7 +13844,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13286,7 +13860,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13301,7 +13876,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13316,7 +13892,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13331,7 +13908,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13346,7 +13924,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13361,7 +13940,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13376,7 +13956,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13391,13 +13972,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/wing-nuts/material~18-8-stainless-steel/ (McMaster 18-8 wing nuts: width, height, base dia; inch Style 1 92001A, metric 94545A)",
    "sources": {
@@ -13414,7 +13997,7 @@
    "code": "NWG-I",
    "kind": "nut",
    "shape": "wing",
-   "name": "Wing nut",
+   "name": "Wing Nut",
    "standard": "Style 1",
    "system": "inch",
    "sizes": [
@@ -13432,7 +14015,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13449,7 +14033,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13466,7 +14051,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13483,7 +14069,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13500,7 +14087,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13517,7 +14105,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13534,7 +14123,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13551,7 +14141,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13568,7 +14159,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13585,13 +14177,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/wing-nuts/material~18-8-stainless-steel/ (McMaster 18-8 wing nuts: width, height, base dia; inch Style 1 92001A, metric 94545A)",
    "sources": {
@@ -13608,7 +14202,7 @@
    "code": "NSQ-M",
    "kind": "nut",
    "shape": "square",
-   "name": "Square nut",
+   "name": "Square Nut",
    "standard": "DIN 557",
    "system": "metric",
    "sizes": [
@@ -13622,7 +14216,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13635,7 +14230,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13648,7 +14244,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13661,7 +14258,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13674,7 +14272,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13687,13 +14286,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/square-nuts/material~18-8-stainless-steel/ (McMaster 18-8 square nuts: width, height; inch 94785A, metric 90225A)",
    "sources": {
@@ -13710,7 +14311,7 @@
    "code": "NSQ-I",
    "kind": "nut",
    "shape": "square",
-   "name": "Square nut",
+   "name": "Square Nut",
    "standard": "ASME B18.2.2",
    "system": "inch",
    "sizes": [
@@ -13726,7 +14327,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13741,7 +14343,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13756,7 +14359,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13771,7 +14375,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13786,7 +14391,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13801,7 +14407,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13816,7 +14423,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13831,7 +14439,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13846,7 +14455,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13861,7 +14471,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13876,7 +14487,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13891,7 +14503,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -13906,13 +14519,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/square-nuts/material~18-8-stainless-steel/ (McMaster 18-8 square nuts: width, height; inch 94785A, metric 90225A)",
    "sources": {
@@ -13929,7 +14544,7 @@
    "code": "WTK-M",
    "kind": "washer",
    "shape": "flat",
-   "name": "Thick washer",
+   "name": "Thick Washer",
    "standard": "DIN 7349",
    "system": "metric",
    "sizes": [
@@ -14070,7 +14685,7 @@
    "code": "WTE-I",
    "kind": "washer",
    "shape": "tooth",
-   "name": "External-tooth lock washer",
+   "name": "External-Tooth Lock Washer",
    "standard": "ASME B18.21.1",
    "system": "inch",
    "sizes": [
@@ -14085,7 +14700,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14099,7 +14715,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14113,7 +14730,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14127,7 +14745,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14141,7 +14760,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14155,7 +14775,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14169,7 +14790,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14183,7 +14805,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14197,13 +14820,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/system-of-measurement~inch/tooth-lock-washers-2~~/ (McMaster 18-8 and black-oxide 18-8 inch tooth lock washers, ASME B18.21.1: ID, OD, thk)",
    "sources": {
@@ -14222,7 +14847,7 @@
    "code": "WTI-I",
    "kind": "washer",
    "shape": "tooth",
-   "name": "Internal-tooth lock washer",
+   "name": "Internal-Tooth Lock Washer",
    "standard": "ASME B18.21.1",
    "system": "inch",
    "sizes": [
@@ -14237,7 +14862,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14251,7 +14877,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14265,7 +14892,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14279,7 +14907,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14293,7 +14922,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14307,7 +14937,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14321,7 +14952,8 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     },
     {
@@ -14335,13 +14967,15 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "ZN"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "ZN"
    ],
    "source": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/system-of-measurement~inch/tooth-lock-washers-2~~/ (McMaster 18-8 and black-oxide 18-8 inch tooth lock washers, ASME B18.21.1: ID, OD, thk)",
    "sources": {
@@ -14358,7 +14992,7 @@
    "code": "WOV-I",
    "kind": "washer",
    "shape": "flat",
-   "name": "Oversized washer",
+   "name": "Oversized Washer",
    "standard": "inch fender",
    "system": "inch",
    "sizes": [
@@ -14373,7 +15007,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -14387,7 +15024,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -14401,7 +15041,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -14415,7 +15058,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -14429,7 +15075,10 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     },
     {
@@ -14443,13 +15092,19 @@
      },
      "finishes": [
       "SS",
-      "SS-BO"
+      "SS-BO",
+      "STL",
+      "ZN",
+      "GR8"
      ]
     }
    ],
    "finishes": [
     "SS",
-    "SS-BO"
+    "SS-BO",
+    "STL",
+    "ZN",
+    "GR8"
    ],
    "source": "https://www.mcmaster.com/products/oversized-washers/material~18-8-stainless-steel/system-of-measurement~inch/oversized-washers-2~~/ (McMaster 18-8 inch oversized washers 90313A1xx: ID, OD, thk)",
    "sources": {

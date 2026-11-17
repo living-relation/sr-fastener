@@ -48,7 +48,7 @@ def test_mcmaster_spot_checks():
     # sheet metal: McMaster No. 8 0.322 x 0.115, 15 threads per inch; B18.6.3 recess M 0.175
     s = row('STP-I', '#8')
     assert (s['dims']['dk'], s['dims']['k'], s['tpi'], s['dims']['m']) == (0.322, 0.115, 15, 0.175)
-    assert fc.finishes_for(CAT, fam('STP-I'), row('STP-I', '#4')) == ['SS', 'SS-BO']
+    assert fc.finishes_for(CAT, fam('STP-I'), row('STP-I', '#4'))[:2] == ['SS', 'SS-BO']
     sm = row('STP-M', 'M4.2')
     assert (sm['dims']['dk'], sm['dims']['k'], sm['pitch'], sm['dims']['tip']) == (8.2, 3.1, 1.4, 3.7)
 
@@ -70,11 +70,11 @@ def test_bom_text():
     assert fc.part_number(fam('STP-I'), row('STP-I', '#8'), 0.5, 'SS-BO') == 'STP-8-15 x 0.5 18-8 SS-BO'
     assert fc.part_number(fam('STP-M'), row('STP-M', 'M2.9'), 9.5, 'SS') == 'STP-M2.9-1.1 x 9.5 18-8 SS'
     d = fc.description(CAT, fam('STP-I'), row('STP-I', '#8'), 0.5, 'SS')
-    assert d == 'Phillips rounded head sheet metal screw, ASME B18.6.3 head, #8-15 tapping thread x 1/2", 18-8 stainless steel'
+    assert d == 'Phillips Rounded Head Sheet Metal Screw, #8-15, 18-8 Stainless Steel'
     assert fc.thread_spec(fam('STP-M'), row('STP-M', 'M4.2')) is None
     for code in NEW:
         for r in fam(code)['sizes']:
-            assert fc.finishes_for(CAT, fam(code), r) == ['SS', 'SS-BO']
+            assert fc.finishes_for(CAT, fam(code), r)[:2] == ['SS', 'SS-BO']
 
 
 def test_geometry_fits_every_length():

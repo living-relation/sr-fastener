@@ -7,30 +7,30 @@ McMaster series and item numbers in this file are dimension sources only. The ad
 
 | Code | Type (McMaster name) | Standard | Dimensions | Lengths | Thread length | Alloy black oxide |
 |---|---|---|---|---|---|---|
-| SSH-M | Socket head screw | ISO 4762 | iso4762, hk_m_shcs | iso4762 | iso4762 | hk_m_shcs |
-| SBH-M | Button head hex-drive screw | ISO 7380-1 | iso7380, iso7380_22, hk_m_bhcs | iso7380 | iso7380 | hk_m_bhcs, av_m_bhcs16 |
-| SFH-M | Hex-drive flat head screw, 90 deg | ISO 10642 | iso10642, hk_m_fhcs | iso10642 | iso10642 | hk_m_fhcs |
-| SLH-M | Low-profile socket head screw | DIN 7984 | bbi_7984, fn_7984 |  |  | bbi_7984 |
-| HHB-M | Hex head bolt, fully threaded | ISO 4017 | iso4017 |  | iso4017 |  |
-| SSF-M | Flat-tip set screw | ISO 4026 | iso4026 | iso4026 | iso4026 | av_m_set, av_m_set2 |
-| SSC-M | Cup-tip set screw | ISO 4029 | iso4029, hk_tech | iso4029 | iso4029 | hk_tech |
-| SPH-M | Pan head Phillips screw | ISO 7045 | iso7045 | iso7045 | iso7045 |  |
-| SCH-M | Cheese head slotted screw | ISO 1207 | iso1207 | iso1207 | iso1207 |  |
-| SSH-I | Socket head screw | ASME B18.3 | hk_shcs |  | hk_tech | hk_shcs |
-| SBH-I | Button head hex-drive screw | ASME B18.3 | hk_bhcs | hk_bhcs | hk_tech | hk_bhcs |
-| SFH-I | Hex-drive flat head screw, 82 deg | ASME B18.3 | hk_fhcs, b183_fhcs |  | hk_tech | hk_fhcs |
-| SLH-I | Low-profile socket head screw | ASME B18.3 | hk_lhcs, b183_lhcs |  |  | hk_lhcs |
-| HHB-I | Hex head bolt | ASME B18.2.1 | b1821_hex |  | b1821_hex | av_in_hex |
-| SSF-I | Flat-tip set screw | ASME B18.3 | hk_tech | hk_tech |  | av_in_set |
-| SSC-I | Cup-tip set screw | ASME B18.3 | hk_tech | hk_tech |  | hk_tech |
-| SSN-M | Cone-tip set screw | ISO 4027 | iso4027, mcm_cone | mcm_cone | iso4027 |  |
-| SSN-I | Cone-tip set screw | ASME B18.3 | hk_tech, mcm_cone | mcm_cone |  |  |
-| SSE-M | Extended-tip set screw | ISO 4028 | iso4028, mcm_ext | mcm_ext | iso4028 |  |
-| SSE-I | Extended-tip set screw | ASME B18.3 (half dog) | hk_tech, mcm_ext | mcm_ext |  |  |
-| SSO-I | Oval-tip set screw | ASME B18.3 | hk_tech | mcm_oval |  |  |
-| SBF-M | Flanged button head hex-drive screw | ISO 7380-2 | mcm_flbtn, iso7380_2 | mcm_flbtn | mcm_flbtn |  |
-| STP-I | Phillips rounded head sheet metal screw | ASME B18.6.3 head | mcm_tap_pan, b1863_pan | mcm_tap_pan | mcm_tap_pan |  |
-| STP-M | Phillips rounded head sheet metal screw | ISO 7049 | mcm_tap_pan, iso7049 | mcm_tap_pan | iso7049 |  |
+| SSH-M | Socket Head Screw | ISO 4762 | iso4762, hk_m_shcs | iso4762 | iso4762 | hk_m_shcs |
+| SBH-M | Button Head Hex-Drive Screw | ISO 7380-1 | iso7380, iso7380_22, hk_m_bhcs | iso7380 | iso7380 | hk_m_bhcs, av_m_bhcs16 |
+| SFH-M | Hex-Drive Flat Head Screw | ISO 10642 | iso10642, hk_m_fhcs | iso10642 | iso10642 | hk_m_fhcs |
+| SLH-M | Low-Profile Socket Head Screw | DIN 7984 | bbi_7984, fn_7984 |  |  | bbi_7984 |
+| HHB-M | Hex Head Bolt, Fully Threaded | ISO 4017 | iso4017 |  | iso4017 |  |
+| SSF-M | Flat-Tip Set Screw | ISO 4026 | iso4026 | iso4026 | iso4026 | av_m_set, av_m_set2 |
+| SSC-M | Cup-Tip Set Screw | ISO 4029 | iso4029, hk_tech | iso4029 | iso4029 | hk_tech |
+| SPH-M | Pan Head Phillips Screw | ISO 7045 | iso7045 | iso7045 | iso7045 |  |
+| SCH-M | Cheese Head Slotted Screw | ISO 1207 | iso1207 | iso1207 | iso1207 |  |
+| SSH-I | Socket Head Screw | ASME B18.3 | hk_shcs |  | hk_tech | hk_shcs |
+| SBH-I | Button Head Hex-Drive Screw | ASME B18.3 | hk_bhcs | hk_bhcs | hk_tech | hk_bhcs |
+| SFH-I | Hex-Drive Flat Head Screw | ASME B18.3 | hk_fhcs, b183_fhcs |  | hk_tech | hk_fhcs |
+| SLH-I | Low-Profile Socket Head Screw | ASME B18.3 | hk_lhcs, b183_lhcs |  |  | hk_lhcs |
+| HHB-I | Hex Head Bolt | ASME B18.2.1 | b1821_hex |  | b1821_hex | av_in_hex |
+| SSF-I | Flat-Tip Set Screw | ASME B18.3 | hk_tech | hk_tech |  | av_in_set |
+| SSC-I | Cup-Tip Set Screw | ASME B18.3 | hk_tech | hk_tech |  | hk_tech |
+| SSN-M | Cone-Tip Set Screw | ISO 4027 | iso4027, mcm_cone | mcm_cone | iso4027 |  |
+| SSN-I | Cone-Tip Set Screw | ASME B18.3 | hk_tech, mcm_cone | mcm_cone |  |  |
+| SSE-M | Extended-Tip Set Screw | ISO 4028 | iso4028, mcm_ext | mcm_ext | iso4028 |  |
+| SSE-I | Extended-Tip Set Screw | ASME B18.3 (half dog) | hk_tech, mcm_ext | mcm_ext |  |  |
+| SSO-I | Oval-Tip Set Screw | ASME B18.3 | hk_tech | mcm_oval |  |  |
+| SBF-M | Flanged Button Head Hex-Drive Screw | ISO 7380-2 | mcm_flbtn, iso7380_2 | mcm_flbtn | mcm_flbtn |  |
+| STP-I | Phillips Rounded Head Sheet Metal Screw | ASME B18.6.3 head | mcm_tap_pan, b1863_pan | mcm_tap_pan | mcm_tap_pan |  |
+| STP-M | Phillips Rounded Head Sheet Metal Screw | ISO 7049 | mcm_tap_pan, iso7049 | mcm_tap_pan | iso7049 |  |
 
 ## Nuts and washers
 
@@ -89,6 +89,73 @@ These McMaster lengths are shorter than Holo-Krome Table 13 column B and are not
 | SSN-I | 5/16 | 0.375 | 0.156 | 0.156 |
 | SSN-I | 5/16-24 | 0.375 | 0.156 | 0.156 |
 | SSO-I | #6 | 0.1875 | 0.080 | 0.080 |
+
+## Materials
+
+Materials offered per type (checked on McMaster-Carr 2026-11-17, per type, not per size). Codes are the shop part number finish codes; STL, ZN, GR8, CL10.9, CL10 and ALLOY-BO are made-up codes.
+
+| Code | Description words | Fusion material name | Physical properties from |
+|---|---|---|---|
+| 18-8 SS | 18-8 Stainless Steel | Stainless Steel | Stainless Steel AISI 304 |
+| 18-8 SS-BO | 18-8 Stainless Steel Black Oxide | Stainless Steel Black Oxide | Stainless Steel AISI 304 |
+| ALLOY-BO | Alloy Steel Black Oxide | Alloy Steel Black Oxide | Steel AISI 4142 400 QT |
+| STL | Plain Steel | Plain Steel | Steel |
+| ZN | Zinc Plated Steel | Zinc Plated | Steel |
+| GR8 | Grade 8 Steel | Grade 8 Steel | Steel AISI 4340 350A QT |
+| CL10.9 | Class 10.9 Steel | Class 10.9 Steel | Steel AISI 4340 350A QT |
+| CL10 | Class 10 Steel | Class 10 Steel | Steel |
+
+| Type | Extra materials |
+|---|---|
+| SSH | ZN, CL10.9 |
+| SBH | ZN, CL10.9 |
+| SFH | ZN, CL10.9 |
+| SLH | ZN |
+| HHB | STL, ZN, GR8, CL10.9 |
+| SSC | ZN |
+| SSN | ZN |
+| SPH | ZN |
+| SCH | ZN |
+| SBF | ZN |
+| STP | ZN |
+| NHX | STL, ZN, GR8, CL10 |
+| NTH | STL, ZN |
+| NNL | ZN, GR8 |
+| NTN | ZN, GR8 |
+| NTL | ZN |
+| NFL | ZN, GR8, CL10 |
+| NSF | ZN, GR8, CL10 |
+| NCP | ZN, GR8, CL10 |
+| NCA | ZN |
+| NWG | ZN |
+| NSQ | ZN |
+| WGP | STL, ZN |
+| WSA | STL, ZN, GR8 |
+| WUS | STL, ZN, GR8 |
+| WOV | STL, ZN, GR8 |
+| WSL | ZN |
+| WTE | ZN |
+| WTI | ZN |
+
+McMaster pages used:
+
+- STL: https://www.mcmaster.com/products/hex-head-screws/finish~unfinished/ , https://www.mcmaster.com/products/hex-nuts/finish~unfinished/ , https://www.mcmaster.com/products/washers/finish~unfinished/
+- ZN: https://www.mcmaster.com/products/socket-head-screws/finish~zinc-plated/ , https://www.mcmaster.com/products/socket-head-screws/finish~zinc-plated/socket-head-profile~low/ , https://www.mcmaster.com/products/rounded-head-screws/finish~zinc-plated/ , https://www.mcmaster.com/products/hex-head-screws/finish~zinc-plated/ , https://www.mcmaster.com/products/set-screws/finish~zinc-plated/tip-type~cup/ , https://www.mcmaster.com/products/set-screws/finish~zinc-plated/tip-type~cone/ , https://www.mcmaster.com/products/tapping-screws/finish~zinc-plated/ , https://www.mcmaster.com/products/hex-nuts/finish~zinc-plated/ , https://www.mcmaster.com/products/lock-nuts/finish~zinc-plated/ , https://www.mcmaster.com/products/flange-nuts/finish~zinc-plated/ , https://www.mcmaster.com/products/coupling-nuts/finish~zinc-plated/ , https://www.mcmaster.com/products/cap-nuts/finish~zinc-plated/ , https://www.mcmaster.com/products/wing-nuts/finish~zinc-plated/ , https://www.mcmaster.com/products/square-nuts/finish~zinc-plated/ , https://www.mcmaster.com/products/washers/finish~zinc-plated/ , https://www.mcmaster.com/products/lock-washers/finish~zinc-plated/
+- GR8: https://www.mcmaster.com/products/hex-head-screws/fastener-strength-grade-class~sae-grade-8/ , https://www.mcmaster.com/products/hex-nuts/fastener-strength-grade-class~sae-grade-8/ , https://www.mcmaster.com/products/lock-nuts/fastener-strength-grade-class~sae-grade-8/ , https://www.mcmaster.com/products/flange-nuts/fastener-strength-grade-class~sae-grade-8/ , https://www.mcmaster.com/products/washers/fastener-strength-grade-class~sae-grade-8/
+- CL10.9: https://www.mcmaster.com/products/hex-head-screws/fastener-strength-grade-class~class-10-9/ , https://www.mcmaster.com/products/socket-head-screws/fastener-strength-grade-class~class-10-9/ , https://www.mcmaster.com/products/flat-head-screws/fastener-strength-grade-class~class-10-9/
+- CL10: https://www.mcmaster.com/products/hex-nuts/fastener-strength-grade-class~class-10/
+
+Left off:
+
+- Grade 8 on socket, button, flat and low-profile screws, set screws, pan, cheese and sheet metal screws. Grade 8 is a hex bolt grade; McMaster lists no Grade 8 socket or machine screws (the Grade 8 filter does not exist on those pages).
+- Class 10.9 on set screws, low-profile socket head, pan, cheese and sheet metal screws. Not found on McMaster with a Class 10.9 filter (set screws are hardness rated, 45H).
+- Class 10.9 and Class 10 on washers. Washers are not rated in property classes.
+- Class 10.9 on nuts. Nuts use Class 10 (offered instead) to mate with Class 10.9 screws.
+- Plain Steel on socket, button, flat and low-profile screws, set screws, pan, cheese and sheet metal screws. McMaster sells those in alloy steel (black oxide or zinc) or stainless; unfinished plain steel only for hex bolts, hex nuts and flat washers.
+- Zinc Plated on flat-tip, extended-tip and oval-tip set screws. McMaster zinc-plated flat-tip set screws are magnetic-tip only; no zinc extended-tip or oval-tip found.
+- Zinc Plated on thick washers (DIN 7349). Not checked on McMaster.
+- Grade 8 on thin hex nuts and top-lock nuts. Not listed under the McMaster Grade 8 filter.
+- Plain Steel on locknuts, flange, coupling, cap, wing and square nuts, lock washers. Not checked on McMaster.
 
 ## Source keys
 
