@@ -10,7 +10,9 @@ BOM part number, description and material.
 
 ## What it does
 
-- **Toolbar button** "SR Fastener" in the Design workspace, Solid tab, **Insert** panel (also listed under Utilities > Add-ins).
+- **Toolbar button** "SR Fastener" on more than one panel: by default the Design workspace Solid tab **Insert**
+  panel, an **SR Tools** panel on the Solid tab, and Utilities > Add-ins. The panel list is configurable (see
+  [Toolbar panels](#toolbar-panels)).
 - **Dialog:** Units, Part (screws, nuts or washers), Type, Size, Length (screws only), Finish, hole selection,
   "Match size to first hole", "Flip direction", "Cosmetic thread" (screws only), "Stack on nuts/washers", and a
   read-only BOM preview.
@@ -196,9 +198,29 @@ stores the vendor part number as `TBD`.
 
    Or copy or link the `SRFastener` folder into
    `%APPDATA%\Autodesk\Autodesk Fusion 360\API\AddIns\` and restart Fusion.
-3. The button shows up in the Insert panel.
+3. The button shows up in the Insert panel, the SR Tools panel and Utilities > Add-ins.
 
 Settings (last type, size, length, finish) are saved in `%APPDATA%\SRFastener\settings.json`.
+
+## Toolbar panels
+
+The button can go on any number of Fusion toolbar panels. To change where it shows, copy
+[panels.example.json](panels.example.json) to `%APPDATA%\SRFastener\panels.json`, edit it, and stop and run the
+add-in (or restart Fusion). Without that file the defaults are used: Insert (on the panel face), SR Tools (a panel the
+add-in creates on the Solid tab, on the panel face) and Utilities > Add-ins (in the drop-down).
+
+| Key | Meaning |
+|---|---|
+| `panel` | Fusion toolbar panel id, e.g. `InsertPanel`, `SolidCreatePanel`, `SolidScriptsAddinsPanel`, or a new id such as `SRToolsPanel` |
+| `workspace` | workspace id, default `FusionSolidEnvironment` (Design) |
+| `tab` | tab id used to create a new panel, default `SolidTab` |
+| `name` | name shown for a panel the add-in creates |
+| `create` | `true` to create the panel if it does not exist |
+| `promote` | `true` to show the button on the panel face, not only in its drop-down |
+
+An entry can also be just the panel id as a string. Bad entries are skipped and listed in a message when the add-in
+starts. On stop the add-in removes every button it added, the command, and any panel it created that is left
+empty (other SR add-ins can share the SR Tools panel).
 
 ## Known gaps (TBD)
 
