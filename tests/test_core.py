@@ -227,3 +227,24 @@ def test_remembered_length_matches_int_catalog_lengths():
     src = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'SRFastener',
                             'SRFastener.py'), encoding='utf-8').read()
     assert 'fc.length_key(row, _st.length)' in src
+
+
+def test_bom_fields_never_use_vendor_numbers():
+    """Fusion part number, component name and description use only the shop smart scheme."""
+    for fam in CAT['families'] + CAT.get('parts', []):
+        for row in fam['sizes']:
+            Ls = [None] if fc.kind(fam) != 'screw' else [row['lengths'][0], row['lengths'][-1]]
+            for L in Ls:
+                for fk in fc.finishes_for(CAT, fam, row):
+                    bom = fc.bom_fields(CAT, fam, row, L, fk)
+                    pn = bom['part_number']
+                    assert pn == fc.part_number(fam, row, L, fk)
+                    assert pn == fc.component_name(fam, row, L, fk)
+                    assert pn.startswith(fam['code'].rsplit('-', 1)[0] + '-')
+                    assert pn.endswith(' ' + {'SS': '18-8 SS', 'SS-BO': '18-8 SS-BO', 'ALLOY-BO': 'ALLOY-BO'}[fk])
+                    for label, text in (
+                        ('part_number', pn),
+                        ('description', bom['description']),
+                        ('standard', bom['standard']),
+                    ):
+                        assert not fc.contains_vendor_number(text), (fam['code'], row['size'], label, text)

@@ -6,6 +6,7 @@ Fusion's internal length unit is the centimetre; `geometry()` returns cm.
 import json
 import math
 import os
+import re
 from fractions import Fraction
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -127,6 +128,20 @@ def part_number(fam, row, length, finish_key):
 
 _FIN_CODE = {'SS': '18-8 SS', 'SS-BO': '18-8 SS-BO', 'ALLOY-BO': 'ALLOY-BO'}
 
+# McMaster-style catalog numbers (e.g. 94758A, 90313A108) and vendor names must never
+# appear in the Fusion part number, component name or description.
+_VENDOR_PN = re.compile(r'\b(?:McMaster|Fastenal)\b|\b\d{5,6}[A-Z]\d{0,6}\b', re.I)
+
+
+def contains_vendor_number(text):
+    """True if text looks like, or contains, a McMaster or other vendor part number."""
+    return bool(_VENDOR_PN.search(text or ''))
+
+
+def _reject_vendor(label, text):
+    if contains_vendor_number(text):
+        raise ValueError('%s must use the shop smart part number scheme, not a vendor number: %s' % (label, text))
+
 
 def grade(row, finish_key):
     """Strength grade for this finish if the catalog gives one, e.g. 'class 12.9' or 'ASTM A574'."""
@@ -176,16 +191,20 @@ def bom_fields(cat, fam, row, length, finish_key):
     f = finish(cat, finish_key)
     g = grade(row, finish_key)
     material = cat.get('alloy_materials', {}).get(g, f['material']) if g else f['material']
+    pn = part_number(fam, row, length, finish_key)
+    desc = description(cat, fam, row, length, finish_key)
+    _reject_vendor('part number', pn)
+    _reject_vendor('component name', component_name(fam, row, length, finish_key))
+    _reject_vendor('description', desc)
+    _reject_vendor('standard', fam['standard'])
     return {
-        'part_number': part_number(fam, row, length, finish_key),
-        'description': description(cat, fam, row, length, finish_key),
+        'part_number': pn,
+        'description': desc,
         'material': material,
         'appearance': f['appearance'],
         'finish': f['name'],
         'grade': g or '',
-        'vendor_pn': 'TBD',
         'standard': fam['standard'],
-        'source': fam['source'],
     }
 
 
