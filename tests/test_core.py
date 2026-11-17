@@ -211,3 +211,19 @@ def test_names_follow_mcmaster():
             assert words == 'phillips rounded head screws for sheet metal'
         else:
             assert code[0] == 'S' and code[2] == 'H'
+
+
+def test_remembered_length_matches_int_catalog_lengths():
+    # the dialog saves 16.0; the catalog lists 16 -- the reopened dialog must land on 16 mm, not the first length
+    fam = fc.family(CAT, 'SSH-M')
+    row = fc.size_row(fam, 'M5')
+    assert 16 in row['lengths'] and isinstance(row['lengths'][0], int)
+    assert fc.length_key(row, 16.0) == '16'
+    assert fc.length_key(row, 16) == '16'
+    assert fc.length_key(row, 17.0) is None and fc.length_key(row, None) is None
+    inch = fc.family(CAT, 'SSH-I')
+    r = fc.size_row(inch, '1/4')
+    assert fc.length_key(r, 0.5) == str([L for L in r['lengths'] if abs(L - 0.5) < 1e-9][0])
+    src = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'SRFastener',
+                            'SRFastener.py'), encoding='utf-8').read()
+    assert 'fc.length_key(row, _st.length)' in src
