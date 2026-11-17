@@ -16,25 +16,14 @@ Daniel approves new types automatically once their data is checked against McMas
 | Flanged Button Head Hex-Drive Screws | ISO 7380-2 | metric |
 | Shoulder Screws | ISO 7379, ASME B18.3 | both |
 
-## Nuts and washers not built yet (next PR)
+## Nuts and washers left out on purpose
 
-Approved by Daniel; not built in the first nuts-and-washers PR because they need more McMaster checks or new shapes.
-
-| McMaster name | Standard | Metric / inch |
-|---|---|---|
-| Flange Nuts, inch | IFI / maker | inch |
-| Top-Lock / Center-Lock Distorted-Thread Locknuts (all-metal) | DIN 980, ISO 7042, IFI 100/107 | both |
-| Thin-Profile Nylon-Insert Locknuts | DIN 982 (thin), IFI | both |
-| Coupling Nuts | DIN 6334, IFI | both |
-| Cap Nuts (acorn) | DIN 1587, IFI | both |
-| Thumb Nuts (wing) | DIN 315, IFI | both |
-| Square Nuts | DIN 557, ASME B18.2.2 | both |
-| T-Slot Nuts for aluminum extrusion | maker (80/20, Misumi) | both |
-| General Purpose Washers, inch; Oversized (fender) Washers, inch | ASME B18.21.1 | inch |
-| Thick flat washers | DIN 7349 | metric |
-| Fender washers | DIN 9021 | metric |
-| Tooth Lock Washers, inch | ASME B18.21.1 | inch |
-| Extreme-Vibration-Resistant Wedge Lock Washers | maker (Nord-Lock) | both |
-| Disc Springs (Belleville) | DIN 2093 | both |
+| McMaster name | Why |
+|---|---|
+| T-Slot Nuts for aluminum extrusion | McMaster sells them in zinc-plated steel only, sized by extrusion series, not in 18-8 or black oxide |
+| Fender washers, DIN 9021 | McMaster's metric oversized washer (ISO 7093-1, already built as WOV) covers the same sizes |
+| Extreme-Vibration-Resistant Wedge Lock Washers | Only 316 stainless, black-oxide 316 or zinc-flake steel, not 18-8 or alloy black oxide |
+| Disc Springs (Belleville) | 302 stainless, 17-7 PH or steel, picked by load rating, not by screw size and finish |
+| Serrated flange nut 1/2-20, wing nut 3/8-24 and 1/2-20 | McMaster's dimensions differ from the coarse-thread size, not added yet |
 
 The work hub's Standard Components > Fasteners folder was not reachable live, so its list could not be rechecked.
