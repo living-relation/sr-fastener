@@ -7,6 +7,7 @@ import adsk.fusion
 from . import fastener_core as fc
 
 _EPS = 0.0005  # cm; lets the socket cutter break through the top face cleanly
+_TIP_R = 0.0005  # cm; pointed tips end in a 0.01 mm flat so the cone stays a valid solid
 
 
 def _p(x, y, z):
@@ -83,9 +84,25 @@ def build_body(fam, row, length):
         body = _dome_head(tbm, g)
         tbm.booleanOperation(body, _cyl(tbm, 0.0, r, -L, r), union)
         _cut_socket(tbm, body, g['key'], g['key_depth'], g['head_h'])
-    elif head == 'pan':
-        body = _dome_head(tbm, g)
+    elif head == 'flbutton':
+        body = _cyl(tbm, 0.0, g['flange_r'], g['flange_t'], g['flange_r'])
+        crown = tbm.createSphere(_p(0, 0, g['dome_zc']), g['dome_r'])
+        tbm.booleanOperation(crown, _cyl(tbm, g['flange_t'] - _EPS, g['head_r'], g['head_h'] + _EPS, g['head_r']),
+                             adsk.fusion.BooleanTypes.IntersectionBooleanType)
+        tbm.booleanOperation(body, crown, union)
         tbm.booleanOperation(body, _cyl(tbm, 0.0, r, -L, r), union)
+        _cut_socket(tbm, body, g['key'], g['key_depth'], g['head_h'])
+    elif head == 'pan':
+        if g.get('flat_top'):
+            body = _cyl(tbm, 0.0, g['head_r'], g['head_h'], g['head_r'])
+        else:
+            body = _dome_head(tbm, g)
+        if g.get('point') == 'tapping':
+            tip = -L + g['point_h']
+            tbm.booleanOperation(body, _cyl(tbm, 0.0, r, tip, r), union)
+            tbm.booleanOperation(body, _cyl(tbm, tip, r, -L, _TIP_R), union)
+        else:
+            tbm.booleanOperation(body, _cyl(tbm, 0.0, r, -L, r), union)
         _cut_cross(tbm, body, g['recess_m'], g['recess_depth'], g['head_h'])
     elif head == 'cheese':
         body = _cyl(tbm, 0.0, g['head_r'], g['head_h'], g['head_r'])
@@ -101,8 +118,17 @@ def build_body(fam, row, length):
     elif head == 'set':
         tip = -L + g['point_h']
         body = _cyl(tbm, 0.0, r, tip, r)
-        if g['point_h'] > 0:
-            tbm.booleanOperation(body, _cyl(tbm, tip, r, -L, g['point_r']), union)
+        if g.get('point') == 'dog':
+            z0 = -L + g['dog_z']
+            tbm.booleanOperation(body, _cyl(tbm, tip, g['root_r'], z0, g['point_r']), union)
+            tbm.booleanOperation(body, _cyl(tbm, z0, g['point_r'], -L, g['point_r']), union)
+        elif g.get('point') == 'oval':
+            ball = tbm.createSphere(_p(0, 0, -L + g['oval_R']), g['oval_R'])
+            tbm.booleanOperation(ball, _cyl(tbm, -L - _EPS, r, tip + _EPS, r), adsk.fusion.BooleanTypes.IntersectionBooleanType)
+            tbm.booleanOperation(body, ball, union)
+        elif g['point_h'] > 0:
+            top_r = g['root_r'] if g.get('point') == 'cone' else r
+            tbm.booleanOperation(body, _cyl(tbm, tip, top_r, -L, max(g['point_r'], _TIP_R)), union)
         if g.get('point') == 'cup':
             cup = _cyl(tbm, -L - _EPS, g['cup_r'], -L + g['cup_depth'], 0.0)
             tbm.booleanOperation(body, cup, adsk.fusion.BooleanTypes.DifferenceBooleanType)

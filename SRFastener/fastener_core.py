@@ -75,6 +75,10 @@ def nominal(row):
 def thread_label(fam, row):
     if kind(fam) == 'washer':
         return ('%s screw' % nominal(row)) if fam['system'] == 'inch' else row['size']
+    if fam.get('thread_form') == 'tapping':  # sheet metal screw: threads per inch or ISO 1478 pitch
+        if fam['system'] == 'inch':
+            return '%s-%d tapping thread' % (nominal(row), row['tpi'])
+        return '%s x %g tapping thread' % (row['size'], row['pitch'])
     if fam['system'] == 'inch':
         return '%s-%d %s' % (nominal(row), row['tpi'], row.get('series', 'UNC'))
     return '%s x %g' % (row['size'], row['pitch'])
@@ -245,7 +249,14 @@ def geometry(fam, row, length):
     dims = row['dims']
     g = {'head': fam['head'], 'drive': fam.get('drive', 'hex'), 'r': c(row['d']) / 2.0, 'L': c(length),
          'thread_len': c(thread_length(fam, row, length))}
-    if fam['head'] in ('cap', 'button'):
+    if fam['head'] == 'flbutton':
+        # flange disc dc x c on the seat, then a dome (crown rf) from the head diameter dk at z=c up to k
+        g.update(head_r=c(dims['dk']) / 2.0, head_h=c(dims['k']), flange_r=c(dims['dc']) / 2.0, flange_t=c(dims['c']),
+                 key=c(dims['s']), key_depth=c(key_depth(row, length)))
+        g['dome_r'], zc = dome(g['head_r'], g['head_h'] - g['flange_t'], rf=c(dims['rf']))
+        g['dome_zc'] = zc + g['flange_t']
+        g['shank'] = (0.0, -g['L'])
+    elif fam['head'] in ('cap', 'button'):
         g.update(head_r=c(dims['dk']) / 2.0, head_h=c(dims['k']), key=c(dims['s']), key_depth=c(key_depth(row, length)))
         g['shank'] = (0.0, -g['L'])
         if fam['head'] == 'button':
@@ -254,8 +265,17 @@ def geometry(fam, row, length):
     elif fam['head'] == 'pan':
         g.update(head_r=c(dims['dk']) / 2.0, head_h=c(dims['k']), recess_m=c(dims['m']), recess_depth=c(dims['pen']),
                  recess_no=dims['recess'])
-        g['dome_r'], g['dome_zc'] = dome(g['head_r'], g['head_h'], rf=c(dims['rf']))
+        if dims.get('flat_top'):  # ASME B18.6.3 pan head: flat top (the small corner radius is not drawn)
+            g['flat_top'] = True
+        else:
+            g['dome_r'], g['dome_zc'] = dome(g['head_r'], g['head_h'], rf=c(dims['rf']))
         g['shank'] = (0.0, -g['L'])
+        if fam.get('thread_form') == 'tapping':
+            # pointed tip: ISO 7049 Type C point length y; inch Type A/AB point length is not in the sources,
+            # so it is drawn one diameter long (shape only)
+            g['point_h'] = c(dims['tip']) if 'tip' in dims else 2.0 * g['r']
+            g['point_r'] = 0.0
+            g['point'] = 'tapping'
     elif fam['head'] == 'cheese':
         g.update(head_r=c(dims['dk']) / 2.0, head_h=c(dims['k']), slot_w=c(dims['n']), slot_depth=c(dims['t']))
         g['shank'] = (0.0, -g['L'])
@@ -270,9 +290,32 @@ def geometry(fam, row, length):
         g.update(across_flats=c(dims['s']), head_h=c(dims['k']))
         g['shank'] = (0.0, -g['L'])
     elif fam['head'] == 'set':
-        g.update(key=c(dims['s']), key_depth=c(key_depth(row, length)), point_r=c(dims['dp']) / 2.0)
-        g['point_h'] = max(g['r'] - g['point_r'], 0.0)  # 45 deg chamfer down to the point diameter
         g['point'] = fam.get('point', 'flat')
+        g.update(key=c(dims['s']), key_depth=c(key_depth(row, length)))
+        lk = '%g' % length
+        # cone and dog points start at the thread root (ISO 4027/4028: the point angle applies below the root
+        # diameter); root = basic minor diameter d - 1.082532 P (ISO 68-1 / ASME B1.1)
+        pitch = row['pitch'] if 'pitch' in row else 1.0 / row['tpi']
+        g['root_r'] = c(row['d'] - 1.082532 * pitch) / 2.0
+        if g['point'] == 'cone':
+            # cone to the tip diameter (ISO 4027 dt; inch cone drawn to a point); included angle per length
+            angle = dims.get('angle_by_length', {}).get(lk, 90)
+            g['point_r'] = c(dims.get('tip_d', 0.0)) / 2.0
+            g['point_h'] = (g['root_r'] - g['point_r']) / math.tan(math.radians(angle / 2.0))
+            g['cone_angle'] = angle
+        elif g['point'] == 'dog':
+            # extended (dog) tip: cylinder dp x z, joined to the thread by a 45 deg chamfer
+            g['point_r'] = c(dims['dp']) / 2.0
+            g['dog_z'] = c(dims['z_by_length'][lk])
+            g['point_h'] = g['dog_z'] + (g['root_r'] - g['point_r'])
+        elif g['point'] == 'oval':
+            # oval tip: sphere of radius R (Holo-Krome Table 13) meeting the thread diameter
+            g['oval_R'] = c(dims['R'])
+            g['point_r'] = 0.0
+            g['point_h'] = g['oval_R'] - math.sqrt(g['oval_R'] ** 2 - g['r'] ** 2)
+        else:
+            g['point_r'] = c(dims['dp']) / 2.0
+            g['point_h'] = max(g['r'] - g['point_r'], 0.0)  # 45 deg chamfer down to the point diameter
         if g['point'] == 'cup':
             # The standards give only the cup diameter dz; the cup recess is drawn as a 118 deg cone with a
             # rim 0.1 x dz wide (shape not dimensioned in ISO 4029 / ASME B18.3, so simplified).
@@ -343,7 +386,10 @@ def size_from_designation(fam, designation):
 
 
 def thread_spec(fam, row):
-    """Fusion thread-type name and designation for a cosmetic thread."""
+    """Fusion thread-type name and designation for a cosmetic thread; None for tapping screws (Fusion has no
+    sheet metal screw thread, so they get no cosmetic thread)."""
+    if fam.get('thread_form') == 'tapping':
+        return None
     if fam['system'] == 'inch':
         # Fusion lists numbered sizes without the '#', e.g. '6-32 UNC'
         return ('ANSI Unified Screw Threads',

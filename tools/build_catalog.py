@@ -399,6 +399,270 @@ MCMASTER = {
     'SPH': ('Pan Head Phillips Screws', MCM + 'rounded-head-screws/'),
     'SCH': ('Cheese Head Slotted Screws', MCM + 'rounded-head-screws/'),
 }
+# ---------- More screws: cone, extended and oval tip set screws, flanged button head, Phillips tapping ----------
+# Lengths are the ones McMaster-Carr stocks in 18-8 stainless (checked 2026-11-16), so every offered length is a real
+# part. Head and point dimensions come from McMaster where it lists them, the rest from the cited standard or maker.
+SRC.update({
+    'mcm_cone': MCM + 'set-screws/material~18-8-stainless-steel/stainless-steel-cone-tip-set-screws-2~~/ (McMaster 18-8 cone-tip set screws: lengths, cone angle per length, drive size)',
+    'mcm_ext': MCM + 'set-screws/material~18-8-stainless-steel/stainless-steel-extended-tip-set-screws-2~~/ (McMaster 18-8 extended-tip set screws: lengths, tip dia, tip length, drive size)',
+    'mcm_oval': MCM + 'set-screws/material~18-8-stainless-steel/stainless-steel-oval-tip-set-screws-2~~/ (McMaster 18-8 oval-tip set screws: lengths, drive size)',
+    'mcm_flbtn': MCM + 'rounded-head-screws/material~18-8-stainless-steel/stainless-steel-flanged-button-head-hex-drive-screws~~/ (McMaster 18-8 flanged button head: lengths, flange dia, head dia, head height, fully threaded)',
+    'mcm_tap_pan': MCM + 'tapping-screws/material~18-8-stainless-steel/stainless-steel-phillips-rounded-head-screws-for-sheet-metal~~/ (McMaster 18-8 and black-oxide 18-8 Phillips rounded head sheet metal screws: lengths, head dia, head height, threads per inch, drive size)',
+    'iso4027': ITEH + '36430/dfcea24c694e460ea6b659cfc216c6c1/ISO-4027-2003.pdf (ISO 4027:2003 Table 1: dt max, s, t min short/long)',
+    'iso4028': 'https://cdn.standards.iteh.ai/samples/36432/747ac323337a46f7a02c6211e6675ce6/ISO-4028-2003.pdf (ISO 4028:2003 Table 1: dp, z short/long, s, t min short/long)',
+    'iso7380_2': ITEH + '53672/801ec2c66dfc4359ba76493e3d01d97f/ISO-7380-2-2011.pdf (ISO 7380-2:2011 Table 1: c max, dc, dk, k, rf max, s, t min)',
+    'iso7049': ITEH + '54046/cdf129d179c645d7b5c43390e21e0811/ISO-7049-2011.pdf (ISO 7049:2011 Table 1: P, rf, recess no., Type H m and penetration, y Type C)',
+    'b1863_pan': 'https://adfastcomponents.com/weights/asme/weights-for-asme-b18-6-3-type-1-cross-recessed-pan-head-machine-screws/ (ASME B18.6.3 Table 18 Type I pan head: A, H, recess M, driver size, penetration P)',
+})
+STD_SS = ['SS']
+CONE_MCM = {  # McMaster 18-8 cone-tip set screws: (length, cone angle deg) per thread
+    '#2': [(0.125, 90), (0.1875, 90), (0.25, 90), (0.3125, 90), (0.375, 90)],
+    '#4': [(0.125, 118), (0.1875, 90), (0.25, 90), (0.3125, 90), (0.375, 90), (0.4375, 90), (0.5, 90), (0.625, 90), (0.75, 90), (1, 90)],
+    '#6': [(0.125, 118), (0.1875, 90), (0.25, 90), (0.3125, 90), (0.375, 90), (0.4375, 90), (0.5, 90), (0.625, 90), (0.75, 90), (1, 90)],
+    '#8': [(0.125, 118), (0.1875, 118), (0.25, 90), (0.3125, 90), (0.375, 90), (0.5, 90), (0.625, 90), (0.75, 90), (1, 90)],
+    '#10': [(0.1875, 118), (0.25, 90), (0.3125, 90), (0.375, 90), (0.5, 90), (0.625, 90), (0.75, 90), (1, 90)],
+    '#10-32': [(0.125, 118), (0.1875, 118), (0.25, 90), (0.3125, 90), (0.375, 90), (0.5, 90), (0.625, 90), (0.75, 90), (1, 90)],
+    '1/4': [(0.1875, 118), (0.25, 118), (0.3125, 90), (0.375, 90), (0.5, 90), (0.625, 90), (0.75, 90), (1, 90), (1.25, 90), (1.5, 90)],
+    '1/4-28': [(0.1875, 118), (0.25, 118), (0.3125, 90), (0.375, 90), (0.5, 90), (0.625, 90), (0.75, 90), (1, 90)],
+    '5/16': [(0.25, 118), (0.3125, 118), (0.375, 90), (0.5, 90), (0.625, 90), (0.75, 90), (0.875, 90), (1, 90), (1.25, 90)],
+    '5/16-24': [(0.25, 118), (0.375, 118), (0.5, 90), (0.625, 90), (0.75, 90), (1, 90)],
+    '3/8': [(0.375, 118), (0.5, 90), (0.625, 90), (0.75, 90), (1, 90), (1.25, 90), (1.5, 90), (2, 90)],
+    '3/8-24': [(0.375, 118), (0.5, 90), (0.625, 90), (0.75, 90), (1, 90)],
+    '1/2': [(0.5, 118), (0.75, 90), (1, 90), (1.25, 90), (1.5, 90)],
+    'M2': [(3, 90), (4, 90), (5, 90), (10, 90)],
+    'M2.5': [(3, 120), (4, 90), (5, 90), (6, 90), (8, 90), (10, 90)],
+    'M3': [(3, 120), (4, 90), (5, 90), (6, 90), (8, 90), (10, 90), (12, 90), (16, 90), (20, 90)],
+    'M4': [(3, 90), (4, 120), (5, 90), (6, 90), (8, 90), (10, 90), (12, 90), (16, 90), (20, 90)],
+    'M5': [(5, 120), (6, 90), (8, 90), (10, 90), (12, 90), (30, 90)],
+    'M6': [(6, 120), (8, 90), (10, 90), (12, 90), (16, 90), (20, 90), (30, 90)],
+    'M8': [(8, 120), (10, 120), (12, 90), (16, 90), (20, 90), (30, 90)],
+    'M10': [(10, 120), (12, 90), (16, 90), (20, 90), (25, 90), (30, 90)],
+    'M12': [(12, 90), (20, 90)],
+}
+EXT_MCM = {  # McMaster 18-8 extended-tip set screws: (length, tip dia, tip length)
+    '#2': [(0.125, 0.057, 0.024), (0.1875, 0.057, 0.024), (0.25, 0.057, 0.024), (0.3125, 0.057, 0.024)],
+    '#4': [(0.125, 0.075, 0.03), (0.1875, 0.075, 0.03), (0.25, 0.075, 0.03), (0.3125, 0.075, 0.03), (0.375, 0.075, 0.03), (0.5, 0.075, 0.03)],
+    '#6': [(0.125, 0.092, 0.038), (0.1875, 0.092, 0.038), (0.25, 0.092, 0.038), (0.3125, 0.092, 0.038), (0.375, 0.092, 0.038), (0.5, 0.092, 0.038), (0.625, 0.092, 0.038), (0.75, 0.092, 0.038)],
+    '#8': [(0.125, 0.109, 0.043), (0.1875, 0.109, 0.043), (0.25, 0.109, 0.043), (0.3125, 0.109, 0.043), (0.375, 0.109, 0.043), (0.5, 0.109, 0.043), (0.625, 0.109, 0.043), (0.75, 0.109, 0.043), (1, 0.109, 0.043)],
+    '#10': [(0.1875, 0.127, 0.049), (0.25, 0.127, 0.049), (0.3125, 0.127, 0.049), (0.375, 0.127, 0.049), (0.5, 0.127, 0.049), (0.625, 0.127, 0.049), (0.75, 0.127, 0.049), (1, 0.127, 0.049)],
+    '#10-32': [(0.1875, 0.127, 0.049), (0.25, 0.127, 0.049), (0.3125, 0.127, 0.049), (0.375, 0.127, 0.049), (0.5, 0.127, 0.049), (0.625, 0.127, 0.049), (0.75, 0.127, 0.049), (1, 0.127, 0.049)],
+    '1/4': [(0.1875, 0.156, 0.067), (0.25, 0.156, 0.067), (0.3125, 0.156, 0.067), (0.375, 0.156, 0.067), (0.5, 0.156, 0.067), (0.625, 0.156, 0.067), (0.75, 0.156, 0.067), (1, 0.156, 0.067), (1.25, 0.156, 0.067)],
+    '1/4-28': [(0.1875, 0.156, 0.067), (0.25, 0.156, 0.067), (0.3125, 0.156, 0.067), (0.375, 0.156, 0.067), (0.5, 0.156, 0.067), (0.625, 0.156, 0.067), (0.75, 0.156, 0.067), (1, 0.156, 0.067), (1.25, 0.156, 0.067)],
+    '5/16': [(0.25, 0.203, 0.082), (0.3125, 0.203, 0.082), (0.375, 0.203, 0.082), (0.5, 0.203, 0.082), (0.625, 0.203, 0.082), (0.75, 0.203, 0.082), (1, 0.203, 0.082), (1.25, 0.203, 0.082), (1.5, 0.203, 0.082)],
+    '5/16-24': [(0.25, 0.203, 0.082), (0.3125, 0.203, 0.082), (0.375, 0.203, 0.082), (0.5, 0.203, 0.082), (0.625, 0.203, 0.082), (0.75, 0.203, 0.082), (1, 0.203, 0.082), (1.25, 0.203, 0.082)],
+    '3/8': [(0.375, 0.25, 0.099), (0.5, 0.25, 0.099), (0.625, 0.25, 0.099), (0.75, 0.25, 0.099), (1, 0.25, 0.099), (1.25, 0.25, 0.099), (1.5, 0.25, 0.099)],
+    '3/8-24': [(0.375, 0.25, 0.099), (0.5, 0.25, 0.099), (0.625, 0.25, 0.099), (0.75, 0.25, 0.099), (1, 0.25, 0.099), (1.25, 0.25, 0.099)],
+    '1/2': [(0.375, 0.343, 0.13), (0.5, 0.343, 0.13), (0.625, 0.343, 0.13), (0.75, 0.343, 0.13), (1, 0.343, 0.13), (1.25, 0.343, 0.13), (1.5, 0.343, 0.13)],
+    'M3': [(3, 2, 1), (4, 2, 1), (5, 2, 1), (6, 2, 1.75), (8, 2, 1.75), (10, 2, 1.75)],
+    'M4': [(6, 2.5, 1.25), (8, 2.5, 2.25), (10, 2.5, 2.25), (12, 2.5, 2.25), (16, 2.5, 2.25), (20, 2.5, 2.25)],
+    'M5': [(5, 3.5, 1.5), (6, 3.5, 1.5), (8, 3.5, 2.75), (10, 3.5, 2.75), (12, 3.5, 2.75), (16, 3.5, 2.75), (20, 3.5, 2.75), (25, 3.5, 2.75), (30, 3.5, 2.75)],
+    'M6': [(6, 4, 1.75), (8, 4, 1.75), (10, 4, 3.25), (12, 4, 3.25), (16, 4, 3.25), (20, 4, 3.25), (25, 4, 3.25), (30, 4, 3.25), (35, 4, 3.25)],
+    'M8': [(8, 5.5, 2.25), (10, 5.5, 2.25), (12, 5.5, 4.3), (16, 5.5, 4.3), (20, 5.5, 4.3), (25, 5.5, 4.3), (30, 5.5, 4.3), (35, 5.5, 4.3), (40, 5.5, 4.3), (50, 5.5, 4.3)],
+    'M10': [(10, 7, 2.75), (12, 7, 2.75), (16, 7, 5.3), (20, 7, 5.3), (25, 7, 5.3), (30, 7, 5.3), (35, 7, 5.3), (40, 7, 5.3), (50, 7, 5.3)],
+    'M12': [(12, 8.5, 3.25), (16, 8.5, 6.3), (20, 8.5, 6.3), (25, 8.5, 6.3), (30, 8.5, 6.3), (35, 8.5, 6.3), (40, 8.5, 6.3), (50, 8.5, 6.3)],
+}
+OVAL_MCM = {  # McMaster 18-8 oval-tip set screws: lengths
+    '#4': [0.125, 0.1875, 0.25, 0.375],
+    '#6': [0.125, 0.1875, 0.25, 0.375, 0.5],
+    '#8': [0.25, 0.375, 0.5],
+    '#10-32': [0.1875, 0.25, 0.375, 0.5, 0.75],
+    '1/4': [0.375, 0.5],
+    '3/8': [0.625],
+}
+
+# Holo-Krome Table 13 (hk_tech): socket J, key engagement TH for lengths >= column B, oval point radius R,
+# and column B for 90 deg cone and oval points and for half dog points.
+_HK13 = {  # nominal: (J, TH, R, B_cone_oval, B_half_dog)
+    '#2': (0.035, 0.060, 0.064, 0.19, 0.19), '#4': (0.050, 0.070, 0.084, 0.19, 0.19),
+    '#6': (0.062, 0.080, 0.104, 0.25, 0.19), '#8': (0.078, 0.090, 0.123, 0.25, 0.25),
+    '#10': (0.094, 0.100, 0.142, 0.25, 0.25), '1/4': (0.125, 0.125, 0.188, 0.31, 0.31),
+    '5/16': (0.156, 0.156, 0.234, 0.44, 0.38), '3/8': (0.188, 0.188, 0.281, 0.44, 0.44),
+    '1/2': (0.250, 0.250, 0.375, 0.63, 0.63)}
+# Holo-Krome Table 14: minimum key engagement for short set screws, by two-place nominal length:
+# (118 deg cone and oval points, half dog point). None: not made.
+_HK14 = {
+    '#2': {0.06: (0.029, None), 0.09: (0.040, 0.035)},
+    '#4': {0.09: (0.039, None), 0.13: (0.045, 0.045)},
+    '#6': {0.09: (0.039, None), 0.13: (0.045, 0.045), 0.16: (0.065, 0.065)},
+    '#8': {0.13: (0.050, 0.045), 0.16: (0.060, 0.060), 0.19: (0.065, 0.065)},
+    '#10': {0.13: (0.042, 0.042), 0.19: (0.060, 0.060)},
+    '1/4': {0.19: (0.065, 0.055), 0.25: (0.110, 0.090)},
+    '5/16': {0.25: (0.099, 0.090), 0.31: (0.140, 0.105)},
+    '3/8': {0.25: (0.090, 0.075), 0.31: (0.115, 0.105)},
+    '1/2': {0.38: (0.130, 0.130), 0.44: (0.155, 0.155), 0.50: (0.195, 0.195)}}
+_TWO = {0.0625: 0.06, 0.09375: 0.09, 0.125: 0.13, 0.15625: 0.16, 0.1875: 0.19, 0.25: 0.25, 0.3125: 0.31,
+        0.375: 0.38, 0.4375: 0.44, 0.5: 0.50}
+# ISO 4027 / ISO 4028 / ISO 4026 socket: s nom, t min (short lengths), t min (other lengths)
+_ISO_SET = {'M2': (0.9, 0.8, 1.7), 'M2.5': (1.3, 1.2, 2.0), 'M3': (1.5, 1.2, 2.0), 'M4': (2.0, 1.5, 2.5),
+            'M5': (2.5, 2.0, 3.0), 'M6': (3.0, 2.0, 3.5), 'M8': (4.0, 3.0, 5.0), 'M10': (5.0, 4.0, 6.0),
+            'M12': (6.0, 4.8, 8.0)}
+_ISO4027_DT = {'M2': 0.5, 'M2.5': 0.65, 'M3': 0.75, 'M4': 1.0, 'M5': 1.25, 'M6': 1.5, 'M8': 2.0, 'M10': 2.5,
+               'M12': 3.0}
+
+
+def _inch_t(nom, L, point):
+    """Key engagement for an inch set screw: Table 13 TH at or above column B, else the Table 14 value for this
+    length; None if neither table covers the length (that length is not offered)."""
+    j, th, r, b_co, b_hd = _HK13[nom]
+    b = b_hd if point == 'dog' else b_co
+    if _TWO.get(L, round(L, 2)) >= b - 1e-9:
+        return th
+    v = _HK14.get(nom, {}).get(_TWO.get(L))
+    return v and v[1 if point == 'dog' else 0]
+
+
+def _key(size):
+    """'1/4-28' -> ('1/4', 'UNF'), '1/4' -> ('1/4', 'UNC')."""
+    return (size.rsplit('-', 1)[0], 'UNF') if '-' in size else (size, 'UNC')
+
+
+def _set_rows(table, point):
+    rows = []
+    for size, items in table.items():
+        if size.startswith('M'):
+            s, t_short, t_long = _ISO_SET[size]
+            row = dict(size=size, d=float(size[1:]), pitch=PITCH[size], dims={'s': s, 't_by_length': {}},
+                       lengths=[])
+            for it in items:
+                L = it[0]
+                if point == 'cone':
+                    short = it[1] != 90 or L <= row['d']  # McMaster's 118/120 deg lengths are ISO 4027's short ones
+                    row['dims'].setdefault('angle_by_length', {})['%g' % L] = it[1]
+                    row['dims']['tip_d'] = _ISO4027_DT[size]
+                else:  # dog: McMaster's short tip lengths are ISO 4028's short dog points
+                    row['dims']['dp'] = it[1]
+                    row['dims'].setdefault('z_by_length', {})['%g' % L] = it[2]
+                    short = it[2] < max(x[2] for x in items)
+                row['dims']['t_by_length']['%g' % L] = t_short if short else t_long
+                row['lengths'].append(float(L))
+        else:
+            nom, series = _key(size)
+            d, tpi = UNC[nom]
+            if series == 'UNF':
+                tpi = UNF[nom]
+            j, th, R, _b, _bd = _HK13[nom]
+            row = dict(size=size if series == 'UNC' else '%s-%d' % (nom, tpi), nominal=nom, series=series, d=d,
+                       tpi=tpi, dims={'s': j, 't_by_length': {}}, lengths=[])
+            if point == 'oval':
+                row['dims']['R'] = R
+            for it in (items if point != 'oval' else [(L,) for L in items]):
+                L = float(it[0])
+                t = _inch_t(nom, L, point)
+                if t is None:
+                    continue  # no key engagement source for this short length
+                if point == 'cone':
+                    row['dims'].setdefault('angle_by_length', {})['%g' % L] = it[1]
+                    row['dims']['tip_d'] = 0.0
+                elif point == 'dog':
+                    row['dims']['dp'] = it[1]
+                    row['dims'].setdefault('z_by_length', {})['%g' % L] = it[2]
+                row['dims']['t_by_length']['%g' % L] = t
+                row['lengths'].append(L)
+        if row['lengths']:
+            rows.append(row)
+    return rows
+
+
+def _tap_in(rows):
+    """rows: (nominal, d, tpi, dims, lengths, black_oxide_too)."""
+    return [dict(size=n, nominal=n, series='tapping', d=d, tpi=tpi, dims=dims, lengths=ls,
+                 finishes=['SS', 'SS-BO'] if bo else ['SS']) for n, d, tpi, dims, ls, bo in rows]
+
+
+def _tap_m(rows):
+    return [dict(size=n, d=float(n[1:]), pitch=p, dims=dims, lengths=ls, finishes=['SS']) for n, p, dims, ls in rows]
+
+
+def _pan_in(dk, k, recess, m, p_max, p_min):
+    return {'dk': dk, 'k': k, 'flat_top': True, 'recess': recess, 'm': m, 'pen': round((p_max + p_min) / 2.0, 4)}
+
+
+def _pan_m(dk, k, rf, recess, m, p_max, p_min, y):
+    return {'dk': dk, 'k': k, 'rf': rf, 'recess': recess, 'm': m, 'pen': round((p_max + p_min) / 2.0, 4), 'tip': y}
+
+
+def _fl(dk, k, rf, s, t, dc, c):
+    return {'dk': dk, 'k': k, 'rf': rf, 's': s, 't': t, 'dc': dc, 'c': c}
+
+
+FAMILIES += [
+    dict(code='SSN-M', name='Cone-tip set screw', standard='ISO 4027', system='metric', head='set', point='cone',
+         drive='hex', finishes=STD_SS, source=SRC['iso4027'],
+         sources={'dims': ['iso4027', 'mcm_cone'], 'lengths': ['mcm_cone'], 'thread': ['iso4027'], 'alloy': []},
+         sizes=_set_rows({k: v for k, v in CONE_MCM.items() if k.startswith('M')}, 'cone')),
+    dict(code='SSN-I', name='Cone-tip set screw', standard='ASME B18.3', system='inch', head='set', point='cone',
+         drive='hex', finishes=STD_SS, source=SRC['hk_tech'],
+         sources={'dims': ['hk_tech', 'mcm_cone'], 'lengths': ['mcm_cone'], 'thread': [], 'alloy': []},
+         sizes=_set_rows({k: v for k, v in CONE_MCM.items() if not k.startswith('M')}, 'cone')),
+    dict(code='SSE-M', name='Extended-tip set screw', standard='ISO 4028', system='metric', head='set', point='dog',
+         drive='hex', finishes=STD_SS, source=SRC['iso4028'],
+         sources={'dims': ['iso4028', 'mcm_ext'], 'lengths': ['mcm_ext'], 'thread': ['iso4028'], 'alloy': []},
+         sizes=_set_rows({k: v for k, v in EXT_MCM.items() if k.startswith('M')}, 'dog')),
+    dict(code='SSE-I', name='Extended-tip set screw', standard='ASME B18.3 (half dog)', system='inch', head='set',
+         point='dog', drive='hex', finishes=STD_SS, source=SRC['hk_tech'],
+         sources={'dims': ['hk_tech', 'mcm_ext'], 'lengths': ['mcm_ext'], 'thread': [], 'alloy': []},
+         sizes=_set_rows({k: v for k, v in EXT_MCM.items() if not k.startswith('M')}, 'dog')),
+    dict(code='SSO-I', name='Oval-tip set screw', standard='ASME B18.3', system='inch', head='set', point='oval',
+         drive='hex', finishes=STD_SS, source=SRC['hk_tech'],
+         sources={'dims': ['hk_tech'], 'lengths': ['mcm_oval'], 'thread': [], 'alloy': []},
+         sizes=_set_rows(OVAL_MCM, 'oval')),
+    # McMaster: dc (flange dia), dk (head dia), k; ISO 7380-2: rf, c (flange thickness), s, t. All fully threaded.
+    # M10 lengths 20 to 30 mm have a different head on McMaster (20.6 mm flange) and are left out.
+    dict(code='SBF-M', name='Flanged button head hex-drive screw', standard='ISO 7380-2', system='metric',
+         head='flbutton', drive='hex', finishes=STD_SS, source=SRC['iso7380_2'],
+         sources={'dims': ['mcm_flbtn', 'iso7380_2'], 'lengths': ['mcm_flbtn'], 'thread': ['mcm_flbtn'], 'alloy': []},
+         sizes=[dict(size=s, d=float(s[1:]), pitch=PITCH[s], dims=dims, lengths=ls) for s, dims, ls in [
+             ('M3', _fl(5.2, 1.65, 3.7, 2.0, 1.04, 6.9, 0.7), [5, 6, 8, 10, 12, 14, 16, 20, 22, 25]),
+             ('M4', _fl(7.2, 2.2, 4.6, 2.5, 1.3, 9.4, 0.8), [5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40]),
+             ('M5', _fl(8.8, 2.75, 5.75, 3.0, 1.56, 11.8, 1.0), [6, 8, 10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40]),
+             ('M6', _fl(10.0, 3.3, 6.15, 4.0, 2.08, 13.6, 1.2),
+              [6, 8, 10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40, 45, 50]),
+             ('M8', _fl(13.2, 4.4, 7.95, 5.0, 2.6, 17.8, 1.5), [10, 12, 16, 20, 22, 25, 30, 35, 40, 45, 50]),
+             ('M10', _fl(16.5, 5.5, 9.8, 6.0, 3.12, 22.0, 2.0), [12, 16, 35, 40])]]),
+    # Inch: McMaster head (matches ASME B18.6.3 Table 18 A and H max) and threads per inch; recess M and mean
+    # penetration from B18.6.3 Table 18. Black oxide on the sizes McMaster sells in black-oxide 18-8.
+    dict(code='STP-I', name='Phillips rounded head sheet metal screw', standard='ASME B18.6.3 head', system='inch',
+         head='pan', drive='phillips', thread_form='tapping', finishes=STD, source=SRC['mcm_tap_pan'],
+         sources={'dims': ['mcm_tap_pan', 'b1863_pan'], 'lengths': ['mcm_tap_pan'], 'thread': ['mcm_tap_pan'],
+                  'alloy': []},
+         sizes=_tap_in([
+             ('#2', 0.086, 32, _pan_in(0.167, 0.062, 1, 0.097, 0.052, 0.034),
+              [0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5, 0.625, 0.75], False),
+             ('#4', 0.112, 24, _pan_in(0.219, 0.080, 1, 0.115, 0.071, 0.053),
+              [0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5, 0.625, 0.75, 1.0, 1.25, 1.5], False),
+             ('#6', 0.138, 18, _pan_in(0.270, 0.097, 2, 0.159, 0.080, 0.055),
+              [0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5, 0.625, 0.75, 0.875, 1.0, 1.125, 1.25, 1.5, 1.75, 2.0, 2.5],
+              True),
+             ('#8', 0.164, 15, _pan_in(0.322, 0.115, 2, 0.175, 0.097, 0.071),
+              [0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 2.75, 3.0, 3.5], True),
+             ('#10', 0.190, 12, _pan_in(0.373, 0.133, 2, 0.192, 0.113, 0.089),
+              [0.25, 0.375, 0.4375, 0.5, 0.625, 0.75, 0.875, 1.0, 1.25, 1.5, 1.75], True),
+             ('#12', 0.216, 11, _pan_in(0.425, 0.151, 3, 0.252, 0.124, 0.098),
+              [0.375, 0.5, 0.625, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.5, 4.0], True)])),
+    # Metric: McMaster head dk and k (slightly off ISO 7049: McMaster wins); pitch, crown rf, Type H recess m and
+    # mean penetration, and Type C point length y from ISO 7049. M3.9 is not in ISO 7049 and is left out.
+    dict(code='STP-M', name='Phillips rounded head sheet metal screw', standard='ISO 7049', system='metric',
+         head='pan', drive='phillips', thread_form='tapping', finishes=STD_SS, source=SRC['iso7049'],
+         sources={'dims': ['mcm_tap_pan', 'iso7049'], 'lengths': ['mcm_tap_pan'], 'thread': ['iso7049'], 'alloy': []},
+         sizes=_tap_m([
+             ('M2.2', 0.8, _pan_m(4.2, 1.8, 3.2, 0, 1.9, 1.20, 0.85, 2.0), [6.5, 9.5, 13, 16]),
+             ('M2.9', 1.1, _pan_m(5.6, 2.2, 5.0, 1, 3.0, 1.80, 1.40, 2.6), [6.5, 9.5, 13, 16, 19, 25]),
+             ('M3.5', 1.3, _pan_m(6.9, 2.6, 6.0, 2, 3.9, 1.90, 1.40, 3.2), [9.5, 13, 16, 19, 25, 32]),
+             ('M4.2', 1.4, _pan_m(8.2, 3.1, 6.5, 2, 4.4, 2.40, 1.90, 3.7), [9.5, 13, 16, 19, 22, 25, 32, 38]),
+             ('M4.8', 1.6, _pan_m(9.5, 3.6, 8.0, 2, 4.9, 2.90, 2.40, 4.3), [13, 16, 19, 22, 25, 38]),
+             ('M5.5', 1.8, _pan_m(10.8, 4.0, 9.0, 3, 6.4, 3.10, 2.60, 5.0), [13, 16, 19, 25, 38])])),
+]
+for _f in FAMILIES[-8:]:
+    for _r in _f['sizes']:
+        _r['lengths'] = [float(x) for x in _r['lengths']]
+MCMASTER.update({
+    'SSN': ('Cone-Tip Set Screws', MCM + 'set-screws/'),
+    'SSE': ('Extended-Tip Set Screws', MCM + 'set-screws/'),
+    'SSO': ('Oval-Tip Set Screws', MCM + 'set-screws/'),
+    'SBF': ('Flanged Button Head Hex-Drive Screws', MCM + 'flanged-button-head-screws/'),
+    'STP': ('Phillips Rounded Head Screws for Sheet Metal', MCM + 'tapping-screws/'),
+})
+
 for _fam in FAMILIES:
     _fam['mcmaster'], _fam['mcmaster_url'] = MCMASTER[_fam['code'].rsplit('-', 1)[0]]
 

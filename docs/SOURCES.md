@@ -21,6 +21,14 @@ listed for it; `tests/test_sources.py` spot-checks rows against them. Blank mean
 | HHB-I | Hex head bolt | ASME B18.2.1 | b1821_hex |  | b1821_hex | av_in_hex |
 | SSF-I | Flat-tip set screw | ASME B18.3 | hk_tech | hk_tech |  | av_in_set |
 | SSC-I | Cup-tip set screw | ASME B18.3 | hk_tech | hk_tech |  | hk_tech |
+| SSN-M | Cone-tip set screw | ISO 4027 | iso4027, mcm_cone | mcm_cone | iso4027 |  |
+| SSN-I | Cone-tip set screw | ASME B18.3 | hk_tech, mcm_cone | mcm_cone |  |  |
+| SSE-M | Extended-tip set screw | ISO 4028 | iso4028, mcm_ext | mcm_ext | iso4028 |  |
+| SSE-I | Extended-tip set screw | ASME B18.3 (half dog) | hk_tech, mcm_ext | mcm_ext |  |  |
+| SSO-I | Oval-tip set screw | ASME B18.3 | hk_tech | mcm_oval |  |  |
+| SBF-M | Flanged button head hex-drive screw | ISO 7380-2 | mcm_flbtn, iso7380_2 | mcm_flbtn | mcm_flbtn |  |
+| STP-I | Phillips rounded head sheet metal screw | ASME B18.6.3 head | mcm_tap_pan, b1863_pan | mcm_tap_pan | mcm_tap_pan |  |
+| STP-M | Phillips rounded head sheet metal screw | ISO 7049 | mcm_tap_pan, iso7049 | mcm_tap_pan | iso7049 |  |
 
 ## Nuts and washers
 
@@ -93,6 +101,16 @@ Dimensions follow McMaster-Carr 18-8 stock, cross-checked with the listed standa
 | av_m_set2 | https://www.fastenal.ca/product/details/90061 (Fastenal M6 x 25 ISO 4026 flat point, black oxide alloy steel) |
 | av_in_set | https://www.fastenal.ca/product/details/24879 (Fastenal 1/4-20 x 1-1/2 flat point, black oxide alloy steel, ASME B18.3 / ASTM F912) |
 | av_in_hex | https://www.raptorsupplies.com/c/fasteners/c5/black-oxide-grade-8-steel-hex-head-cap-screws (Grade 8 black oxide hex cap screws, ASME B18.2.1 / SAE J429) |
+| mcm_cone | https://www.mcmaster.com/products/set-screws/material~18-8-stainless-steel/stainless-steel-cone-tip-set-screws-2~~/ (McMaster 18-8 cone-tip set screws: lengths, cone angle per length, drive size) |
+| mcm_ext | https://www.mcmaster.com/products/set-screws/material~18-8-stainless-steel/stainless-steel-extended-tip-set-screws-2~~/ (McMaster 18-8 extended-tip set screws: lengths, tip dia, tip length, drive size) |
+| mcm_oval | https://www.mcmaster.com/products/set-screws/material~18-8-stainless-steel/stainless-steel-oval-tip-set-screws-2~~/ (McMaster 18-8 oval-tip set screws: lengths, drive size) |
+| mcm_flbtn | https://www.mcmaster.com/products/rounded-head-screws/material~18-8-stainless-steel/stainless-steel-flanged-button-head-hex-drive-screws~~/ (McMaster 18-8 flanged button head: lengths, flange dia, head dia, head height, fully threaded) |
+| mcm_tap_pan | https://www.mcmaster.com/products/tapping-screws/material~18-8-stainless-steel/stainless-steel-phillips-rounded-head-screws-for-sheet-metal~~/ (McMaster 18-8 and black-oxide 18-8 Phillips rounded head sheet metal screws: lengths, head dia, head height, threads per inch, drive size) |
+| iso4027 | https://cdn.standards.iteh.ai/samples/36430/dfcea24c694e460ea6b659cfc216c6c1/ISO-4027-2003.pdf (ISO 4027:2003 Table 1: dt max, s, t min short/long) |
+| iso4028 | https://cdn.standards.iteh.ai/samples/36432/747ac323337a46f7a02c6211e6675ce6/ISO-4028-2003.pdf (ISO 4028:2003 Table 1: dp, z short/long, s, t min short/long) |
+| iso7380_2 | https://cdn.standards.iteh.ai/samples/53672/801ec2c66dfc4359ba76493e3d01d97f/ISO-7380-2-2011.pdf (ISO 7380-2:2011 Table 1: c max, dc, dk, k, rf max, s, t min) |
+| iso7049 | https://cdn.standards.iteh.ai/samples/54046/cdf129d179c645d7b5c43390e21e0811/ISO-7049-2011.pdf (ISO 7049:2011 Table 1: P, rf, recess no., Type H m and penetration, y Type C) |
+| b1863_pan | https://adfastcomponents.com/weights/asme/weights-for-asme-b18-6-3-type-1-cross-recessed-pan-head-machine-screws/ (ASME B18.6.3 Table 18 Type I pan head: A, H, recess M, driver size, penetration P) |
 | mcm_hexnut_m | https://www.mcmaster.com/products/hex-nuts/material~18-8-stainless-steel/system-of-measurement~metric/hex-nuts-3~~/ (McMaster 18-8 metric hex nuts, DIN 934: width, height) |
 | mcm_hexnut_i | https://www.mcmaster.com/products/hex-nuts/material~18-8-stainless-steel/hex-nuts-3~~/ (McMaster 18-8 inch hex nuts, ASME B18.2.2 / ASTM F594: width, height) |
 | mcm_hexnut_bo | https://www.mcmaster.com/products/hex-nuts/finish~black-oxide/material~18-8-stainless-steel/hex-nuts-3~~/ (McMaster black-oxide 18-8 hex nuts: inch threads stocked, metric M3 to M6) |
