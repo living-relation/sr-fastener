@@ -12,7 +12,7 @@ BOM part number, description and material.
 
 - **Toolbar button** "SR Fastener" on more than one panel: by default the Design workspace Solid tab **Insert**
   panel, an **SR Tools** panel on the Solid tab, and Utilities > Add-ins. The panel list is configurable (see
-  [Toolbar panels](#toolbar-panels)).
+  [Where the buttons go](#where-the-buttons-go)).
 - **Dialog:** Units, Part (screws, nuts or washers), Type, Size, Length (screws only), Finish, hole selection,
   "Match size to first hole", "Flip direction", "Cosmetic thread" (screws only), "Stack on nuts/washers", and a
   read-only BOM preview.
@@ -203,12 +203,17 @@ as the dimension source only.
 
 Settings (last type, size, length, finish) are saved in `%APPDATA%\SRFastener\settings.json`.
 
-## Toolbar panels
+## Where the buttons go
 
-The button can go on any number of Fusion toolbar panels. To change where it shows, copy
-[panels.example.json](panels.example.json) to `%APPDATA%\SRFastener\panels.json`, edit it, and stop and run the
-add-in (or restart Fusion). Without that file the defaults are used: Insert (on the panel face), SR Tools (a panel the
-add-in creates on the Solid tab, on the panel face) and Utilities > Add-ins (in the drop-down).
+The **SR Fastener** button can show on any number of Fusion toolbar panels at once. By default it is on:
+
+- the Design workspace SOLID tab **Insert** panel (on the panel face)
+- the **SR Tools** panel (the add-in creates this panel on the SOLID tab, on the panel face)
+- **Utilities > Add-ins** (in the drop-down)
+
+Make is not in the default list. You can add it with panel id `SolidMakePanel`, or add any other Fusion toolbar panel.
+
+To change where it shows, copy [panels.example.json](panels.example.json) to `%APPDATA%\SRFastener\panels.json`, edit it, then Stop and Run the add-in (or restart Fusion). If that file is missing, unreadable, or lists nothing valid, the defaults above are used.
 
 | Key | Meaning |
 |---|---|
