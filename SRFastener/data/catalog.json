@@ -11530,7 +11530,7 @@
    "kind": "nut",
    "shape": "flange",
    "name": "Flange nut",
-   "standard": "McMaster 94758A",
+   "standard": "inch flange",
    "system": "inch",
    "sizes": [
     {
@@ -11766,7 +11766,7 @@
     ],
     "finish": []
    },
-   "notes": "No ASME standard for inch flange nuts; McMaster 18-8 listing values.",
+   "notes": "No ASME standard for inch flange nuts; dimensions from McMaster 94758A 18-8 listing.",
    "mcmaster": "Flange Nuts",
    "mcmaster_url": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~inch/flange-nuts-1~~/"
   },
@@ -11775,7 +11775,7 @@
    "kind": "nut",
    "shape": "flange",
    "name": "Serrated flange nut",
-   "standard": "McMaster 93776A",
+   "standard": "inch serrated flange",
    "system": "inch",
    "sizes": [
     {
@@ -11977,7 +11977,7 @@
     ],
     "finish": []
    },
-   "notes": "Serrations are not modelled. 1/2-20 left out: McMaster lists a 0.05\" flange on it.",
+   "notes": "Serrations are not modelled. Dimensions from McMaster 93776A. 1/2-20 left out: McMaster lists a 0.05\" flange on it.",
    "mcmaster": "Serrated Flange Nuts",
    "mcmaster_url": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~inch/serrated-flange-nuts-1~~/"
   },
@@ -11986,7 +11986,7 @@
    "kind": "nut",
    "shape": "hex",
    "name": "Top-lock distorted-thread locknut",
-   "standard": "McMaster 90045A",
+   "standard": "metric top-lock",
    "system": "metric",
    "sizes": [
     {
@@ -12092,7 +12092,7 @@
     ],
     "finish": []
    },
-   "notes": "Distorted thread not modelled. Heights are McMaster's (M6 6 mm, M8 6.4 mm as listed).",
+   "notes": "Distorted thread not modelled. Dimensions from McMaster 90045A (M6 6 mm, M8 6.4 mm as listed).",
    "mcmaster": "Top-Lock Distorted-Thread Locknuts",
    "mcmaster_url": "https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/top-lock-distorted-thread-locknuts~~/"
   },
@@ -12101,7 +12101,7 @@
    "kind": "nut",
    "shape": "hex",
    "name": "Top-lock distorted-thread locknut",
-   "standard": "McMaster 90045A",
+   "standard": "inch top-lock",
    "system": "inch",
    "sizes": [
     {
@@ -12296,7 +12296,7 @@
     ],
     "finish": []
    },
-   "notes": "Distorted thread not modelled.",
+   "notes": "Distorted thread not modelled. Dimensions from McMaster 90045A.",
    "mcmaster": "Top-Lock Distorted-Thread Locknuts",
    "mcmaster_url": "https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/top-lock-distorted-thread-locknuts~~/"
   },
@@ -12305,7 +12305,7 @@
    "kind": "nut",
    "shape": "nylon",
    "name": "Thin-profile nylon-insert locknut",
-   "standard": "McMaster 90101A",
+   "standard": "inch thin nylon-insert",
    "system": "inch",
    "sizes": [
     {
@@ -12517,7 +12517,7 @@
      "mcm_thinnyl"
     ]
    },
-   "notes": "Black oxide is modelled with the plain 18-8 dimensions (McMaster's black-oxide #4 to #10 are taller). No metric 18-8 in this style.",
+   "notes": "Black oxide is modelled with the plain 18-8 dimensions (McMaster's black-oxide #4 to #10 are taller). No metric 18-8 in this style. Dimensions from McMaster 90101A.",
    "mcmaster": "Thin-Profile Nylon-Insert Locknuts",
    "mcmaster_url": "https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/thin-profile-nylon-insert-locknuts-2~~/"
   },
@@ -12669,7 +12669,7 @@
    "kind": "nut",
    "shape": "hex",
    "name": "Coupling nut",
-   "standard": "McMaster 90268A",
+   "standard": "inch coupling",
    "system": "inch",
    "sizes": [
     {
@@ -13038,7 +13038,7 @@
    "kind": "nut",
    "shape": "cap",
    "name": "Cap nut",
-   "standard": "McMaster 91855A",
+   "standard": "inch cap",
    "system": "inch",
    "sizes": [
     {
@@ -13247,7 +13247,7 @@
      "mcm_cap"
     ]
    },
-   "notes": "Dome drawn as a half sphere of radius s/2 on the hex; thread depth dp is the blind bore depth.",
+   "notes": "Dome drawn as a half sphere of radius s/2 on the hex; thread depth dp is the blind bore depth. Dimensions from McMaster 91855A.",
    "mcmaster": "Cap Nuts",
    "mcmaster_url": "https://www.mcmaster.com/products/cap-nuts/material~18-8-stainless-steel/"
   },
@@ -13256,7 +13256,7 @@
    "kind": "nut",
    "shape": "wing",
    "name": "Wing nut",
-   "standard": "McMaster 94545A",
+   "standard": "DIN 315",
    "system": "metric",
    "sizes": [
     {
@@ -13406,7 +13406,7 @@
     ],
     "finish": []
    },
-   "notes": "Overall width, height and base dia are McMaster's; the wing shape is simplified (base height m/2, wing thickness db/4, not dimensioned by McMaster).",
+   "notes": "DIN 315 sizes; overall width, height and base dia from McMaster 94545A; the wing shape is simplified (base height m/2, wing thickness db/4, not dimensioned by McMaster).",
    "mcmaster": "Wing Nuts",
    "mcmaster_url": "https://www.mcmaster.com/products/wing-nuts/material~18-8-stainless-steel/"
   },
@@ -13415,7 +13415,7 @@
    "kind": "nut",
    "shape": "wing",
    "name": "Wing nut",
-   "standard": "McMaster 92001A (Style 1)",
+   "standard": "Style 1",
    "system": "inch",
    "sizes": [
     {
@@ -13600,7 +13600,7 @@
     ],
     "finish": []
    },
-   "notes": "Overall width, height and base dia are McMaster's; wing shape simplified. 3/8-24 and 1/2-20 left out (different McMaster dimensions).",
+   "notes": "Style 1; overall width, height and base dia from McMaster 92001A; wing shape simplified. 3/8-24 and 1/2-20 left out (different McMaster dimensions).",
    "mcmaster": "Wing Nuts",
    "mcmaster_url": "https://www.mcmaster.com/products/wing-nuts/material~18-8-stainless-steel/"
   },
@@ -14359,7 +14359,7 @@
    "kind": "washer",
    "shape": "flat",
    "name": "Oversized washer",
-   "standard": "McMaster 90313A",
+   "standard": "inch fender",
    "system": "inch",
    "sizes": [
     {

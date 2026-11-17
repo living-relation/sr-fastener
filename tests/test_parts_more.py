@@ -70,7 +70,7 @@ def test_bom_text():
     f = fam('NWG-M')
     assert fc.part_number(f, row('NWG-M', 'M6'), None, 'SS') == 'NWG-M6-1 18-8 SS'
     assert fc.description(CAT, f, row('NWG-M', 'M6'), None, 'SS').startswith(
-        'Wing nut, McMaster 94545A, M6 x 1, 26.3 mm wide x 12.7 mm high, 13 mm base')
+        'Wing nut, DIN 315, M6 x 1, 26.3 mm wide x 12.7 mm high, 13 mm base')
     assert fc.part_number(fam('NCA-I'), row('NCA-I', '#10-32'), None, 'SS-BO') == 'NCA-10-32 18-8 SS-BO'
 
 
