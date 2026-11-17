@@ -1,0 +1,9 @@
+{
+ "panels": [
+  {"workspace": "FusionSolidEnvironment", "tab": "SolidTab", "panel": "InsertPanel", "promote": true},
+  {"workspace": "FusionSolidEnvironment", "tab": "SolidTab", "panel": "SRToolsPanel", "name": "SR Tools",
+   "create": true, "promote": true},
+  {"workspace": "FusionSolidEnvironment", "tab": "ToolsTab", "panel": "SolidScriptsAddinsPanel"},
+  {"workspace": "FusionSolidEnvironment", "tab": "SolidTab", "panel": "SolidCreatePanel"}
+ ]
+}

@@ -14,6 +14,7 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 
 from . import fastener_core as fc  # noqa: E402
 from . import fastener_place as fp  # noqa: E402
+from . import panels as sp  # noqa: E402
 
 CMD_ID = 'srFastenerInsertCmd'
 CMD_NAME = 'SR Fastener'
@@ -21,13 +22,13 @@ CMD_TIP = ('Insert a screw (socket, button, flat, low-profile, pan or cheese hea
            'a nut (hex, thin-profile, nylon-insert lock, flange) or a washer (flat, SAE, USS, oversized, split lock, '
            'tooth lock) at hole edges. Pick type, size, length and finish (stainless, stainless black oxide or alloy '
            'black oxide); parts stack on washers and nuts already at the edge and BOM fields fill in.')
-WORKSPACE = 'FusionSolidEnvironment'
-PANELS = ['InsertPanel', 'SolidScriptsAddinsPanel']
 SYSTEMS = [('metric', 'Metric'), ('inch', 'Inch')]
 SETTINGS_DIR = os.path.join(os.environ.get('APPDATA') or os.path.expanduser('~'), 'SRFastener')
 SETTINGS_FILE = os.path.join(SETTINGS_DIR, 'settings.json')
+PANELS_FILE = os.path.join(SETTINGS_DIR, 'panels.json')  # where the button goes (see panels.py)
 
 _handlers = []
+_placed = []    # (workspace id, panel id, created the panel) for every control this add-in added
 _cat = None
 
 
@@ -328,9 +329,42 @@ class _Destroy(adsk.core.CommandEventHandler):
 
 # ---------- add-in entry points ----------
 
+def _find_panel(ui, s):
+    """(panel, created) for a spec; creates the panel on its tab when the spec asks for it."""
+    ws = ui.workspaces.itemById(s['workspace'])
+    if ws is None:
+        return None, False
+    panel = ws.toolbarPanels.itemById(s['panel'])
+    if panel is not None or not s['create']:
+        return panel, False
+    tab = ws.toolbarTabs.itemById(s['tab'])
+    if tab is None:
+        return None, False
+    return tab.toolbarPanels.add(s['panel'], s['name']), True
+
+
+def _remove_controls(ui):
+    """Remove every control this add-in added, and any panel it created that is now empty."""
+    for wid, pid, created in reversed(_placed):
+        try:
+            ws = ui.workspaces.itemById(wid)
+            panel = ws.toolbarPanels.itemById(pid) if ws else None
+            if panel is None:
+                continue
+            ctrl = panel.controls.itemById(CMD_ID)
+            if ctrl:
+                ctrl.deleteMe()
+            if created and panel.controls.count == 0:
+                panel.deleteMe()
+        except Exception:
+            pass
+    _placed.clear()
+
+
 def run(context):
     try:
         ui = _ui()
+        _remove_controls(ui)
         cdef = ui.commandDefinitions.itemById(CMD_ID)
         if cdef:
             cdef.deleteMe()
@@ -339,18 +373,22 @@ def run(context):
         h = _Created()
         cdef.commandCreated.add(h)
         _handlers.append(h)
-        ws = ui.workspaces.itemById(WORKSPACE)
-        for pid in PANELS:
-            panel = ws.toolbarPanels.itemById(pid) if ws else None
+        specs, problems = sp.load(PANELS_FILE)
+        for s in specs:
+            panel, created = _find_panel(ui, s)
             if panel is None:
+                problems.append('panel %s not found in %s' % (s['panel'], s['workspace']))
                 continue
             old = panel.controls.itemById(CMD_ID)
             if old:
                 old.deleteMe()
             ctrl = panel.controls.addCommand(cdef)
-            if pid == PANELS[0]:
+            if s['promote']:
                 ctrl.isPromoted = True
                 ctrl.isPromotedByDefault = True
+            _placed.append((s['workspace'], s['panel'], s['create']))
+        if problems:
+            ui.messageBox('SR Fastener panel settings (%s):\n' % PANELS_FILE + '\n'.join(problems), CMD_NAME)
     except Exception:
         _ui().messageBox('SR Fastener failed to start:\n' + traceback.format_exc(), CMD_NAME)
 
@@ -358,12 +396,7 @@ def run(context):
 def stop(context):
     try:
         ui = _ui()
-        ws = ui.workspaces.itemById(WORKSPACE)
-        for pid in PANELS:
-            panel = ws.toolbarPanels.itemById(pid) if ws else None
-            ctrl = panel.controls.itemById(CMD_ID) if panel else None
-            if ctrl:
-                ctrl.deleteMe()
+        _remove_controls(ui)
         cdef = ui.commandDefinitions.itemById(CMD_ID)
         if cdef:
             cdef.deleteMe()
