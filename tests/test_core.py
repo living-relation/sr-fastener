@@ -12,7 +12,11 @@ def test_finishes():
     assert set(CAT['finishes']) == {'SS', 'SS-BO', 'ALLOY-BO'}
     for fam in CAT['families']:
         for row in fam['sizes']:
-            assert {'SS', 'SS-BO'} <= set(fc.finishes_for(CAT, fam, row)), (fam['code'], row['size'])
+            # 18-8 everywhere; black oxide only where McMaster sells it (the newer families list it per size)
+            fins = set(fc.finishes_for(CAT, fam, row))
+            assert 'SS' in fins, (fam['code'], row['size'])
+            if fam['code'][:3] not in ('SSN', 'SSE', 'SSO', 'SBF', 'STP'):  # these are sold in 18-8 only
+                assert 'SS-BO' in fins, (fam['code'], row['size'])
     alloy = CAT['finishes']['ALLOY-BO']
     assert alloy['appearance'] == 'Coating - Black Oxide'
     for fam in CAT['families']:
@@ -200,8 +204,13 @@ def test_names_follow_mcmaster():
         assert fam['mcmaster'] and fam['mcmaster_url'].startswith('https://www.mcmaster.com/')
         words = fam['mcmaster'].lower()
         if code.startswith('SS') and fam['head'] == 'set':
-            assert words.startswith({'F': 'flat-tip', 'C': 'cup-tip'}[code[2]])
+            assert words.startswith({'F': 'flat-tip', 'C': 'cup-tip', 'N': 'cone-tip', 'E': 'extended-tip',
+                                     'O': 'oval-tip'}[code[2]])
         elif code == 'HHB':  # Daniel's name for McMaster's Hex Head Screws
             assert words == 'hex head screws' and fam['name'].startswith('Hex head bolt')
+        elif code == 'SBF':  # button head, flanged
+            assert words == 'flanged button head hex-drive screws'
+        elif code == 'STP':  # sheet metal tapping screw, pan (rounded) head
+            assert words == 'phillips rounded head screws for sheet metal'
         else:
             assert code[0] == 'S' and code[2] == 'H'

@@ -178,7 +178,10 @@ def _tip_end_location(face, tip_z):
 
 def _apply_thread(comp, fam, row, length, notes):
     try:
-        ttype, designation, tclass = fc.thread_spec(fam, row)
+        spec = fc.thread_spec(fam, row)
+        if spec is None:
+            return
+        ttype, designation, tclass = spec
         query = comp.features.threadFeatures.threadDataQuery
         body = comp.bRepBodies.item(0)
         g = fc.geometry(fam, row, length)
@@ -333,7 +336,7 @@ def join(design, parent, occ, hole, world_m, local_m, notes, offset=0.0):
         return None
 
 
-_STACKS = ('cap', 'button', 'pan', 'cheese', 'hex')  # screw heads that sit on a washer (not flat or set screws)
+_STACKS = ('cap', 'button', 'flbutton', 'pan', 'cheese', 'hex')  # screw heads that sit on a washer (not flat or set screws)
 
 
 def place(app, design, cat, fam, row, length, finish_key, edges, flip=False, thread=True, stack=True):

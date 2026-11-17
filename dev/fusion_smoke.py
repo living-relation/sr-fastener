@@ -179,7 +179,13 @@ def main(keep=False, out=None):
                  ('SSF-I', '1/4', 0.5, 'ALLOY-BO', 0.53),
                  # new types and a partly threaded metric screw
                  ('SSC-M', 'M6', 10, 'SS', 0.5), ('SSC-I', '1/4', 0.5, 'ALLOY-BO', 0.53), ('SSH-M', 'M6', 35, 'SS', 0.66),
-                 ('SPH-M', 'M4', 12, 'SS', 0.45), ('SCH-M', 'M5', 10, 'SS', 0.55)]
+                 ('SPH-M', 'M4', 12, 'SS', 0.45), ('SCH-M', 'M5', 10, 'SS', 0.55),
+                 # cone, extended and oval tips, flanged button head, Phillips sheet metal screws
+                 ('SSN-M', 'M6', 10, 'SS', 0.5), ('SSN-M', 'M3', 3, 'SS', 0.25), ('SSN-I', '1/4', 0.5, 'SS', 0.53),
+                 ('SSE-M', 'M6', 8, 'SS', 0.5), ('SSE-M', 'M12', 16, 'SS', 1.0), ('SSE-I', '#10-32', 0.5, 'SS', 0.44),
+                 ('SSO-I', '#6', 0.25, 'SS', 0.33), ('SBF-M', 'M5', 10, 'SS', 0.55), ('SBF-M', 'M10', 35, 'SS', 1.1),
+                 ('STP-I', '#8', 0.5, 'SS-BO', 0.44), ('STP-I', '#2', 0.125, 'SS', 0.22),
+                 ('STP-M', 'M4.2', 13, 'SS', 0.45)]
         holes = [(i * 2.5, c[4]) for i, c in enumerate(cases)]
         body = _plate_with_holes(design, holes)
         for i, (code, size, length, fin, dia) in enumerate(cases):

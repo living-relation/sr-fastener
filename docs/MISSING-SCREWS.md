@@ -3,18 +3,16 @@
 Daniel approves new types automatically once their data is checked against McMaster-Carr or Fastenal. Names below are McMaster-Carr's category names
 (mcmaster.com, checked 2026-11-16).
 
-## Not built yet (next PRs, most common first)
+## Not built yet
 
-| McMaster name | Standard | Metric / inch |
-|---|---|---|
-| Tapping Screws (self-tapping) | ISO 7049 / ISO 15482, ASME B18.6.4 | both |
-| JIS Steel Flat Head Screws (cross-recessed countersunk) | JIS B 1111 | metric |
-| Threaded Inserts (SPIROL heat-set) | maker datasheet | both |
-| Cone-Tip Set Screws | ISO 4027, ASME B18.3 | both |
-| Extended-Tip Set Screws (dog point) | ISO 4028, ASME B18.3 | both |
-| Oval-Tip Set Screws | ASME B18.3 | inch (metric: no ISO standard) |
-| Flanged Button Head Hex-Drive Screws | ISO 7380-2 | metric |
-| Shoulder Screws | ISO 7379, ASME B18.3 | both |
+| McMaster name | Why not yet |
+|---|---|
+| Phillips Flat Head Screws for Sheet Metal (inch and metric) | McMaster's head height switches between undercut and standard by length, and the threads per inch change within a size, so each length needs its own head data |
+| JIS Flat Head Screws (cross-recessed countersunk) | McMaster sells only M4 to M6 in 18-8; no checked source yet for the JIS B 1111 cross recess size |
+| Heat-Set Inserts for Plastic | a new kind of part (sits inside a hole, no head), needs its own placement rule |
+| Shoulder Screws, 18-8 hex drive | McMaster lists several thread lengths per shoulder size; needs a full scrape plus Holo-Krome Table 12 socket depths |
+| Flanged Button Head Hex-Drive Screws, inch | no standard for the flange thickness and socket, and McMaster's head and flange sizes change with length |
+| Phillips Rounded Head Screws for Sheet Metal, No. 0, 1, 5, 7, 14 and M3.9 | outside ASME B18.6.3 Table 18 or ISO 7049, so no recess source |
 
 ## Nuts and washers left out on purpose
 

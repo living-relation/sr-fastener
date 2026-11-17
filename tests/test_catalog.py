@@ -51,7 +51,7 @@ def test_heads_bigger_than_shank_and_key_fits():
             if fam['head'] == 'hex':
                 assert dims['s'] > row['d']
             if fam['head'] == 'set':
-                assert dims['dp'] < row['d'] and dims['s'] < row['d']
+                assert dims.get('dp', 0.0) < row['d'] and dims['s'] < row['d']
 
 
 def test_banned_words():
