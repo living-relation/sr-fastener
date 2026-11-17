@@ -57,8 +57,11 @@ def test_lengths_are_mcmaster_stock():
     assert row('SSN-M', 'M5')['lengths'] == [5.0, 6.0, 8.0, 10.0, 12.0, 30.0]
     assert row('SBF-M', 'M10')['lengths'] == [12.0, 16.0, 35.0, 40.0]
     assert row('STP-M', 'M2.2')['lengths'] == [6.5, 9.5, 13.0, 16.0]
-    # #2 cone 1/8: no key engagement in Holo-Krome Tables 13/14, so it is not offered
-    assert 0.125 not in row('SSN-I', '#2')['lengths']
+    # short lengths below Holo-Krome Tables 13/14: standard socket depth, cut back to clear the point
+    assert 0.125 in row('SSN-I', '#2')['lengths']
+    assert fc.key_depth(row('SSN-I', '#2'), 0.125) == 0.060          # Table 13 TH, full depth
+    assert fc.key_depth(row('SSE-I', '3/8-24'), 0.375) == 0.142      # cut back for the dog point
+    assert fc.key_depth(row('SSE-I', '1/2'), 0.625) == 0.250         # Table 13 column B is 0.63 (5/8)
 
 
 def test_bom_text():
@@ -104,3 +107,15 @@ def test_point_shapes():
     g = fc.geometry(fam('SSO-I'), row('SSO-I', '#6'), 0.25)
     R, r = g['oval_R'], g['r']
     assert abs(g['point_h'] - (R - math.sqrt(R * R - r * r))) < 1e-12
+
+
+def test_short_set_screw_sockets_clear_the_point():
+    """The restored short inch lengths leave at least 0.25 d of metal between the socket and the point."""
+    for code, size, L in [('SSN-I', '#2', 0.125), ('SSN-I', '#6', 0.1875), ('SSN-I', '5/16', 0.375),
+                          ('SSN-I', '5/16-24', 0.375), ('SSN-I', '3/8', 0.375), ('SSN-I', '3/8-24', 0.375),
+                          ('SSE-I', '#2', 0.125), ('SSE-I', '3/8', 0.375), ('SSE-I', '3/8-24', 0.375),
+                          ('SSE-I', '1/2', 0.625), ('SSO-I', '#6', 0.1875)]:
+        r = row(code, size)
+        assert L in r['lengths'], (code, size, L)
+        g = fc.geometry(fam(code), r, L)
+        assert g['L'] - g['key_depth'] - g['point_h'] >= 0.5 * g['r'] - 1e-9, (code, size, L)

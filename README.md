@@ -58,8 +58,9 @@ Names and codes follow McMaster-Carr's category names (checked on mcmaster.com 2
 | Phillips rounded head sheet metal screw, metric | STP | ISO 7049 | M2.2, M2.9, M3.5, M4.2, M4.8, M5.5 |
 
 The newer types (SSN, SSE, SSO, SBF, STP) have no alloy black oxide. Their lengths are exactly the lengths
-McMaster stocks. A few short inch set screws are left out where Holo-Krome's key engagement tables give no
-socket depth. Sheet metal screws get no cosmetic thread (Fusion has no tapping-screw thread), and the inch
+McMaster stocks. Short inch set screws that Holo-Krome's key engagement tables do not cover use the size's
+standard socket depth, cut back where needed to leave a quarter diameter of metal above the point (listed in
+[docs/SOURCES.md](docs/SOURCES.md)). Sheet metal screws get no cosmetic thread (Fusion has no tapping-screw thread), and the inch
 tip is drawn one diameter long (its length is not in the sources). Cone and extended tips start at the thread
 root, as the standards specify.
 

@@ -185,7 +185,14 @@ def main(keep=False, out=None):
                  ('SSE-M', 'M6', 8, 'SS', 0.5), ('SSE-M', 'M12', 16, 'SS', 1.0), ('SSE-I', '#10-32', 0.5, 'SS-BO', 0.44),
                  ('SSO-I', '#6', 0.25, 'SS-BO', 0.33), ('SBF-M', 'M5', 10, 'SS-BO', 0.55), ('SBF-M', 'M10', 35, 'SS', 1.1),
                  ('STP-I', '#8', 0.5, 'SS-BO', 0.44), ('STP-I', '#2', 0.125, 'SS-BO', 0.22),
-                 ('STP-M', 'M4.2', 13, 'SS-BO', 0.45)]
+                 ('STP-M', 'M4.2', 13, 'SS-BO', 0.45),
+                 # short inch set screws with the standard socket depth (cut back for the point where needed)
+                 ('SSN-I', '#2', 0.125, 'SS', 0.22), ('SSN-I', '#6', 0.1875, 'SS-BO', 0.37),
+                 ('SSN-I', '5/16', 0.375, 'SS', 0.8), ('SSN-I', '5/16-24', 0.375, 'SS-BO', 0.8),
+                 ('SSN-I', '3/8', 0.375, 'SS', 0.95), ('SSN-I', '3/8-24', 0.375, 'SS-BO', 0.95),
+                 ('SSE-I', '#2', 0.125, 'SS-BO', 0.22), ('SSE-I', '3/8', 0.375, 'SS', 0.95),
+                 ('SSE-I', '3/8-24', 0.375, 'SS-BO', 0.95), ('SSE-I', '1/2', 0.625, 'SS', 1.1),
+                 ('SSO-I', '#6', 0.1875, 'SS-BO', 0.37)]
         holes = [(i * 2.5, c[4]) for i, c in enumerate(cases)]
         body = _plate_with_holes(design, holes)
         for i, (code, size, length, fin, dia) in enumerate(cases):
