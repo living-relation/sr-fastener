@@ -414,7 +414,6 @@ SRC.update({
     'iso7049': ITEH + '54046/cdf129d179c645d7b5c43390e21e0811/ISO-7049-2011.pdf (ISO 7049:2011 Table 1: P, rf, recess no., Type H m and penetration, y Type C)',
     'b1863_pan': 'https://adfastcomponents.com/weights/asme/weights-for-asme-b18-6-3-type-1-cross-recessed-pan-head-machine-screws/ (ASME B18.6.3 Table 18 Type I pan head: A, H, recess M, driver size, penetration P)',
 })
-STD_SS = ['SS']
 CONE_MCM = {  # McMaster 18-8 cone-tip set screws: (length, cone angle deg) per thread
     '#2': [(0.125, 90), (0.1875, 90), (0.25, 90), (0.3125, 90), (0.375, 90)],
     '#4': [(0.125, 118), (0.1875, 90), (0.25, 90), (0.3125, 90), (0.375, 90), (0.4375, 90), (0.5, 90), (0.625, 90), (0.75, 90), (1, 90)],
@@ -564,13 +563,13 @@ def _set_rows(table, point):
 
 
 def _tap_in(rows):
-    """rows: (nominal, d, tpi, dims, lengths, black_oxide_too)."""
-    return [dict(size=n, nominal=n, series='tapping', d=d, tpi=tpi, dims=dims, lengths=ls,
-                 finishes=['SS', 'SS-BO'] if bo else ['SS']) for n, d, tpi, dims, ls, bo in rows]
+    """rows: (nominal, d, tpi, dims, lengths, McMaster stocks black oxide too (reference only))."""
+    return [dict(size=n, nominal=n, series='tapping', d=d, tpi=tpi, dims=dims, lengths=ls)
+            for n, d, tpi, dims, ls, bo in rows]
 
 
 def _tap_m(rows):
-    return [dict(size=n, d=float(n[1:]), pitch=p, dims=dims, lengths=ls, finishes=['SS']) for n, p, dims, ls in rows]
+    return [dict(size=n, d=float(n[1:]), pitch=p, dims=dims, lengths=ls) for n, p, dims, ls in rows]
 
 
 def _pan_in(dk, k, recess, m, p_max, p_min):
@@ -587,29 +586,29 @@ def _fl(dk, k, rf, s, t, dc, c):
 
 FAMILIES += [
     dict(code='SSN-M', name='Cone-tip set screw', standard='ISO 4027', system='metric', head='set', point='cone',
-         drive='hex', finishes=STD_SS, source=SRC['iso4027'],
+         drive='hex', finishes=STD, source=SRC['iso4027'],
          sources={'dims': ['iso4027', 'mcm_cone'], 'lengths': ['mcm_cone'], 'thread': ['iso4027'], 'alloy': []},
          sizes=_set_rows({k: v for k, v in CONE_MCM.items() if k.startswith('M')}, 'cone')),
     dict(code='SSN-I', name='Cone-tip set screw', standard='ASME B18.3', system='inch', head='set', point='cone',
-         drive='hex', finishes=STD_SS, source=SRC['hk_tech'],
+         drive='hex', finishes=STD, source=SRC['hk_tech'],
          sources={'dims': ['hk_tech', 'mcm_cone'], 'lengths': ['mcm_cone'], 'thread': [], 'alloy': []},
          sizes=_set_rows({k: v for k, v in CONE_MCM.items() if not k.startswith('M')}, 'cone')),
     dict(code='SSE-M', name='Extended-tip set screw', standard='ISO 4028', system='metric', head='set', point='dog',
-         drive='hex', finishes=STD_SS, source=SRC['iso4028'],
+         drive='hex', finishes=STD, source=SRC['iso4028'],
          sources={'dims': ['iso4028', 'mcm_ext'], 'lengths': ['mcm_ext'], 'thread': ['iso4028'], 'alloy': []},
          sizes=_set_rows({k: v for k, v in EXT_MCM.items() if k.startswith('M')}, 'dog')),
     dict(code='SSE-I', name='Extended-tip set screw', standard='ASME B18.3 (half dog)', system='inch', head='set',
-         point='dog', drive='hex', finishes=STD_SS, source=SRC['hk_tech'],
+         point='dog', drive='hex', finishes=STD, source=SRC['hk_tech'],
          sources={'dims': ['hk_tech', 'mcm_ext'], 'lengths': ['mcm_ext'], 'thread': [], 'alloy': []},
          sizes=_set_rows({k: v for k, v in EXT_MCM.items() if not k.startswith('M')}, 'dog')),
     dict(code='SSO-I', name='Oval-tip set screw', standard='ASME B18.3', system='inch', head='set', point='oval',
-         drive='hex', finishes=STD_SS, source=SRC['hk_tech'],
+         drive='hex', finishes=STD, source=SRC['hk_tech'],
          sources={'dims': ['hk_tech'], 'lengths': ['mcm_oval'], 'thread': [], 'alloy': []},
          sizes=_set_rows(OVAL_MCM, 'oval')),
     # McMaster: dc (flange dia), dk (head dia), k; ISO 7380-2: rf, c (flange thickness), s, t. All fully threaded.
     # M10 lengths 20 to 30 mm have a different head on McMaster (20.6 mm flange) and are left out.
     dict(code='SBF-M', name='Flanged button head hex-drive screw', standard='ISO 7380-2', system='metric',
-         head='flbutton', drive='hex', finishes=STD_SS, source=SRC['iso7380_2'],
+         head='flbutton', drive='hex', finishes=STD, source=SRC['iso7380_2'],
          sources={'dims': ['mcm_flbtn', 'iso7380_2'], 'lengths': ['mcm_flbtn'], 'thread': ['mcm_flbtn'], 'alloy': []},
          sizes=[dict(size=s, d=float(s[1:]), pitch=PITCH[s], dims=dims, lengths=ls) for s, dims, ls in [
              ('M3', _fl(5.2, 1.65, 3.7, 2.0, 1.04, 6.9, 0.7), [5, 6, 8, 10, 12, 14, 16, 20, 22, 25]),
@@ -620,7 +619,7 @@ FAMILIES += [
              ('M8', _fl(13.2, 4.4, 7.95, 5.0, 2.6, 17.8, 1.5), [10, 12, 16, 20, 22, 25, 30, 35, 40, 45, 50]),
              ('M10', _fl(16.5, 5.5, 9.8, 6.0, 3.12, 22.0, 2.0), [12, 16, 35, 40])]]),
     # Inch: McMaster head (matches ASME B18.6.3 Table 18 A and H max) and threads per inch; recess M and mean
-    # penetration from B18.6.3 Table 18. Black oxide on the sizes McMaster sells in black-oxide 18-8.
+    # penetration from B18.6.3 Table 18.
     dict(code='STP-I', name='Phillips rounded head sheet metal screw', standard='ASME B18.6.3 head', system='inch',
          head='pan', drive='phillips', thread_form='tapping', finishes=STD, source=SRC['mcm_tap_pan'],
          sources={'dims': ['mcm_tap_pan', 'b1863_pan'], 'lengths': ['mcm_tap_pan'], 'thread': ['mcm_tap_pan'],
@@ -642,7 +641,7 @@ FAMILIES += [
     # Metric: McMaster head dk and k (slightly off ISO 7049: McMaster wins); pitch, crown rf, Type H recess m and
     # mean penetration, and Type C point length y from ISO 7049. M3.9 is not in ISO 7049 and is left out.
     dict(code='STP-M', name='Phillips rounded head sheet metal screw', standard='ISO 7049', system='metric',
-         head='pan', drive='phillips', thread_form='tapping', finishes=STD_SS, source=SRC['iso7049'],
+         head='pan', drive='phillips', thread_form='tapping', finishes=STD, source=SRC['iso7049'],
          sources={'dims': ['mcm_tap_pan', 'iso7049'], 'lengths': ['mcm_tap_pan'], 'thread': ['iso7049'], 'alloy': []},
          sizes=_tap_m([
              ('M2.2', 0.8, _pan_m(4.2, 1.8, 3.2, 0, 1.9, 1.20, 0.85, 2.0), [6.5, 9.5, 13, 16]),
@@ -678,7 +677,8 @@ FAMILIES = [f for f in FAMILIES if f['code'] not in PENDING_APPROVAL]
 # the standard or a maker data sheet; `notes` records where they differ. Catalog units (mm or in):
 #   nuts: s across flats, m height (overall height for nylon-insert), flange: dc diameter, c flange thickness
 #   washers: d1 inside, d2 outside, t thickness (middle of McMaster's range where it gives a range)
-# Black oxide (SS-BO) is offered only on the sizes McMaster lists in black-oxide 18-8 stainless. No alloy.
+# Every size is offered in 18-8 SS and 18-8 SS-BO (Daniel's rule; McMaster is used for dimensions, not
+# availability). No alloy black oxide on nuts and washers.
 MCMP = 'https://www.mcmaster.com/products/'
 SRC.update({
     'mcm_hexnut_m': MCMP + 'hex-nuts/material~18-8-stainless-steel/system-of-measurement~metric/hex-nuts-3~~/ (McMaster 18-8 metric hex nuts, DIN 934: width, height)',
@@ -714,11 +714,13 @@ SRC.update({
 
 
 def _fins(bo, key):
-    return ['SS', 'SS-BO'] if key in bo else ['SS']
+    # Daniel (2026-11-16): every size is offered in 18-8 SS and 18-8 SS-BO whether or not McMaster stocks the
+    # black-oxide version. `bo` keeps the record of McMaster's black-oxide stock for reference only.
+    return ['SS', 'SS-BO']
 
 
 def part_mm(rows, bo=()):
-    """rows: [(size, dims)]. bo: sizes McMaster sells in black-oxide 18-8."""
+    """rows: [(size, dims)]. bo: sizes McMaster sells in black-oxide 18-8 (reference only; every size gets SS-BO)."""
     return [dict(size=size, d=float(size[1:]), pitch=PITCH[size], dims=dims, finishes=_fins(bo, size))
             for size, dims in rows]
 
@@ -769,7 +771,7 @@ TOOTH_M = [('M3', wash(3.2, 6.0, 0.4)), ('M4', wash(4.3, 8.0, 0.5)), ('M5', wash
 
 
 def part(code, kind, shape, name, standard, system, sizes, dims, finish_src, notes=''):
-    fins = ['SS'] + (['SS-BO'] if any('SS-BO' in r['finishes'] for r in sizes) else [])
+    fins = ['SS', 'SS-BO']
     return dict(code=code, kind=kind, shape=shape, name=name, standard=standard, system=system, sizes=sizes,
                 finishes=fins, source=SRC[dims[0]], sources={'dims': dims, 'finish': finish_src}, notes=notes)
 
@@ -907,8 +909,8 @@ PARTS += [
                   ('3/8', nut(fr(9, 16), fr(17, 64))), ('1/2', nut(0.75, fr(5, 16)))],
                  unf=UNF_ALL, bo=('1/4', '5/16', '3/8', '1/2'), bo_unf=('3/8', '1/2')),
          ['mcm_thinnyl'], ['mcm_thinnyl'],
-         'Black oxide only where McMaster\'s black-oxide nut has the same height as the plain one (#4 to #10 '
-         'black-oxide are taller, 1/4-28 and 5/16-24 are not stocked in black oxide). No metric 18-8 in this style.'),
+         'Black oxide is modelled with the plain 18-8 dimensions (McMaster\'s black-oxide #4 to #10 are taller). '
+         'No metric 18-8 in this style.'),
     part('NCP-M', 'nut', 'hex', 'Coupling nut', 'DIN 6334', 'metric',
          part_mm([('M3', nut(5.0, 9.0)), ('M4', nut(7.0, 12.0)), ('M5', nut(8.0, 15.0)), ('M6', nut(10.0, 18.0)),
                   ('M8', nut(13.0, 24.0)), ('M10', nut(17.0, 30.0)), ('M12', nut(19.0, 36.0)), ('M16', nut(24.0, 48.0)),
@@ -1024,15 +1026,14 @@ def sources_md():
         out.append('| %s | %s | %s | %s |' % (fam['code'], name, fam['standard'], ' | '.join(
             ', '.join(src.get(k, [])) for k in ('dims', 'lengths', 'thread', 'alloy'))))
     out += ['', '## Nuts and washers', '',
-            'Dimensions follow McMaster-Carr 18-8 stock, cross-checked with the listed standard or maker sheet.', '',
-            '| Code | McMaster name | Standard | Sizes | Dimension sources | Black oxide (SS-BO) sizes | Notes |',
-            '|---|---|---|---|---|---|---|']
+            'Dimensions follow McMaster-Carr 18-8 stock, cross-checked with the listed standard or maker sheet.',
+           'Every size is offered in 18-8 SS and 18-8 SS-BO; McMaster is used for dimensions, not availability.', '',
+            '| Code | McMaster name | Standard | Sizes | Dimension sources | Notes |',
+            '|---|---|---|---|---|---|']
     for p in PARTS:
-        bo = [r['size'] for r in p['sizes'] if 'SS-BO' in r['finishes']]
-        out.append('| %s | %s | %s | %s | %s | %s | %s |' % (
+        out.append('| %s | %s | %s | %s | %s | %s |' % (
             p['code'], p['mcmaster'], p['standard'], ', '.join(r['size'] for r in p['sizes']),
-            ', '.join(p['sources']['dims']), (', '.join(bo) + ' (' + ', '.join(p['sources']['finish']) + ')') if bo else 'none',
-            p['notes'] or ''))
+            ', '.join(p['sources']['dims']), p['notes'] or ''))
     out += ['', '## Source keys', '', '| Key | Source |', '|---|---|']
     out += ['| %s | %s |' % (k, v) for k, v in SRC.items()]
     out += ['', 'Lengths with no length source use the preferred series trimmed to an unverified range (TBD).',

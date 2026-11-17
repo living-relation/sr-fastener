@@ -92,16 +92,14 @@ def test_washers_inch():  # McMaster SAE 1/4 .281/.625; USS 1/4 .312/.750; split
 def test_black_oxide_only_where_stocked():
     fin = lambda c, s: fc.finishes_for(CAT, fc.family(CAT, c), row(c, s))  # noqa: E731
     assert fin('NHX-M', 'M6') == ['SS', 'SS-BO']
-    assert fin('NHX-M', 'M8') == ['SS']            # McMaster black-oxide metric hex nuts stop at M6
-    assert fin('NHX-I', '#4-48') == ['SS']         # no black-oxide 4-48
-    assert fin('NHX-I', '#6-40') == ['SS', 'SS-BO']
-    assert fin('WSL-M', 'M4') == ['SS']            # no black-oxide M4 split lock washer
-    assert fin('NNL-M', 'M16') == ['SS']
-    for code in ('NFL-M', 'NSF-M', 'WOV-M', 'WTE-M', 'WTI-M'):
-        assert fc.family(CAT, code)['finishes'] == ['SS'], code
+    # Daniel's rule: every nut and washer size in 18-8 SS and 18-8 SS-BO, even where McMaster has no black oxide
+    assert fin('NHX-M', 'M8') == ['SS', 'SS-BO']
+    assert fin('NHX-I', '#4-48') == ['SS', 'SS-BO']
+    assert fin('WSL-M', 'M4') == ['SS', 'SS-BO']
     for p in CAT['parts']:
+        assert p['finishes'] == ['SS', 'SS-BO'], p['code']
         for r in p['sizes']:
-            assert 'ALLOY-BO' not in r['finishes']
+            assert r['finishes'] == ['SS', 'SS-BO'], (p['code'], r['size'])
 
 
 def test_part_numbers_and_descriptions():
@@ -116,9 +114,10 @@ def test_part_numbers_and_descriptions():
     assert bom('NHX-M', 'M5')['description'] == 'Hex nut, DIN 934, M5 x 0.8, 8 mm wide x 4 mm high, 18-8 stainless steel'
     assert bom('WSL-M', 'M6')['description'] == ('Split lock washer, DIN 127 B, M6, 6.5 mm ID x 11.8 mm OD x 1.6 mm thick, '
                                                  '18-8 stainless steel')
+    assert bom('NHX-M', 'M8', 'SS-BO')['part_number'] == 'NHX-M8-1.25 18-8 SS-BO'
     try:
-        bom('NHX-M', 'M8', 'SS-BO')
-        assert False, 'M8 black oxide should be refused'
+        bom('NHX-M', 'M8', 'ALLOY-BO')
+        assert False, 'alloy black oxide is not offered on nuts'
     except ValueError:
         pass
 

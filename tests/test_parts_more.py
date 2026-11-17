@@ -36,22 +36,22 @@ def test_top_lock_and_thin_nylon():
     assert d('NTL-M', 'M8') == {'s': 13.0, 'm': 6.4}  # 90045A115
     assert close(d('NTL-I', '3/8-24')['m'], 21 / 64)  # 90045A461
     assert close(d('NTN-I', '#8')['m'], 11 / 64)  # 90101A009
-    assert fc.finishes_for(CAT, fam('NTN-I'), row('NTN-I', '#8')) == ['SS']  # black-oxide #8 is 3/16 high
+    assert fc.finishes_for(CAT, fam('NTN-I'), row('NTN-I', '#8')) == ['SS', 'SS-BO']
     assert fc.finishes_for(CAT, fam('NTN-I'), row('NTN-I', '3/8-24')) == ['SS', 'SS-BO']  # 90101A124
-    assert fc.finishes_for(CAT, fam('NTN-I'), row('NTN-I', '1/4-28')) == ['SS']
+    assert fc.finishes_for(CAT, fam('NTN-I'), row('NTN-I', '1/4-28')) == ['SS', 'SS-BO']
 
 
 def test_coupling_nuts():
     assert d('NCP-M', 'M6') == {'s': 10.0, 'm': 18.0}  # 93590A106, DIN 6334
     assert d('NCP-M', 'M20') == {'s': 30.0, 'm': 60.0}
-    assert fc.finishes_for(CAT, fam('NCP-M'), row('NCP-M', 'M16')) == ['SS']
+    assert fc.finishes_for(CAT, fam('NCP-M'), row('NCP-M', 'M16')) == ['SS', 'SS-BO']
     assert d('NCP-I', '1/4') == {'s': 0.375, 'm': 0.875}  # 90268A029 product page: width 3/8, length 7/8
 
 
 def test_cap_wing_square():
     assert d('NCA-M', 'M8') == {'s': 13.0, 'm': 15.0, 'dp': 10.7}  # 94000A039
     assert close(d('NCA-I', '1/4')['m'], 15 / 32) and d('NCA-I', '1/4')['dp'] == 0.25  # 91855A520
-    assert fc.finishes_for(CAT, fam('NCA-I'), row('NCA-I', '1/4-28')) == ['SS']
+    assert fc.finishes_for(CAT, fam('NCA-I'), row('NCA-I', '1/4-28')) == ['SS', 'SS-BO']
     assert d('NWG-M', 'M6') == {'s': None, 'm': 12.7, 'w': 26.3, 'db': 13.0}  # 94545A230, DIN 315
     assert d('NWG-I', '1/4')['w'] == 1.125  # 92001A321
     assert d('NSQ-M', 'M10') == {'s': 17.0, 'm': 8.0}  # 90225A104
@@ -62,7 +62,7 @@ def test_new_washers():
     assert d('WTK-M', 'M8') == {'d1': 8.4, 'd2': 21.0, 't': 4.0}  # 97310A132, DIN 7349
     assert d('WTE-I', '1/4') == {'d1': 0.256, 'd2': 0.510, 't': 0.0255}  # 95584A207
     assert d('WTI-I', '#10') == {'d1': 0.195, 'd2': 0.381, 't': 0.021}  # 91757A107
-    assert fc.finishes_for(CAT, fam('WTE-I'), row('WTE-I', '1/2')) == ['SS']
+    assert fc.finishes_for(CAT, fam('WTE-I'), row('WTE-I', '1/2')) == ['SS', 'SS-BO']
     assert d('WOV-I', '1/4') == {'d1': 0.281, 'd2': 1.25, 't': 0.05}  # 90313A108
 
 

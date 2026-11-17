@@ -83,13 +83,13 @@ PART_STACKS = [
     (0.51, [('NHX-I', '#10-32', 'SS-BO', 'bottom'), ('WSL-I', '#10', 'SS-BO', 'top'), ('WSA-I', '#10', 'SS', 'top')]),
     (0.37, [('NHX-I', '#6', 'SS', 'bottom'), ('NNL-I', '#6-40', 'SS-BO', 'top')]),
     (0.66, [('WTK-M', 'M6', 'SS', 'top'), ('NCA-M', 'M6', 'SS', 'bottom')]),
-    (0.55, [('NWG-M', 'M5', 'SS', 'top'), ('NSQ-M', 'M5', 'SS', 'bottom')]),
-    (0.66, [('NFL-I', '1/4', 'SS', 'top'), ('NSF-I', '1/4-28', 'SS', 'bottom')]),
+    (0.55, [('NWG-M', 'M5', 'SS-BO', 'top'), ('NSQ-M', 'M5', 'SS', 'bottom')]),
+    (0.66, [('NFL-I', '1/4', 'SS-BO', 'top'), ('NSF-I', '1/4-28', 'SS-BO', 'bottom')]),
     (0.66, [('WTE-I', '1/4', 'SS-BO', 'top'), ('NTN-I', '1/4', 'SS-BO', 'top'), ('WTI-I', '1/4', 'SS', 'bottom'),
             ('NTL-I', '1/4-28', 'SS', 'bottom')]),
-    (0.88, [('NTL-M', 'M8', 'SS', 'top'), ('NCP-M', 'M8', 'SS-BO', 'bottom')]),
-    (0.51, [('WOV-I', '#10', 'SS', 'top'), ('NCA-I', '#10-32', 'SS-BO', 'bottom')]),
-    (0.51, [('NWG-I', '#10', 'SS', 'top'), ('NSQ-I', '#10-32', 'SS', 'bottom')]),
+    (0.88, [('NTL-M', 'M8', 'SS-BO', 'top'), ('NCP-M', 'M8', 'SS-BO', 'bottom')]),
+    (0.51, [('WOV-I', '#10', 'SS-BO', 'top'), ('NCA-I', '#10-32', 'SS-BO', 'bottom')]),
+    (0.51, [('NWG-I', '#10', 'SS', 'top'), ('NSQ-I', '#10-32', 'SS-BO', 'bottom')]),
     (0.66, [('NCP-I', '1/4', 'SS', 'top')]),
 ]
 
@@ -181,11 +181,11 @@ def main(keep=False, out=None):
                  ('SSC-M', 'M6', 10, 'SS', 0.5), ('SSC-I', '1/4', 0.5, 'ALLOY-BO', 0.53), ('SSH-M', 'M6', 35, 'SS', 0.66),
                  ('SPH-M', 'M4', 12, 'SS', 0.45), ('SCH-M', 'M5', 10, 'SS', 0.55),
                  # cone, extended and oval tips, flanged button head, Phillips sheet metal screws
-                 ('SSN-M', 'M6', 10, 'SS', 0.5), ('SSN-M', 'M3', 3, 'SS', 0.25), ('SSN-I', '1/4', 0.5, 'SS', 0.53),
-                 ('SSE-M', 'M6', 8, 'SS', 0.5), ('SSE-M', 'M12', 16, 'SS', 1.0), ('SSE-I', '#10-32', 0.5, 'SS', 0.44),
-                 ('SSO-I', '#6', 0.25, 'SS', 0.33), ('SBF-M', 'M5', 10, 'SS', 0.55), ('SBF-M', 'M10', 35, 'SS', 1.1),
-                 ('STP-I', '#8', 0.5, 'SS-BO', 0.44), ('STP-I', '#2', 0.125, 'SS', 0.22),
-                 ('STP-M', 'M4.2', 13, 'SS', 0.45)]
+                 ('SSN-M', 'M6', 10, 'SS-BO', 0.5), ('SSN-M', 'M3', 3, 'SS', 0.25), ('SSN-I', '1/4', 0.5, 'SS', 0.53),
+                 ('SSE-M', 'M6', 8, 'SS', 0.5), ('SSE-M', 'M12', 16, 'SS', 1.0), ('SSE-I', '#10-32', 0.5, 'SS-BO', 0.44),
+                 ('SSO-I', '#6', 0.25, 'SS-BO', 0.33), ('SBF-M', 'M5', 10, 'SS-BO', 0.55), ('SBF-M', 'M10', 35, 'SS', 1.1),
+                 ('STP-I', '#8', 0.5, 'SS-BO', 0.44), ('STP-I', '#2', 0.125, 'SS-BO', 0.22),
+                 ('STP-M', 'M4.2', 13, 'SS-BO', 0.45)]
         holes = [(i * 2.5, c[4]) for i, c in enumerate(cases)]
         body = _plate_with_holes(design, holes)
         for i, (code, size, length, fin, dia) in enumerate(cases):
