@@ -48,6 +48,21 @@ Names and codes follow McMaster-Carr's category names (checked on mcmaster.com 2
 | Hex head bolt, inch | HHB | ASME B18.2.1 | 1/4 to 1/2 |
 | Flat-tip set screw, inch | SSF | ASME B18.3 | #2 to 1/2, UNC and UNF |
 | Cup-tip set screw, inch | SSC | ASME B18.3 | #2 to 1/2, UNC and UNF |
+| Cone-tip set screw, metric | SSN | ISO 4027 | M2 to M12 |
+| Cone-tip set screw, inch | SSN | ASME B18.3 | #2 to 1/2 UNC, #10 to 3/8 UNF |
+| Extended-tip set screw, metric | SSE | ISO 4028 | M3 to M12 |
+| Extended-tip set screw, inch | SSE | ASME B18.3 (half dog) | #2 to 1/2 UNC, #10 to 3/8 UNF |
+| Oval-tip set screw, inch | SSO | ASME B18.3 | #4, #6, #8, #10-32, 1/4, 3/8 |
+| Flanged button head hex-drive screw, metric | SBF | ISO 7380-2 | M3 to M10 |
+| Phillips rounded head sheet metal screw, inch | STP | ASME B18.6.3 head | #2 to #12 |
+| Phillips rounded head sheet metal screw, metric | STP | ISO 7049 | M2.2, M2.9, M3.5, M4.2, M4.8, M5.5 |
+
+The newer types (SSN, SSE, SSO, SBF, STP) are sold by McMaster in 18-8 stainless only, so they have no alloy
+black oxide, and black-oxide 18-8 only on sheet metal screws #6 to #12. Their lengths are exactly the lengths
+McMaster stocks. A few short inch set screws are left out where Holo-Krome's key engagement tables give no
+socket depth. Sheet metal screws get no cosmetic thread (Fusion has no tapping-screw thread), and the inch
+tip is drawn one diameter long (its length is not in the sources). Cone and extended tips start at the thread
+root, as the standards specify.
 
 Every family cites its sources in the catalog (dimensions, lengths, thread length and alloy availability
 separately), and `tests/test_sources.py` checks rows against them. See [docs/SOURCES.md](docs/SOURCES.md).
@@ -157,12 +172,13 @@ These follow the shop's basic hardware codes, which end with the finish:
 
 Codes: screws are S + head letter + H, which is the shop's existing SSH/SBH/SFH/SLH pattern; the external hex
 is a hex head bolt, HHB (Daniel's name; McMaster sells it as Hex Head Screws);
-set screws are SS + tip letter (SSF flat-tip, SSC cup-tip).
+set screws are SS + tip letter (SSF flat-tip, SSC cup-tip, SSN cone-tip, SSE extended-tip, SSO oval-tip);
+SBF is a flanged button head and STP a Phillips rounded head sheet metal (tapping) screw.
 Nuts are N + two letters (NHX hex, NTH thin-profile, NNL nylon-insert locknut, NFL flange, NSF serrated
 flange, NTL top-lock, NTN thin nylon-insert locknut, NCP coupling, NCA cap, NWG wing, NSQ square); washers are
 W + two letters (WGP general purpose, WSA SAE, WUS USS, WOV oversized, WSL split lock, WTE/WTI external/internal
 tooth lock, WTK thick).
-Codes not in the shop list yet: `HHB` (named by Daniel), `SSC`, `SSF`, `SPH`, `SCH`, all the nut and washer codes, and the finish `ALLOY-BO`.
+Codes not in the shop list yet: `HHB` (named by Daniel), `SSC`, `SSF`, `SPH`, `SCH`, `SSN`, `SSE`, `SSO`, `SBF`, `STP`, all the nut and washer codes, and the finish `ALLOY-BO`.
 If a screw is bought from McMaster-Carr, use McMaster's part number on the BOM instead. The tool
 stores the vendor part number as `TBD`.
 
@@ -200,8 +216,8 @@ python tools/check.py           # repo safety scan + catalog freshness + unit te
 ```
 
 `dev/fusion_smoke.py` is a live test that runs inside Fusion (through a Python bridge or the Scripts
-dialog). It opens a new design, cuts a plate with 29 holes, places every type in every finish (alloy black
-oxide in each family that offers it, a UNF screw, cup-tip set screws, the pan and cheese heads, and partly threaded screws),
+dialog). It opens a new design, cuts a plate with 41 holes, places every type in every finish (alloy black
+oxide in each family that offers it, a UNF screw, cup, cone, extended and oval tip set screws, the pan and cheese heads, flanged button heads, sheet metal screws, and partly threaded screws),
 checks the part number, description, material, appearance, position, tip depth, joint, reuse, toolbar
 button, and that partial cosmetic threads have the tabled length and start at the tip. A second plate with
 17 holes gets every nut and washer type, stacked under screw heads and on the thread end, and checks the seat
