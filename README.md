@@ -46,7 +46,7 @@ Components project or any shared folder. To use the tool on another PC, install 
   the hole. Only with no screw do they size from the hole. They never size from other nuts or washers. Stack
   rows only offer types that come in the screw's size.
 - **Warnings** (shown live and again after Insert): a nut or washer that does not match the screw's size or
-  thread, a screw that does not match a tapped hole's thread, a screw bigger than a plain hole, two screws in
+  thread (the warning says "inch and metric" when the unit systems differ), a screw that does not match a tapped hole's thread, a screw bigger than a plain hole, two screws in
   one hole, and mixed materials.
 - **Mixed materials:** if the new parts' materials differ from each other or from parts already in the hole,
   Insert asks: Yes switches the new parts to the screw's material where that material is sold, No inserts them

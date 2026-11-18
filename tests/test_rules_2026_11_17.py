@@ -93,7 +93,7 @@ def test_compat_warnings():
     screw = fc.item(CAT, 'SSH-M', 'M4', 'SS', 12)
     nut = fc.item(CAT, 'NHX-I', '#8', 'SS-BO')  # Daniel's screenshot: M4 screw with a 8-32 black oxide nut
     w = fc.compat_warnings(CAT, [screw, nut])
-    assert any('different size or thread' in x for x in w) and any('mixed materials' in x for x in w)
+    assert any('inch and metric' in x for x in w) and any('mixed materials' in x for x in w)
     ok = [screw, fc.item(CAT, 'NHX-M', 'M4', 'SS'), fc.item(CAT, 'WGP-M', 'M4', 'SS')]
     assert fc.compat_warnings(CAT, ok) == []
     assert any('tapped hole' in x for x in fc.compat_warnings(CAT, [screw], 'M5x0.8'))
@@ -177,3 +177,9 @@ def test_screw_vs_plain_hole_size():
     assert fc.compat_warnings(CAT, [screw], None, 1.2) == []
     # a tapped hole is judged by its thread, not its drill size
     assert fc.compat_warnings(CAT, [screw], 'M6x1', 0.50) == []
+
+
+def test_unit_system_mismatch_is_named():
+    screw = fc.item(CAT, 'SSH-M', 'M4', 'SS', 12)
+    assert any('inch and metric' in x for x in fc.compat_warnings(CAT, [screw, fc.item(CAT, 'NHX-I', '#8', 'SS')]))
+    assert any('different size or thread' in x for x in fc.compat_warnings(CAT, [screw, fc.item(CAT, 'NHX-M', 'M6', 'SS')]))
