@@ -126,7 +126,7 @@ def main(keep=False):
               fc.compat_warnings(cat, ex, hc.thread))
         bad = ex + [fc.item(cat, 'NHX-I', '#8', 'SS-BO')]
         w = fc.compat_warnings(cat, bad, hc.thread)
-        check('mismatched nut warns size and material', any('size or thread' in x for x in w) and
+        check('mismatched nut warns size and material', any('does not fit' in x for x in w) and
               any('mixed materials' in x for x in w), w)
         w2 = fc.compat_warnings(cat, [fc.item(cat, 'SSH-M', 'M5', 'SS', 12)], ht.thread)
         check('wrong screw in tapped hole warns', any('tapped hole' in x for x in w2), w2)
