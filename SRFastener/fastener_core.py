@@ -597,7 +597,9 @@ def compat_warnings(cat, items, hole_thread=None, hole_diameter_cm=None):
             if i is screw or i['kind'] == 'screw':
                 continue
             if not same_thread(thread_ref(i['fam'], i['row']), sref):
-                out.append('%s does not fit %s (different size or thread)' % (item_label(cat, i), item_label(cat, screw)))
+                why = ('inch and metric' if i['fam']['system'] != screw['fam']['system']
+                       else 'different size or thread')
+                out.append('%s does not fit %s (%s)' % (item_label(cat, i), item_label(cat, screw), why))
         for i in items:
             if i['kind'] == 'screw' and i is not screw:
                 out.append('two screws in one hole: %s and %s' % (item_label(cat, screw), item_label(cat, i)))
