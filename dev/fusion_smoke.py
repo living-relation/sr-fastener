@@ -261,29 +261,32 @@ def main(keep=False, out=None):
         check('joints made', root.joints.count == len(cases) + report['parts_placed'], root.joints.count)
         threads = sum(c.features.threadFeatures.count for c in design.allComponents)
         report['cosmetic_threads'] = threads
-        # toolbar button
-        # toolbar buttons on every default panel (no panels.json in the test settings folder), removed on stop
-        main_mod.PANELS_FILE = os.path.join(os.path.dirname(out or '.'), 'srf-no-panels.json')
-        main_mod.run(None)
-        ws = ui.workspaces.itemById('FusionSolidEnvironment')
-        for s in main_mod.sp.DEFAULT_PANELS:
-            panel = ws.toolbarPanels.itemById(s['panel'])
-            ctrl = panel.controls.itemById(main_mod.CMD_ID) if panel else None
-            check('toolbar button in %s' % s['panel'], ctrl is not None and ctrl.isVisible)
-            if s['promote']:
-                check('button promoted in %s' % s['panel'], ctrl is not None and ctrl.isPromoted)
-        tab = ws.toolbarTabs.itemById('SolidTab')
-        check('SR Tools panel on the Solid tab', tab.toolbarPanels.itemById('SRToolsPanel') is not None)
-        main_mod.stop(None)
-        left = [s['panel'] for s in main_mod.sp.DEFAULT_PANELS
-                if ws.toolbarPanels.itemById(s['panel']) is not None
-                and ws.toolbarPanels.itemById(s['panel']).controls.itemById(main_mod.CMD_ID) is not None]
-        check('stop removes every button', not left, left)
-        srp = ws.toolbarPanels.itemById('SRToolsPanel')
-        # other SR add-ins may still have buttons there; the panel only goes once it is empty
-        check('stop removes the SR Tools panel once empty', srp is None or srp.controls.count > 0,
-              srp.controls.count if srp else None)
-        check('stop removes the command', ui.commandDefinitions.itemById(main_mod.CMD_ID) is None)
+        # toolbar buttons on every default panel (no panels.json in the test settings folder), removed on stop.
+        # Skipped while the installed add-in is running: stop() would delete its shared command and button.
+        if ui.commandDefinitions.itemById(main_mod.CMD_ID) is not None:
+            report['notes'].append('toolbar check skipped: the installed SR Fastener is running')
+        else:
+            main_mod.PANELS_FILE = os.path.join(os.path.dirname(out or '.'), 'srf-no-panels.json')
+            main_mod.run(None)
+            ws = ui.workspaces.itemById('FusionSolidEnvironment')
+            for s in main_mod.sp.DEFAULT_PANELS:
+                panel = ws.toolbarPanels.itemById(s['panel'])
+                ctrl = panel.controls.itemById(main_mod.CMD_ID) if panel else None
+                check('toolbar button in %s' % s['panel'], ctrl is not None and ctrl.isVisible)
+                if s['promote']:
+                    check('button promoted in %s' % s['panel'], ctrl is not None and ctrl.isPromoted)
+            tab = ws.toolbarTabs.itemById('SolidTab')
+            check('SR Tools panel on the Solid tab', tab.toolbarPanels.itemById('SRToolsPanel') is not None)
+            main_mod.stop(None)
+            left = [s['panel'] for s in main_mod.sp.DEFAULT_PANELS
+                    if ws.toolbarPanels.itemById(s['panel']) is not None
+                    and ws.toolbarPanels.itemById(s['panel']).controls.itemById(main_mod.CMD_ID) is not None]
+            check('stop removes every button', not left, left)
+            srp = ws.toolbarPanels.itemById('SRToolsPanel')
+            # other SR add-ins may still have buttons there; the panel only goes once it is empty
+            check('stop removes the SR Tools panel once empty', srp is None or srp.controls.count > 0,
+                  srp.controls.count if srp else None)
+            check('stop removes the command', ui.commandDefinitions.itemById(main_mod.CMD_ID) is None)
         report['bom'] = [{'pn': o.component.partNumber, 'desc': o.component.description,
                           'material': o.component.material.name if o.component.material else None}
                          for o in root.occurrences]
