@@ -160,16 +160,16 @@ metric hex nuts are DIN 934 (ISO 4032 is taller from M5 and narrower at M10/M12)
 
 ## Materials
 
-| Code | Name | Fusion material (custom, named) | Copied from | Appearance |
+| Code | Description words | Fusion material (custom, named) | Copied from | Appearance |
 |---|---|---|---|---|
 | `18-8 SS` | 18-8 Stainless Steel | Stainless Steel | Stainless Steel AISI 304 | Stainless Steel - Satin |
 | `18-8 SS-BO` | 18-8 Stainless Steel Black Oxide | Stainless Steel Black Oxide | Stainless Steel AISI 304 | Coating - Black Oxide |
 | `ALLOY-BO` | Alloy Steel Black Oxide | Alloy Steel Black Oxide | a quenched-and-tempered Fusion steel for the grade | Coating - Black Oxide |
 | `STL` | Plain Steel | Plain Steel | Steel | Steel - Satin |
 | `ZN` | Zinc Plated Steel | Zinc Plated | Steel | Steel - Galvanized (Small) |
-| `GR8` (inch only) | Grade 8 Steel | Grade 8 Steel | Steel AISI 4340 350A QT | Steel - Satin |
-| `CL10.9` (metric screws) | Class 10.9 Steel | Class 10.9 Steel | Steel AISI 4340 350A QT | Steel - Satin |
-| `CL10` (metric nuts) | Class 10 Steel | Class 10 Steel | Steel | Steel - Satin |
+| `GR8` (inch only) | GR-8 Steel | Grade 8 Steel | Steel AISI 4340 350A QT | Steel - Satin |
+| `CL10.9` (metric screws) | CL-10.9 Steel | Class 10.9 Steel | Steel AISI 4340 350A QT | Steel - Satin |
+| `CL10` (metric nuts) | CL-10 Steel | Class 10 Steel | Steel | Steel - Satin |
 
 The Fusion material is a named copy made in the design the first time it is used, so the material name has no
 alloy numbers or other codes. `STL`, `ZN`, `GR8`, `CL10.9` and `CL10` are made-up codes, like `ALLOY-BO`.
@@ -196,7 +196,9 @@ These follow the shop's basic hardware codes, which end with the finish:
 - nuts: `NHX-M6-1 18-8 SS` (size and thread only); washers: `WGP-M6 x 12 18-8 SS` (screw size x outside diameter)
 
 Descriptions are `Type, size and thread, material` with capitalized words and no standards or dimensions,
-e.g. `Socket Head Screw, M4 x 0.7, 18-8 Stainless Steel`.
+e.g. `Socket Head Screw, M4 x 0.7, 18-8 Stainless Steel`. Grade and class finishes use the short form in the
+description only, e.g. `Hex Head Bolt, 1/4-20, GR-8 Steel` and `Socket Head Screw, M6 x 1, CL-10.9 Steel`; the
+Fusion material name stays spelled out (`Grade 8 Steel`, `Class 10.9 Steel`, `Class 10 Steel`).
 
 Codes: screws are S + head letter + H, which is the shop's existing SSH/SBH/SFH/SLH pattern; the external hex
 is a hex head bolt, HHB (Daniel's name; McMaster sells it as Hex Head Screws);

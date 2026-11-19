@@ -101,9 +101,9 @@ Materials offered per type (checked on McMaster-Carr 2026-11-17, per type, not p
 | ALLOY-BO | Alloy Steel Black Oxide | Alloy Steel Black Oxide | Steel AISI 4142 400 QT |
 | STL | Plain Steel | Plain Steel | Steel |
 | ZN | Zinc Plated Steel | Zinc Plated | Steel |
-| GR8 | Grade 8 Steel | Grade 8 Steel | Steel AISI 4340 350A QT |
-| CL10.9 | Class 10.9 Steel | Class 10.9 Steel | Steel AISI 4340 350A QT |
-| CL10 | Class 10 Steel | Class 10 Steel | Steel |
+| GR8 | GR-8 Steel | Grade 8 Steel | Steel AISI 4340 350A QT |
+| CL10.9 | CL-10.9 Steel | Class 10.9 Steel | Steel AISI 4340 350A QT |
+| CL10 | CL-10 Steel | Class 10 Steel | Steel |
 
 | Type | Extra materials |
 |---|---|

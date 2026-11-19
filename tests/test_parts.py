@@ -115,7 +115,19 @@ def test_part_numbers_and_descriptions():
     assert bom('NHX-M', 'M5')['description'] == 'Hex Nut, M5 x 0.8, 18-8 Stainless Steel'
     assert bom('WSL-M', 'M6')['description'] == 'Split Lock Washer, M6, 18-8 Stainless Steel'
     assert bom('WSL-M', 'M6')['part_number'] == 'WSL-M6 x 11.8 18-8 SS'
-    assert bom('NHX-I', '1/4', 'GR8')['description'] == 'Hex Nut, 1/4-20, Grade 8 Steel'
+    assert bom('NHX-I', '1/4', 'GR8')['description'] == 'Hex Nut, 1/4-20, GR-8 Steel'
+    assert bom('NHX-I', '1/4', 'GR8')['material'] == 'Grade 8 Steel'
+    assert bom('NHX-M', 'M6', 'CL10')['description'] == 'Hex Nut, M6 x 1, CL-10 Steel'
+    assert bom('NHX-M', 'M6', 'CL10')['material'] == 'Class 10 Steel'
+    def screw_bom(code, size, length, fin):
+        f = fc.family(CAT, code)
+        return fc.bom_fields(CAT, f, fc.size_row(f, size), length, fin)
+    hhb = screw_bom('HHB-I', '1/4', 1.0, 'GR8')
+    assert hhb['description'] == 'Hex Head Bolt, 1/4-20, GR-8 Steel'
+    assert hhb['material'] == 'Grade 8 Steel'
+    ssh = screw_bom('SSH-M', 'M6', 20, 'CL10.9')
+    assert ssh['description'] == 'Socket Head Screw, M6 x 1, CL-10.9 Steel'
+    assert ssh['material'] == 'Class 10.9 Steel'
     assert bom('NHX-M', 'M6', 'CL10')['part_number'] == 'NHX-M6-1 CL10'
     assert bom('NHX-M', 'M8', 'SS-BO')['part_number'] == 'NHX-M8-1.25 18-8 SS-BO'
     try:
