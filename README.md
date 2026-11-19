@@ -9,6 +9,22 @@ on both sides of every picked hole.
 
 ![SR Fastener dialog](docs/screenshots/dialog.png) ![SR Fastener dialog for a nut](docs/screenshots/dialog-nut.png)
 
+## How this add-in is installed
+
+**SR Fastener is junctioned straight to the repo clone**, so a `git pull` updates what Fusion loads. Fusion's AddIns entry must be named exactly `SRFastener` and must point at the `SRFastener` folder inside this repo, not the repo root.
+
+Fusion does not pick up new code until the add-in restarts: restart Fusion, or press **Shift+S**, open **Add-Ins**, and **Stop** then **Run**.
+
+An automatic updater (coming soon, in the workstation repo) will pull updates hourly and notify you to restart Fusion.
+
+To create the junction, open a normal Command Prompt (not Run as administrator). `mklink /J` does not need elevation. Both paths below are absolute, so no `cd` is required. Run:
+
+```
+mklink /J "%APPDATA%\Autodesk\Autodesk Fusion 360\API\AddIns\SRFastener" "<path-to-this-clone>\SRFastener"
+```
+
+Replace `<path-to-this-clone>` with this repo's clone path on that PC. The active-folder path differs per PC.
+
 ## What it does
 
 - **Toolbar button** "SR Fastener" on more than one panel: by default the Design workspace Solid tab **Insert**
@@ -215,18 +231,15 @@ as the dimension source only.
 
 ## Install
 
-1. Clone this repo.
-2. In Fusion: **Utilities > Add-ins > Scripts and Add-ins > Add-ins tab > + (green plus)**, and pick the
-   `SRFastener` folder inside the clone. Tick **Run on Startup** and click **Run**.
-
-   Or copy or link the `SRFastener` folder into
-   `%APPDATA%\Autodesk\Autodesk Fusion 360\API\AddIns\` and restart Fusion.
-3. The button shows up in the Insert panel, the SR Tools panel and Utilities > Add-ins.
+1. Clone this repo and keep the folder on disk.
+2. Create the AddIns junction as described in [How this add-in is installed](#how-this-add-in-is-installed). Do not copy the folder into AddIns; a copy will not follow `git pull`.
+3. In Fusion, press **Shift+S**, open the **Add-Ins** tab, select **SR Fastener**, tick **Run on Startup**, and click **Run**. After a later `git pull`, restart the add-in the same way (**Stop**, then **Run**) or restart Fusion.
+4. The button shows up in the Insert panel, the SR Tools panel and Utilities > Add-ins.
 
 Settings (last type, size, length, material and stack rows) are saved in `%APPDATA%\SRFastener\settings.json`.
 
-To share it with the team, each person clones `https://github.com/living-relation/sr-fastener` and adds the
-`SRFastener` folder as above; `git pull` and Stop/Run the add-in to update.
+To share it with the team, each person clones `https://github.com/living-relation/sr-fastener` and creates the
+`SRFastener` junction as above; `git pull` and Stop/Run the add-in to update.
 
 ## Where the buttons go
 
