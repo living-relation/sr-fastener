@@ -193,10 +193,16 @@ def desc_thread(fam, row):
     return '%s x %g' % (row['size'], row['pitch'])
 
 
+def finish_desc_name(fin):
+    """Words at the end of the part description. Grade and class finishes use the short form
+    ('GR-8 Steel', 'CL-10.9 Steel', 'CL-10 Steel'); everything else uses the finish name."""
+    return fin.get('desc_name', fin['name'])
+
+
 def description(cat, fam, row, length, finish_key):
     """'Socket Head Screw, M4 x 0.7, 18-8 Stainless Steel'. Never a dimension (length, OD, thickness live in the
-    part number) and never a standard."""
-    return '%s, %s, %s' % (fam['name'], desc_thread(fam, row), finish(cat, finish_key)['name'])
+    part number) and never a standard. Grade and class use the short form: 'Hex Head Bolt, 1/4-20, GR-8 Steel'."""
+    return '%s, %s, %s' % (fam['name'], desc_thread(fam, row), finish_desc_name(finish(cat, finish_key)))
 
 
 def part_description(cat, fam, row, finish_key):

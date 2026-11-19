@@ -53,10 +53,14 @@ IN_LENGTHS = [0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5, 0.625, 0.75, 0.87
 
 # Finish codes follow Daniel's BOM part-number rule (ends with 18-8 SS or 18-8 SS-BO).
 # ALLOY-BO, STL, ZN, GR8, CL10.9 and CL10 are made-up codes: his list has no code for them.
-# name: the words used in the description (Daniel 2026-11-17: 'Socket Head Screw, M4 x 0.7, 18-8 Stainless Steel').
+# name: the words in the Material list and the match-materials prompt (Daniel 2026-11-17:
+#   'Socket Head Screw, M4 x 0.7, 18-8 Stainless Steel' used name for the description too).
+# desc_name: optional short wording used only at the end of the part description. Grade and class finishes
+#   use this so descriptions stay short (Daniel 2026-11-19: 'GR-8 Steel', 'CL-10.9 Steel', 'CL-10 Steel').
+#   When omitted, the description uses name.
 # material: the Fusion material name shown on the part. Daniel: just the material name, no standard or alloy
 #   acronym (no 'AISI 304'). The add-in makes a design material with this name, copied from `base` so mass and
-#   stiffness stay right.
+#   stiffness stay right. Grade and class stay spelled out ('Grade 8 Steel', 'Class 10.9 Steel', 'Class 10 Steel').
 # base: the Fusion Material Library material the physical properties come from.
 # match: finishes with the same match key count as the same material when checking a stack (a Class 10 nut is
 #   the mating nut for a Class 10.9 screw).
@@ -73,13 +77,15 @@ FINISHES = {
             'appearance': 'Steel - Satin', 'made_up_code': True, 'match': 'STL'},
     'ZN': {'code': 'ZN', 'name': 'Zinc Plated Steel', 'material': 'Zinc Plated', 'base': 'Steel',
            'appearance': 'Steel - Galvanized (Small)', 'made_up_code': True, 'match': 'ZN'},
-    'GR8': {'code': 'GR8', 'name': 'Grade 8 Steel', 'material': 'Grade 8 Steel', 'base': 'Steel AISI 4340 350A QT',
-            'appearance': 'Steel - Satin', 'made_up_code': True, 'match': 'GR8', 'system': 'inch'},
-    'CL10.9': {'code': 'CL10.9', 'name': 'Class 10.9 Steel', 'material': 'Class 10.9 Steel',
-               'base': 'Steel AISI 4340 350A QT', 'appearance': 'Steel - Satin', 'made_up_code': True,
-               'match': 'CL10', 'system': 'metric'},
-    'CL10': {'code': 'CL10', 'name': 'Class 10 Steel', 'material': 'Class 10 Steel', 'base': 'Steel',
-             'appearance': 'Steel - Satin', 'made_up_code': True, 'match': 'CL10', 'system': 'metric'},
+    'GR8': {'code': 'GR8', 'name': 'Grade 8 Steel', 'desc_name': 'GR-8 Steel', 'material': 'Grade 8 Steel',
+            'base': 'Steel AISI 4340 350A QT', 'appearance': 'Steel - Satin', 'made_up_code': True, 'match': 'GR8',
+            'system': 'inch'},
+    'CL10.9': {'code': 'CL10.9', 'name': 'Class 10.9 Steel', 'desc_name': 'CL-10.9 Steel',
+               'material': 'Class 10.9 Steel', 'base': 'Steel AISI 4340 350A QT', 'appearance': 'Steel - Satin',
+               'made_up_code': True, 'match': 'CL10', 'system': 'metric'},
+    'CL10': {'code': 'CL10', 'name': 'Class 10 Steel', 'desc_name': 'CL-10 Steel', 'material': 'Class 10 Steel',
+             'base': 'Steel', 'appearance': 'Steel - Satin', 'made_up_code': True, 'match': 'CL10',
+             'system': 'metric'},
 }
 # Fusion has no generic 'alloy steel' material. The makers do not name the alloy (ASTM A574 and ISO 898-1
 # allow several, e.g. 4037, 4140, 8740), so the material is a quenched-and-tempered Fusion steel whose
@@ -1180,7 +1186,7 @@ def sources_md():
             'Materials offered per type (checked on McMaster-Carr 2026-11-17, per type, not per size). Codes are the '
             'shop part number finish codes; STL, ZN, GR8, CL10.9, CL10 and ALLOY-BO are made-up codes.', '',
             '| Code | Description words | Fusion material name | Physical properties from |', '|---|---|---|---|']
-    out += ['| %s | %s | %s | %s |' % (v['code'], v['name'], v['material'], v['base']) for v in FINISHES.values()]
+    out += ['| %s | %s | %s | %s |' % (v['code'], v.get('desc_name', v['name']), v['material'], v['base']) for v in FINISHES.values()]
     out += ['', '| Type | Extra materials |', '|---|---|']
     out += ['| %s | %s |' % (k, ', '.join(v)) for k, v in EXTRA_FINISHES.items()]
     out += ['', 'McMaster pages used:', '']

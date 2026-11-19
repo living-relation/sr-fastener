@@ -30,7 +30,7 @@ def test_descriptions_have_no_dimensions_or_standards():
             for fk in fc.finishes_for(CAT, f, row):
                 b = fc.bom_fields(CAT, f, row, L, fk)
                 d = b['description']
-                assert d == '%s, %s, %s' % (f['name'], fc.desc_thread(f, row), CAT['finishes'][fk]['name']), d
+                assert d == '%s, %s, %s' % (f['name'], fc.desc_thread(f, row), fc.finish_desc_name(CAT['finishes'][fk])), d
                 assert not fc.contains_standard(d), d
                 assert not re.search(r'\bmm\b|"|\bID\b|\bOD\b|thick|wide|high', d), d
                 assert not fc.contains_standard(b['material']) and 'AISI' not in b['material'], b['material']
@@ -41,6 +41,15 @@ def test_material_names_are_plain():
     assert names['SS'] == 'Stainless Steel' and names['SS-BO'] == 'Stainless Steel Black Oxide'
     assert names['ZN'] == 'Zinc Plated' and names['STL'] == 'Plain Steel'
     assert names['GR8'] == 'Grade 8 Steel' and names['CL10.9'] == 'Class 10.9 Steel'
+    assert names['CL10'] == 'Class 10 Steel'
+    # Material list / match prompt still uses the full grade or class words (name).
+    labels = {k: v['name'] for k, v in CAT['finishes'].items()}
+    assert labels['GR8'] == 'Grade 8 Steel' and labels['CL10.9'] == 'Class 10.9 Steel'
+    assert labels['CL10'] == 'Class 10 Steel'
+    assert fc.finish_desc_name(CAT['finishes']['GR8']) == 'GR-8 Steel'
+    assert fc.finish_desc_name(CAT['finishes']['CL10.9']) == 'CL-10.9 Steel'
+    assert fc.finish_desc_name(CAT['finishes']['CL10']) == 'CL-10 Steel'
+    assert fc.finish_desc_name(CAT['finishes']['SS']) == '18-8 Stainless Steel'
 
 
 def test_part_numbers_carry_the_dimensions():

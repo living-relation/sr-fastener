@@ -127,6 +127,7 @@
   "GR8": {
    "code": "GR8",
    "name": "Grade 8 Steel",
+   "desc_name": "GR-8 Steel",
    "material": "Grade 8 Steel",
    "base": "Steel AISI 4340 350A QT",
    "appearance": "Steel - Satin",
@@ -137,6 +138,7 @@
   "CL10.9": {
    "code": "CL10.9",
    "name": "Class 10.9 Steel",
+   "desc_name": "CL-10.9 Steel",
    "material": "Class 10.9 Steel",
    "base": "Steel AISI 4340 350A QT",
    "appearance": "Steel - Satin",
@@ -147,6 +149,7 @@
   "CL10": {
    "code": "CL10",
    "name": "Class 10 Steel",
+   "desc_name": "CL-10 Steel",
    "material": "Class 10 Steel",
    "base": "Steel",
    "appearance": "Steel - Satin",
