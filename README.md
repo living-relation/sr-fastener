@@ -15,7 +15,7 @@ on both sides of every picked hole.
 
 Fusion does not pick up new code until the add-in restarts: restart Fusion, or press **Shift+S**, open **Add-Ins**, and **Stop** then **Run**.
 
-An automatic updater (coming soon, in the workstation repo) will pull updates hourly and notify you to restart Fusion.
+To update, double-click `pull.cmd` in the repo folder. It runs `git pull --ff-only` on this clone only, then reminds you to restart the add-in. Nothing updates on its own: Fusion does not check add-ins for updates, so pull, then restart the add-in.
 
 To create the junction, open a normal Command Prompt (not Run as administrator). `mklink /J` does not need elevation. Both paths below are absolute, so no `cd` is required. Run:
 
