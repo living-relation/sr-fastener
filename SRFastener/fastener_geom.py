@@ -173,3 +173,34 @@ def build_part_body(fam, row):
         cx = (g['outer_r'] + g['bore_r']) / 2.0
         tbm.booleanOperation(body, _box(tbm, cx, 0, g['height'] / 2.0, span, g['gap'], g['height'] + 2 * _EPS), diff)
     return body, g
+
+
+# Not a published shank length. Standoff clinch length is not in the bulletin, so this only
+# gives the joint a round edge at the published clinch diameter C.
+_SEAT = 0.01  # cm
+
+
+def build_press_body(fam, row, length):
+    """Press-in part. z=0 is the install face (see fastener_core.press_geometry).
+    The clinch undercut is not drawn: the bulletin does not dimension it.
+    A flush stud has no published head thickness, so the solid is the stud."""
+    tbm = adsk.fusion.TemporaryBRepManager.get()
+    g = fc.press_geometry(fam, row, length)
+    union = adsk.fusion.BooleanTypes.UnionBooleanType
+    diff = adsk.fusion.BooleanTypes.DifferenceBooleanType
+    if g['shape'] in ('clinch-nut', 'floating'):
+        body = _cyl(tbm, 0.0, g['head_r'], g['head_h'], g['head_r'])
+        tbm.booleanOperation(body, _cyl(tbm, 0.0, g['shank_r'], -g['shank_l'], g['shank_r']), union)
+        tbm.booleanOperation(body, _cyl(tbm, -g['shank_l'] - _EPS, g['bore_r'], g['head_h'] + _EPS, g['bore_r']), diff)
+    elif g['shape'] == 'stud':
+        body = _cyl(tbm, 0.0, g['r'], -g['L'], g['r'])
+    elif g['shape'] == 'standoff':
+        body = _hex_prism(tbm, g['across'], -g['L'], 0.0)
+        tbm.booleanOperation(body, _cyl(tbm, 0.0, g['seat_r'], -_SEAT, g['seat_r']), union)
+        if g.get('blind'):
+            tbm.booleanOperation(body, _cyl(tbm, -g['L'] - _EPS, g['bore_r'], -g['L'] + g['blind'], g['bore_r']), diff)
+        else:
+            tbm.booleanOperation(body, _cyl(tbm, -g['L'] - _EPS, g['bore_r'], _EPS, g['bore_r']), diff)
+    else:
+        raise ValueError(g['shape'])
+    return body

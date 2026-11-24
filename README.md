@@ -266,6 +266,16 @@ An entry can also be just the panel id as a string. Bad entries are skipped and 
 starts. On stop the add-in removes every button it added, the command, and any panel it created that is left
 empty (other SR add-ins can share the SR Tools panel).
 
+## Press-in (PEM)
+
+Pick **Press-in**, then a PEM type (self-clinching nut, flush-head stud, standoff or floating nut), size and length or shank. One part goes in one hole, as its own component. The BOM part number is the PEM designation, for example `FHS-M5-12` or `S-M4-1ZI`. The description stays `Type, size and thread, material`.
+
+The mounting hole size, hole tolerance and minimum sheet thickness are shown in the dialog when you pick a size. They are also saved as design user parameters and part attributes. They are not written into the BOM description.
+
+Warnings: hole off the PEM size, sheet thinner than the minimum (and thicker than the maximum where PEM gives a range), centerline-to-edge under the minimum, and sheet harder than the family's maximum. Type a sheet thickness, an edge distance and a hardness (HRB) to see them; a picked hole fills the first two when it can.
+
+Dimension sources are in [data/pem_sources.md](data/pem_sources.md).
+
 ## Known gaps (TBD)
 
 - **Stocked lengths and vendor part numbers:** McMaster-Carr pages need a browser that runs scripts, so they

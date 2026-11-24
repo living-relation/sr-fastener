@@ -117,7 +117,11 @@ _st = _State()
 
 
 def _family_items(system, kind):
-    return [(f['code'], f['name']) for f in fc.families(_catalog(), system, kind)]
+    items = []
+    for f in fc.families(_catalog(), system, kind):
+        label = ('%s (%s)' % (f['name'], f['code'])) if kind == 'press-in' else f['name']
+        items.append((f['code'], label))
+    return items
 
 
 def _size_items(fam):
@@ -153,16 +157,34 @@ def _refresh(inputs, level):
     row = _st.row()
     if level == 'size':
         screw = _st.is_screw()
-        inputs.itemById('length').isVisible = screw
-        inputs.itemById('thread').isVisible = screw
-        if screw:
+        press = _st.kind == 'press-in'
+        inputs.itemById('length').isVisible = screw or press
+        inputs.itemById('thread').isVisible = screw or (press and fam.get('shape') == 'stud')
+        if screw or press:
             _st.items['length'] = _length_items(fam, row)
             cur = fc.length_key(row, _st.length)
-            _st.length = float(_fill(inputs.itemById('length'), _st.items['length'], cur))
+            picked = _fill(inputs.itemById('length'), _st.items['length'], cur)
+            if screw:
+                _st.length = float(picked)
+            else:
+                _st.length = picked
+            inputs.itemById('length').name = 'Shank' if fam.get('length_kind') == 'shank' else 'Length'
         # Keep the last screw length when the dialog is on a nut or washer so
         # switching back (or reopening on a nut, then choosing Screws) still lands on it.
         _st.items['finish'] = _finish_items(fam, row)
         _st.finish = _fill(inputs.itemById('finish'), _st.items['finish'], _st.finish)
+        for iid in ('mount', 'sheet', 'edge', 'hard'):
+            box = inputs.itemById(iid)
+            if box is not None:
+                box.isVisible = press
+        stack = inputs.itemById('stack')
+        if stack is not None:
+            stack.isVisible = not press
+            if press:
+                stack.value = False
+            help_box = inputs.itemById('stk_help')
+            if help_box is not None:
+                help_box.isVisible = bool(stack.value)
     _bom_preview(inputs)
     _resize_stack(inputs)
 
@@ -173,6 +195,12 @@ def _bom_preview(inputs):
     inputs.itemById('pn').text = bom['part_number']
     inputs.itemById('desc').text = bom['description']
     inputs.itemById('mat').text = bom['material']
+    mount = inputs.itemById('mount')
+    if mount is not None:
+        if _st.kind == 'press-in' and _st.length is not None:
+            mount.text = fc.mount_text(fam, row, _st.length)
+        else:
+            mount.text = ''
 
 
 def _edges(inputs):
@@ -224,8 +252,11 @@ def _hole_note(inputs):
     box = inputs.itemById('holeinfo')
     edges = _edges(inputs)
     if not edges:
-        box.text = ('Pick circular hole edges on the side the part goes: the top edge (or countersink) for a screw '
-                    'or a washer under its head, the bottom edge of a through hole for a nut.')
+        if _st.kind == 'press-in':
+            box.text = 'Pick the hole edge on the install face. One press-in part goes in that one hole.'
+        else:
+            box.text = ('Pick circular hole edges on the side the part goes: the top edge (or countersink) for a screw '
+                        'or a washer under its head, the bottom edge of a through hole for a nut.')
         _st.hole = _Hole()
         _refresh_stack(inputs)
         return
@@ -238,7 +269,16 @@ def _hole_note(inputs):
                                                    ('tapped ' + h.thread) if h.thread else 'not tapped')
         if h.screw is not None:
             msg += ' Already has %s.' % fc.item_label(_catalog(), h.screw)
-        if inputs.itemById('auto').value:
+        if inputs.itemById('auto').value and _st.kind == 'press-in':
+            size = fc.press_size_for(fam, h.dia)
+            if size and size != _st.size:
+                _st.size = size
+                _refresh(inputs, 'family')
+                msg += ' Size set to %s.' % size
+            elif not size:
+                msg += ' No PEM size matches this hole; check it.'
+            _prefill_sheet(inputs, edges[0])
+        elif inputs.itemById('auto').value:
             sref = None if _st.is_screw() else _screw_ref(h)
             size = fc.size_for(_catalog(), fam, sref, h.thread, h.dia)
             if size and size != _st.size:
@@ -477,12 +517,42 @@ def _drop_refresh_event():
         _refresh_event.clear()
 
 
+def _needs_length():
+    return _st.is_screw() or _st.kind == 'press-in'
+
+
+def _read_num(inputs, iid):
+    """Number typed in a press-in box, or None when the box is blank or hidden."""
+    box = inputs.itemById(iid) if inputs is not None else None
+    if box is None or not box.isVisible:
+        return None
+    text = (box.text or '').strip()
+    if not text:
+        return None
+    try:
+        return float(text)
+    except ValueError:
+        return None
+
+
+def _prefill_sheet(inputs, edge):
+    """Fill blank sheet and edge boxes from the picked hole. Hardness is not in the model."""
+    try:
+        sheet, edge_mm = fp.measure_mount(edge)
+    except Exception:
+        return
+    for iid, value in (('sheet', sheet), ('edge', edge_mm)):
+        box = inputs.itemById(iid)
+        if box is not None and not (box.text or '').strip() and value is not None:
+            box.text = '%g' % value
+
+
 def _main_item():
     if not (_st.code and _st.size):
         return None
-    if _st.is_screw() and _st.length is None:
+    if _needs_length() and _st.length is None:
         return None
-    return fc.item(_catalog(), _st.code, _st.size, _st.finish, _st.length if _st.is_screw() else None)
+    return fc.item(_catalog(), _st.code, _st.size, _st.finish, _st.length if _needs_length() else None)
 
 
 def _stack_items(inputs):
@@ -499,6 +569,11 @@ def _stack_items(inputs):
 
 def _warnings(inputs, h=None):
     h = h or getattr(_st, 'hole', None) or _Hole()
+    if _st.kind == 'press-in' and _st.code and _st.size and _st.length is not None:
+        spec = fc.mount_spec(_st.family(), _st.row(), _st.length)
+        hole_mm = (h.dia * 10.0) if h and h.dia else None
+        return fc.press_warnings(spec, hole_mm, _read_num(inputs, 'sheet'), _read_num(inputs, 'edge'),
+                                 _read_num(inputs, 'hard'))
     main = _main_item()
     items = list(h.existing) + ([main] if main else []) + _stack_items(inputs)
     return fc.compat_warnings(_catalog(), items, h.thread, h.dia) if items else []
@@ -620,6 +695,10 @@ class _Created(adsk.core.CommandCreatedEventHandler):
                                           'side = the other end of the hole. Each side stacks from the part out, '
                                           'top row first.', 2, True)
             inputs.addTextBoxCommandInput('holeinfo', 'Hole', '', 2, True)
+            inputs.addTextBoxCommandInput('mount', 'Mounting', '', 4, True)
+            inputs.addTextBoxCommandInput('sheet', 'Sheet thickness mm', '', 1, False)
+            inputs.addTextBoxCommandInput('edge', 'Centerline to edge mm', '', 1, False)
+            inputs.addTextBoxCommandInput('hard', 'Sheet hardness HRB', '', 1, False)
             inputs.addTextBoxCommandInput('warn', 'Warnings', '', 2, True)
             grp = inputs.addGroupCommandInput('bom', 'BOM')
             gi = grp.children
@@ -668,8 +747,11 @@ class _Changed(adsk.core.InputChangedEventHandler):
                 _refresh(inputs, 'size')
                 _refresh_stack(inputs)
             elif cid == 'length':
-                _st.length = float(_sel_key(inputs.itemById('length'), _st.items['length']))
+                key = _sel_key(inputs.itemById('length'), _st.items['length'])
+                _st.length = key if _st.kind == 'press-in' else float(key)
                 _bom_preview(inputs)
+                _show_warnings(inputs)
+            elif cid in ('sheet', 'edge', 'hard'):
                 _show_warnings(inputs)
             elif cid == 'finish':
                 _st.finish = _sel_key(inputs.itemById('finish'), _st.items['finish'])
@@ -721,13 +803,18 @@ class _Execute(adsk.core.CommandEventHandler):
                 hole = fp.read_hole(edge, inputs.itemById('flip').value)
                 if hole is None:
                     continue
+                if main and main['kind'] == 'press-in':
+                    spec = fc.mount_spec(main['fam'], main['row'], main['length'])
+                    warns += fc.press_warnings(spec, hole.radius * 20.0, _read_num(inputs, 'sheet'),
+                                               _read_num(inputs, 'edge'), _read_num(inputs, 'hard'))
+                    continue
                 design = adsk.fusion.Design.cast(_app().activeProduct)
                 items = fp.existing_items(_catalog(), design, hole) + ([main] if main else []) + rows
                 warns += fc.compat_warnings(_catalog(), items, hole.thread, 2 * hole.radius)
             occs, notes = _run_place(inputs, main, rows)
             old = _load_settings()
             _save_settings({'system': _st.system, 'kind': _st.kind, 'family': _st.code, 'size': _st.size,
-                            'length': _st.length if _st.is_screw() else old.get('length'),
+                            'length': _st.length if _needs_length() else old.get('length'),
                             'finish': _st.finish, 'thread': inputs.itemById('thread').value,
                             'stack_on': inputs.itemById('stack').value,
                             'stack_rows': [{k: r.get(k) for k in ('side', 'kind', 'code', 'finish')} for r in _st.stack]})

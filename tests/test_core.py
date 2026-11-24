@@ -9,7 +9,8 @@ CAT = fc.load_catalog()
 
 
 def test_finishes():
-    assert set(CAT['finishes']) == {'SS', 'SS-BO', 'ALLOY-BO', 'STL', 'ZN', 'GR8', 'CL10.9', 'CL10'}
+    assert set(CAT['finishes']) == {'SS', 'SS-BO', 'ALLOY-BO', 'STL', 'ZN', 'GR8', 'CL10.9', 'CL10',
+                                    'PEM-ZI', 'PEM-SS', 'PEM-4SS'}
     for fam in CAT['families']:
         for row in fam['sizes']:
             # Daniel's rule: every size in 18-8 SS and 18-8 SS-BO, whatever McMaster stocks
@@ -244,20 +245,29 @@ def test_refresh_keeps_remembered_length_when_not_a_screw():
 
 
 def test_bom_fields_never_use_vendor_numbers():
-    """Fusion part number, component name and description use only the shop smart scheme."""
-    for fam in CAT['families'] + CAT.get('parts', []):
+    """Screws, nuts and washers use the shop smart scheme. Press-in parts use the PEM designation,
+    and the BOM description stays the type line (hole notes are not in it)."""
+    for fam in CAT['families'] + CAT.get('parts', []) + CAT.get('press_in', []):
         for row in fam['sizes']:
-            Ls = [None] if fc.kind(fam) != 'screw' else [row['lengths'][0], row['lengths'][-1]]
+            if fc.kind(fam) == 'press-in':
+                Ls = [row['lengths'][0], row['lengths'][-1]]
+            elif fc.kind(fam) != 'screw':
+                Ls = [None]
+            else:
+                Ls = [row['lengths'][0], row['lengths'][-1]]
             for L in Ls:
                 for fk in fc.finishes_for(CAT, fam, row):
                     bom = fc.bom_fields(CAT, fam, row, L, fk)
                     pn = bom['part_number']
                     assert pn == fc.part_number(fam, row, L, fk)
                     assert pn == fc.component_name(fam, row, L, fk)
-                    assert pn.startswith(fam['code'].rsplit('-', 1)[0] + '-')
-                    assert pn.endswith(' ' + CAT['finishes'][fk]['code'])
-                    for label, text in (
-                        ('part_number', pn),
-                        ('description', bom['description']),
-                    ):
-                        assert not fc.contains_vendor_number(text), (fam['code'], row['size'], label, text)
+                    assert not fc.contains_vendor_number(pn), (fam['code'], row['size'], pn)
+                    assert not fc.contains_vendor_number(bom['description'])
+                    assert not fc.contains_standard(bom['description'])
+                    if fc.kind(fam) == 'press-in':
+                        assert 'Mounting hole' not in bom['description']
+                        assert 'Minimum sheet' not in bom['description']
+                        assert pn.startswith(fam['code'] + '-')
+                    else:
+                        assert pn.startswith(fam['code'].rsplit('-', 1)[0] + '-')
+                        assert pn.endswith(' ' + CAT['finishes'][fk]['code'])

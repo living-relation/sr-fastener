@@ -19,7 +19,7 @@ def load_catalog(path=CATALOG_PATH):
         return json.load(f)
 
 
-KINDS = (('screw', 'Screws'), ('nut', 'Nuts'), ('washer', 'Washers'))
+KINDS = (('screw', 'Screws'), ('nut', 'Nuts'), ('washer', 'Washers'), ('press-in', 'Press-in'))
 
 
 def kind(fam):
@@ -27,13 +27,18 @@ def kind(fam):
 
 
 def families(cat, system=None, kind_=None):
-    """Screw families by default; kind_='nut' or 'washer' lists those from cat['parts']."""
-    pool = cat['families'] if kind_ in (None, 'screw') else [p for p in cat.get('parts', []) if p['kind'] == kind_]
+    """Screw families by default. kind_='nut' or 'washer' lists cat['parts']; kind_='press-in' lists cat['press_in']."""
+    if kind_ in (None, 'screw'):
+        pool = cat['families']
+    elif kind_ == 'press-in':
+        pool = cat.get('press_in', [])
+    else:
+        pool = [p for p in cat.get('parts', []) if p['kind'] == kind_]
     return [f for f in pool if system in (None, f['system'])]
 
 
 def family(cat, code):
-    for f in cat['families'] + cat.get('parts', []):
+    for f in cat['families'] + cat.get('parts', []) + cat.get('press_in', []):
         if f['code'] == code:
             return f
     raise KeyError(code)
@@ -66,16 +71,26 @@ def fmt_mm(x):
 
 def length_key(row, length):
     """Dialog list key (str of the catalog value) for a remembered length, or None. Catalog lengths can be ints
-    (16) while the saved setting is a float (16.0), so match by value, not by text."""
+    (16) while the saved setting is a float (16.0), so match by value, not by text. Shank codes are strings
+    ('0', '00') and are matched as text so '00' is not read as 0."""
     if length is None:
         return None
     for L in row['lengths']:
-        if abs(float(L) - float(length)) < 1e-9:
-            return str(L)
+        if isinstance(L, str):
+            if str(length) == L:
+                return L
+            continue
+        try:
+            if abs(float(L) - float(length)) < 1e-9:
+                return str(L)
+        except (TypeError, ValueError):
+            continue
     return None
 
 
 def length_label(fam, length):
+    if fam.get('length_kind') == 'shank':
+        return 'shank %s' % length
     return (fmt_in(length) + '"') if fam['system'] == 'inch' else (fmt_mm(length) + ' mm')
 
 
@@ -85,6 +100,8 @@ def nominal(row):
 
 
 def thread_label(fam, row):
+    if row.get('menu'):
+        return row['menu']
     if kind(fam) == 'washer':
         return ('%s screw' % nominal(row)) if fam['system'] == 'inch' else row['size']
     if fam.get('thread_form') == 'tapping':  # sheet metal screw: threads per inch or ISO 1478 pitch
@@ -117,11 +134,28 @@ def washer_od(fam, row):
     return row['dims']['d2']
 
 
+def _pem_token(row, length):
+    """Catalog length or shank code for a PEM designation, as text ('12', '00')."""
+    key = length_key(row, length)
+    if key is None:
+        raise KeyError(length)
+    for L in row['lengths']:
+        if isinstance(L, str) and L == key:
+            return L
+    number = float(key)
+    if number == int(number):
+        return str(int(number))
+    return '%g' % number
+
+
 def part_number(fam, row, length, finish_key):
     """Daniel's BOM code. All dimensions live here, never in the description.
+    Press-in parts use the PEM designation (FHS-M5-12, S-M3-1ZI) instead of the shop finish code.
     Screws: 'SSH-M3-0.5 x 10 18-8 SS', 'SSH-1/4-20 x 1.5 18-8 SS-BO', 'SSH-4-40 x 0.25 18-8 SS'.
     Nuts: screw diameter and thread only: 'NHX-M5-0.8 18-8 SS', 'NHX-1/4-20 ZN'.
     Washers: screw size and outside diameter: 'WGP-M5 x 10 18-8 SS', 'WSA-1/4 x 0.734 18-8 SS'."""
+    if kind(fam) == 'press-in':
+        return '%s-%s-%s%s' % (fam['code'], row['thread_code'], _pem_token(row, length), fam.get('pem_suffix', ''))
     code = fam['code'].rsplit('-', 1)[0]
     fin = _FIN_CODE.get(finish_key, finish_key)
     if kind(fam) == 'washer':
@@ -185,7 +219,10 @@ def grade_label(g):
 
 def desc_thread(fam, row):
     """Screw size and thread for a description, no standard or series words: 'M4 x 0.7', '1/4-20', '#10-32'.
-    Washers: the screw size only ('M4', '#10', '1/4')."""
+    Washers: the screw size only ('M4', '#10', '1/4'). Press-in uses the thread only, never the hole or length."""
+    if kind(fam) == 'press-in':
+        thread_name = 'M3' if row.get('thread_code') == '3.5M3' else row.get('thread_code', row['size'])
+        return '%s x %g' % (thread_name, row['pitch'])
     if kind(fam) == 'washer':
         return row['size'] if fam['system'] == 'metric' else nominal(row)
     if fam['system'] == 'inch':
@@ -650,3 +687,133 @@ def stack_move(stack, selected, step):
         stack[selected], stack[j] = stack[j], stack[selected]
         return j
     return selected
+
+
+# ---------- PEM press-in (one hole, one sheet) ----------
+
+def _at(dims, key, length):
+    """A dimension that is either one number or a map keyed by length or shank code."""
+    value = dims[key]
+    if not isinstance(value, dict):
+        return value
+    token = None if length is None else str(length)
+    if token in value:
+        return value[token]
+    for k, val in value.items():
+        try:
+            if abs(float(k) - float(length)) < 1e-9:
+                return val
+        except (TypeError, ValueError):
+            continue
+    raise KeyError('%s at %s' % (key, length))
+
+
+def mount_spec(fam, row, length):
+    """Hole size, tolerance and minimum sheet (mm) plus the edge and hardness limits, with the citation."""
+    dims = row['dims']
+    spec = {
+        'hole': float(_at(dims, 'hole', length)),
+        'hole_plus': float(_at(dims, 'hole_plus', length)),
+        'hole_minus': float(_at(dims, 'hole_minus', length)),
+        'min_sheet': float(_at(dims, 'min_sheet', length)),
+        'edge': float(_at(dims, 'edge', length)),
+        'max_hrb': float(dims['max_hrb']),
+        'max_hb': float(dims['max_hb']),
+        'citation': row['citation'],
+    }
+    if 'max_sheet' in dims:
+        spec['max_sheet'] = float(dims['max_sheet'])
+    return spec
+
+
+def mount_text(fam, row, length):
+    """The three mounting notes for the dialog and for user parameters. Not the BOM description."""
+    spec = mount_spec(fam, row, length)
+    lines = ['Mounting hole %g mm +%g/-%g mm.' % (spec['hole'], spec['hole_plus'], spec['hole_minus']),
+             'Minimum sheet %g mm.' % spec['min_sheet']]
+    if 'max_sheet' in spec:
+        lines.append('Maximum sheet %g mm.' % spec['max_sheet'])
+    lines.append(spec['citation'])
+    return '\n'.join(lines)
+
+
+def parameter_values(fam, row, length):
+    """(name suffix, value in mm, comment) for the design user parameters. Not BOM columns."""
+    spec = mount_spec(fam, row, length)
+    cite = spec['citation']
+    return (
+        ('hole', spec['hole'], 'PEM mounting hole size (mm). ' + cite),
+        ('hole_plus', spec['hole_plus'], 'PEM hole plus tolerance (mm). ' + cite),
+        ('hole_minus', spec['hole_minus'], 'PEM hole minus tolerance (mm). ' + cite),
+        ('min_sheet', spec['min_sheet'], 'PEM minimum sheet thickness (mm). ' + cite),
+    )
+
+
+def press_warnings(spec, hole_mm=None, sheet_mm=None, edge_mm=None, hardness_hrb=None):
+    """Warnings for one press-in part. Pass None for a check the design did not measure."""
+    out = []
+    if hole_mm is not None:
+        lo = spec['hole'] - spec['hole_minus']
+        hi = spec['hole'] + spec['hole_plus']
+        if hole_mm < lo - 1e-6 or hole_mm > hi + 1e-6:
+            out.append('Mounting hole %.3f mm is off the PEM hole %.3f mm +%g/-%g.'
+                       % (hole_mm, spec['hole'], spec['hole_plus'], spec['hole_minus']))
+    if sheet_mm is not None and sheet_mm < spec['min_sheet'] - 1e-6:
+        out.append('Sheet %.3f mm is thinner than the PEM minimum %.3f mm.' % (sheet_mm, spec['min_sheet']))
+    if sheet_mm is not None and spec.get('max_sheet') is not None and sheet_mm > spec['max_sheet'] + 1e-6:
+        out.append('Sheet %.3f mm is thicker than the PEM maximum %.3f mm.' % (sheet_mm, spec['max_sheet']))
+    if edge_mm is not None and edge_mm < spec['edge'] - 1e-6:
+        out.append('Centerline-to-edge %.3f mm is under the PEM minimum %.3f mm.' % (edge_mm, spec['edge']))
+    if hardness_hrb is not None and hardness_hrb > spec['max_hrb'] + 1e-6:
+        out.append('Sheet hardness HRB %g is harder than the PEM maximum HRB %g (HB %g).'
+                   % (hardness_hrb, spec['max_hrb'], spec['max_hb']))
+    return out
+
+
+def press_size_for(fam, hole_diameter_cm):
+    """Size whose published hole window contains this hole, or None."""
+    if not hole_diameter_cm:
+        return None
+    mm = hole_diameter_cm * 10.0
+    for row in fam['sizes']:
+        spec = mount_spec(fam, row, row['lengths'][0])
+        if spec['hole'] - spec['hole_minus'] - 1e-6 <= mm <= spec['hole'] + spec['hole_plus'] + 1e-6:
+            return row['size']
+    return None
+
+
+def press_geometry(fam, row, length):
+    """Installed press-in body, centimetres. z=0 is the install face.
+    Nuts and floating nuts: head sits on the face (+z), shank goes into the sheet (-z).
+    Studs and standoffs: the head is flush at z=0 and the body goes into the sheet (-z).
+    A flush stud's head thickness is not in the bulletin, so the solid is the stud only;
+    head_r is still returned from the published head diameter H."""
+    dims = row['dims']
+
+    def c(v):
+        return float(v) / 10.0
+
+    g = {'shape': fam['shape'], 'kind': 'press-in'}
+    if fam['shape'] in ('clinch-nut', 'floating'):
+        height_key = 'T2' if fam['shape'] == 'floating' and 'T2' in dims else ('T' if fam['shape'] == 'clinch-nut' else 'T1')
+        width_key = 'E'
+        g.update(head_r=c(_at(dims, width_key, length)) / 2.0,
+                 head_h=c(_at(dims, height_key, length)),
+                 shank_r=c(_at(dims, 'C', length)) / 2.0,
+                 shank_l=c(_at(dims, 'A', length)),
+                 bore_r=c(row['d']) / 2.0)
+    elif fam['shape'] == 'stud':
+        length_cm = c(float(length))
+        unthread = c(_at(dims, 'S', length))
+        g.update(r=c(row['d']) / 2.0, L=length_cm, head_r=c(_at(dims, 'H', length)) / 2.0,
+                 unthread=unthread, thread_len=max(length_cm - unthread, 0.0),
+                 shank=(0.0, -length_cm))
+    elif fam['shape'] == 'standoff':
+        length_cm = c(float(length))
+        g.update(across=c(_at(dims, 'H', length)), L=length_cm, bore_r=c(row['d']) / 2.0,
+                 seat_r=c(_at(dims, 'C', length)) / 2.0)
+        if 'F' in dims:
+            g['blind'] = c(_at(dims, 'F', length))
+    else:
+        raise ValueError(fam['shape'])
+    return g

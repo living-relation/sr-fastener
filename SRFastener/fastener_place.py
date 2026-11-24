@@ -6,6 +6,8 @@ without the add-in. data/catalog.json is only the size table the add-in builds n
 Stacks: place_stack() puts a screw (or a lone nut or washer) plus any number of nuts and washers on the near side
 (the picked edge, under the screw head) and the far side (the other end of a through hole), in the order given,
 each sitting on the one before. Parts already placed at that edge are stacked on too."""
+import re
+
 import adsk.core
 import adsk.fusion
 
@@ -66,6 +68,50 @@ def _thread_designation(face):
     except Exception:
         pass
     return None
+
+
+def measure_mount(edge):
+    """(sheet thickness mm, minimum centerline-to-edge mm) from the picked hole, or (None, None).
+    Sheet thickness is the cylindrical wall's extent along the hole. Edge distance is the nearest
+    other edge on a flat face of the hole. Hardness is not in the model."""
+    curve = adsk.core.Circle3D.cast(edge.geometry) or adsk.core.Arc3D.cast(edge.geometry)
+    if curve is None:
+        return None, None
+    normal = curve.normal.copy()
+    normal.normalize()
+    centre = curve.center
+    sheet = None
+    for i in range(edge.faces.count):
+        face = edge.faces.item(i)
+        if face.geometry.surfaceType != adsk.core.SurfaceTypes.CylinderSurfaceType:
+            continue
+        box = face.boundingBox
+        lo, hi = box.minPoint, box.maxPoint
+        dots = []
+        for x in (lo.x, hi.x):
+            for y in (lo.y, hi.y):
+                for z in (lo.z, hi.z):
+                    dots.append((x - centre.x) * normal.x + (y - centre.y) * normal.y + (z - centre.z) * normal.z)
+        sheet = (max(dots) - min(dots)) * 10.0
+        break
+    nearest = None
+    for i in range(edge.faces.count):
+        face = edge.faces.item(i)
+        if face.geometry.surfaceType != adsk.core.SurfaceTypes.PlaneSurfaceType:
+            continue
+        for other in face.edges:
+            if other == edge:
+                continue
+            try:
+                ok, point = other.evaluator.getClosestPointTo(centre)
+            except Exception:
+                continue
+            if not ok:
+                continue
+            dist = point.distanceTo(centre) * 10.0
+            if nearest is None or dist < nearest:
+                nearest = dist
+    return sheet, nearest
 
 
 def read_hole(edge, flip=False):
@@ -239,7 +285,7 @@ def _apply_thread(comp, fam, row, length, notes):
         ttype, designation, tclass = spec
         query = comp.features.threadFeatures.threadDataQuery
         body = comp.bRepBodies.item(0)
-        g = fc.geometry(fam, row, length)
+        g = fc.press_geometry(fam, row, length) if fc.kind(fam) == 'press-in' else fc.geometry(fam, row, length)
         r = g['r']
         face = None
         for f in body.faces:
@@ -316,8 +362,14 @@ def make_component(app, design, parent, cat, fam, row, length, finish_key, matri
     comp.name = pn
     comp.partNumber = pn
     comp.description = bom['description']
-    is_part = fc.kind(fam) != 'screw'
-    body = geom.build_part_body(fam, row)[0] if is_part else geom.build_body(fam, row, length)
+    press = fc.kind(fam) == 'press-in'
+    is_part = fc.kind(fam) not in ('screw', 'press-in')
+    if press:
+        body = geom.build_press_body(fam, row, length)
+    elif is_part:
+        body = geom.build_part_body(fam, row)[0]
+    else:
+        body = geom.build_body(fam, row, length)
     if design.designType == adsk.fusion.DesignTypes.ParametricDesignType:
         bf = comp.features.baseFeatures.add()
         bf.startEdit()
@@ -345,9 +397,42 @@ def make_component(app, design, parent, cat, fam, row, length, finish_key, matri
     comp.attributes.add(ATTR, 'kind', fc.kind(fam))
     if is_part:
         comp.attributes.add(ATTR, 'thickness', repr(fc.part_geometry(fam, row)['thickness']))
+    elif press:
+        _press_properties(design, comp, fam, row, length, notes)
+        if thread and fam.get('shape') == 'stud' and design.designType == adsk.fusion.DesignTypes.ParametricDesignType:
+            _apply_thread(comp, fam, row, length, notes)
     elif thread and design.designType == adsk.fusion.DesignTypes.ParametricDesignType:
         _apply_thread(comp, fam, row, length, notes)
     return occ, notes
+
+
+def _param_name(pn, suffix):
+    safe = re.sub(r'[^A-Za-z0-9]', '_', pn)
+    return 'pem_%s_%s' % (safe, suffix)
+
+
+def _press_properties(design, comp, fam, row, length, notes):
+    """Hole size, tolerance and minimum sheet as user parameters and attributes.
+    They are not written into the description, so they are not a BOM column."""
+    spec = fc.mount_spec(fam, row, length)
+    comp.attributes.add(ATTR, 'mount_hole', '%g mm' % spec['hole'])
+    comp.attributes.add(ATTR, 'mount_tol', '+%g/-%g mm' % (spec['hole_plus'], spec['hole_minus']))
+    comp.attributes.add(ATTR, 'min_sheet', '%g mm' % spec['min_sheet'])
+    comp.attributes.add(ATTR, 'citation', spec['citation'])
+    try:
+        params = design.userParameters
+    except Exception as e:
+        notes.append('user parameters not added: %s' % e)
+        return
+    # The PEM designation does not use the finish key; the family's finish still satisfies the call.
+    pn = fc.part_number(fam, row, length, fam['finishes'][0])
+    for suffix, mm, comment in fc.parameter_values(fam, row, length):
+        name = _param_name(pn, suffix)
+        try:
+            if params.itemByName(name) is None:
+                params.add(name, adsk.core.ValueInput.createByReal(mm / 10.0), 'mm', comment)
+        except Exception as e:
+            notes.append('user parameter %s not added: %s' % (name, e))
 
 
 def _seat_edge(occ, matrix, prefer_radius):
@@ -541,6 +626,10 @@ def place_stack(app, design, cat, main, rows, edges, flip=False, thread=True):
         hole = read_hole(edge, flip)
         if hole is None:
             notes.append('skipped a non-circular edge')
+            continue
+        if main is not None and main['kind'] == 'press-in':
+            # One press-in part in the hole. No nut, no stack, seated on the picked face.
+            occs.append(_place_one(app, design, cat, main, hole, 0.0, thread, notes))
             continue
         near = [r for r in rows if r.get('side', 'near') == 'near']
         far = [r for r in rows if r.get('side') == 'far']
