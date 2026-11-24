@@ -8,7 +8,7 @@ McMaster series and item numbers in this file are dimension sources only. Shop s
 | Code | Type (McMaster name) | Standard | Dimensions | Lengths | Thread length | Alloy black oxide |
 |---|---|---|---|---|---|---|
 | SSH-M | Socket Head Screw | ISO 4762 | iso4762, hk_m_shcs | iso4762 | iso4762 | hk_m_shcs |
-| SBH-M | Button Head Hex-Drive Screw | ISO 7380-1 | iso7380, iso7380_22, hk_m_bhcs | iso7380 | iso7380 | hk_m_bhcs, av_m_bhcs16 |
+| SBH-M | Button Head Hex-Drive Screw | ISO 7380-1 | iso7380, iso7380_22, hk_m_bhcs | iso7380, wasi_7380 | iso7380 | hk_m_bhcs, av_m_bhcs16 |
 | SFH-M | Hex-Drive Flat Head Screw | ISO 10642 | iso10642, hk_m_fhcs | iso10642 | iso10642 | hk_m_fhcs |
 | SLH-M | Low-Profile Socket Head Screw | DIN 7984 | bbi_7984, fn_7984 |  |  | bbi_7984 |
 | HHB-M | Hex Head Bolt, Fully Threaded | ISO 4017 | iso4017 |  | iso4017 |  |
@@ -39,14 +39,16 @@ Every size is offered in 18-8 SS and 18-8 SS-BO; McMaster is used for dimensions
 
 | Code | McMaster name | Standard | Sizes | Dimension sources | Notes |
 |---|---|---|---|---|---|
-| NHX-M | Hex Nuts | DIN 934 | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_hexnut_m | McMaster stocks DIN 934. ISO 4032 is taller from M5 (M5 m 4.7, M6 5.2, M8 6.8, M10 8.4, M12 10.8, M16 14.8, M20 18.0) and narrower at M10 (s 16) and M12 (s 18). |
+| NHX-M | Hex Nuts | DIN 934 | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_hexnut_m | McMaster stocks DIN 934. M3 and M4 match ISO 4032 style 1 (s max and m max), so they are not repeated. M2 and the sizes that differ are the regular hex nut. |
 | NTH-M | Thin-Profile Hex Nuts | DIN 439 B | M3, M4, M5, M6, M8, M10, M12, M16 | mcm_thin_bo, iso4035 | Heights match ISO 4035; McMaster widths at M10 (17) and M12 (19) are DIN 439 B, ISO 4035 says 16 and 18. |
-| NNL-M | Nylon-Insert Locknuts | DIN 985 | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_nylon_m, bbi_985 | DIN 985 (McMaster and Brighton-Best agree). ISO 10511 is lower and narrower at M10/M12. |
+| NNL-M | Nylon-Insert Locknuts | DIN 985 | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_nylon_m, bbi_985 | DIN 985 overall height (McMaster and Brighton-Best agree). ISO 10511 is the thin nylon-insert family: same width and overall height at M4, M5 and M6, 0.1 mm shorter at M3, shorter from M8, and narrower at M10 and M12. |
 | NFL-M | Flange Nuts | ISO 4161 (DIN 6923) | M3, M4, M5, M6, M8, M10, M12 | mcm_flange_m, iso4161 | M5 to M12 are ISO 4161 (c = flange thickness min); M3 and M4 are not in ISO 4161 and come from McMaster. |
+| NHR-M | Regular Hex Nuts | ISO 4032 | M2, M5, M6, M8, M10, M12, M16, M20 | iso4032 | ISO 4032:1999 Table 1 style 1, width s max and height m max. M3 is 5.5 by 2.4 and M4 is 7 by 3.2, the same as DIN 934, so those sizes stay on the hex nut. M2 is the same width and height as DIN 934 and is listed here because that family starts at M3. M2.5 is in Table 1 and is not offered. |
+| NTN-M | Thin-Profile Nylon-Insert Locknuts | ISO 10511 | M3, M4, M5, M6, M8, M10, M12, M16, M20 | iso10511 | ISO 10511:2012 Table 1, width s max and overall height h max. The insert is drawn as part of the hex. M4, M5 and M6 match the DIN 985 width and overall height. M3 is 3.9 versus 4.0. From M8 the nut is shorter, and M10 and M12 are also narrower. The table starts at M3. |
 | NSF-M | Serrated Flange Nuts | ISO 4161 (DIN 6923) | M3, M4, M5, M6, M8, M10, M12 | mcm_serr, iso4161, bbi_6923 | Serrations are not modelled. McMaster lists M5 flange dia 11 mm; ISO 4161 and Brighton-Best give 11.8 max. |
 | WGP-M | General Purpose Washers | ISO 7089 | M3, M4, M5, M6, M8, M10, M12, M16, M20 | iso7089, mcm_gp_bo | McMaster rows read for M3 to M8; M10 to M20 from ISO 7089. |
 | WOV-M | Oversized Washers | ISO 7093-1 | M3, M4, M5, M6, M8, M10, M12, M16, M20 | iso7093, mcm_over_m | ISO 7093-1 values. McMaster lists M5 thk 1.0-1.4 and M20 ID 22. |
-| WSL-M | Split Lock Washers | DIN 127 B | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_split, bbi_127 | ID is McMaster (DIN 127 B d1 max); OD and thickness agree with Brighton-Best. |
+| WSL-M | Split Lock Washers | DIN 127 B | M2, M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_split, bbi_127 | Inside diameter is d1 max and outside diameter is d2 max. Thickness is the middle of the Brighton-Best range. M3 and up match McMaster. M2 is Brighton-Best only: d1 max 2.4, d2 max 4.4, thickness middle of 0.4 to 0.6. |
 | WTE-M | Tooth Lock Washers (external) | DIN 6797 A | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_tooth_m, bbi_6797a | Teeth are not modelled (flat ring at the washer thickness). |
 | WTI-M | Tooth Lock Washers (internal) | DIN 6797 J | M3, M4, M5, M6, M8, M10 | mcm_tooth_m, bbi_6797j | McMaster stocks 18-8 to M10. Teeth are not modelled. |
 | NHX-I | Hex Nuts | ASME B18.2.2 | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2, #2-64, #4-48, #6-40, #8-36, #10-32, 1/4-28, 5/16-24, 3/8-24, 1/2-20 | mcm_hexnut_i, bbi_hexnut | #2 to #10 are machine screw nuts. McMaster also sells 1/4-20 at 3/16 high and 5/16, 3/8 in a wider B18.6.3 style; the ASTM F594 heights are used. |
@@ -179,6 +181,8 @@ Left off:
 - Zinc Plated on thick washers (DIN 7349). Not checked on McMaster.
 - Grade 8 on thin hex nuts and top-lock nuts. Not listed under the McMaster Grade 8 filter.
 - Plain Steel on locknuts, flange, coupling, cap, wing and square nuts, lock washers. Not checked on McMaster.
+- Plain steel, zinc, Grade 8 and Class 10 on regular hex nuts. McMaster hex-nut finish and class pages are the DIN 934 nuts already offered. The regular hex nut is ISO 4032 style 1.
+- Zinc plated on metric thin nylon-insert locknuts. McMaster zinc-plated thin nylon-insert locknuts are the inch family. The metric sizes are ISO 10511 and were not on that page.
 
 ## Source keys
 
@@ -186,7 +190,8 @@ Left off:
 |---|---|
 | iso4762 | https://cdn.standards.iteh.ai/samples/34460/06335046afaf46fb8e84d91a3eda001d/ISO-4762-2004.pdf (ISO 4762:2004 Table 1: dk, k, s, t, b, lengths, ls/lg) |
 | iso7380 | https://cdn.standards.iteh.ai/samples/53671/84df01c5fcce4a91896ac3b0c55ca128/ISO-7380-1-2011.pdf (ISO 7380-1:2011 Table 1: dk, k, rf, s, t, b, lengths, ls/lg) |
-| iso7380_22 | https://cdn.standards.iteh.ai/samples/78699/a175805085534f98983d6c8aa583a5b0/ISO-7380-1-2022.pdf (ISO 7380-1:2022 Table 1: same dk, k, rf, s; t min) |
+| iso7380_22 | https://cdn.standards.iteh.ai/samples/78699/a175805085534f98983d6c8aa583a5b0/ISO-7380-1-2022.pdf (ISO 7380-1:2022 Table 1: same dk, k, rf, s; t min. The preview ends before Table 2.) |
+| wasi_7380 | https://www.wasishop.de/pdf_datenblatt/iso7380_en.pdf (WASI ISO 7380-1 datasheet, PDF dated 2020-12-14: length grid. M3 lengths 4 and 5 sit left of the step. Length 4 is 3.80 to 4.20. Head numbers match ISO 7380-1 Table 1.) |
 | iso10642 | https://cdn.standards.iteh.ai/samples/34454/32dec7e84d974361b85f744935ab2175/ISO-10642-2004.pdf (ISO 10642:2004 Table 1: dk theor. max, k, s, t, b, lengths, ls/lg) |
 | iso4017 | https://cdn.standards.iteh.ai/samples/72585/1179998ddd594550a909d6e13c416f3e/ISO-4017-2022.pdf (ISO 4017:2022 Table 1: s max, k nom) |
 | iso4026 | https://cdn.standards.iteh.ai/samples/36431/f53ced64ab1946679bd80f0a0e6cac63/ISO-4026-2003.pdf (ISO 4026:2003 Table 1: s, dp max, t min short/long, lengths) |
@@ -237,7 +242,8 @@ Left off:
 | mcm_split_bo | https://www.mcmaster.com/products/split-lock-washers/finish~black-oxide/material~18-8-stainless-steel/ (McMaster black-oxide 18-8 split lock washers: inch #2 to 1/2, metric M3 and M5 to M20) |
 | mcm_tooth_m | https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/system-of-measurement~metric/tooth-lock-washers-2~~/ (McMaster 18-8 metric tooth lock washers, DIN 6797 A and J: ID, OD, thk) |
 | iso4161 | https://cdn.standards.iteh.ai/samples/61523/6933d05d5928493fa0aaa091527bed78/ISO-4161-2012.pdf (ISO 4161:2012 Table 1: s, m max, dc max, c min) |
-| iso4032 | https://cdn.standards.iteh.ai/samples/26382/0f8d850e82f741f5b13e5ed78b236426/ISO-4032-1999.pdf (ISO 4032:1999 Table 1, for comparison with DIN 934) |
+| iso4032 | https://cdn.standards.iteh.ai/samples/26382/0f8d850e82f741f5b13e5ed78b236426/ISO-4032-1999.pdf (ISO 4032:1999 Table 1 style 1: s max, m max) |
+| iso10511 | https://preview.sist.si/sist-preview/61369/9332a361b820448895a2594727485014/ISO-10511-2012.pdf (ISO 10511:2012 Table 1: s max, h max) |
 | iso4035 | https://cdn.standards.iteh.ai/samples/61671/80e6085c74a64e5bb25f5198a1356852/ISO-4035-2012.pdf (ISO 4035:2012 Table 1: s, m max) |
 | iso7089 | https://cdn.standards.iteh.ai/samples/13666/bd926567c06846afbe5fef5c514ba406/ISO-7089-2000.pdf (ISO 7089:2000 Table 1: d1, d2, h) |
 | iso7093 | https://cdn.standards.iteh.ai/samples/13677/a0dc4c7265a048bcb627747f4d7cadf2/ISO-7093-1-2000.pdf (ISO 7093-1:2000 Table 1: d1, d2, h) |

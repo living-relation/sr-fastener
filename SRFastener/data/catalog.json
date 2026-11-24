@@ -4,7 +4,8 @@
  "sources": {
   "iso4762": "https://cdn.standards.iteh.ai/samples/34460/06335046afaf46fb8e84d91a3eda001d/ISO-4762-2004.pdf (ISO 4762:2004 Table 1: dk, k, s, t, b, lengths, ls/lg)",
   "iso7380": "https://cdn.standards.iteh.ai/samples/53671/84df01c5fcce4a91896ac3b0c55ca128/ISO-7380-1-2011.pdf (ISO 7380-1:2011 Table 1: dk, k, rf, s, t, b, lengths, ls/lg)",
-  "iso7380_22": "https://cdn.standards.iteh.ai/samples/78699/a175805085534f98983d6c8aa583a5b0/ISO-7380-1-2022.pdf (ISO 7380-1:2022 Table 1: same dk, k, rf, s; t min)",
+  "iso7380_22": "https://cdn.standards.iteh.ai/samples/78699/a175805085534f98983d6c8aa583a5b0/ISO-7380-1-2022.pdf (ISO 7380-1:2022 Table 1: same dk, k, rf, s; t min. The preview ends before Table 2.)",
+  "wasi_7380": "https://www.wasishop.de/pdf_datenblatt/iso7380_en.pdf (WASI ISO 7380-1 datasheet, PDF dated 2020-12-14: length grid. M3 lengths 4 and 5 sit left of the step. Length 4 is 3.80 to 4.20. Head numbers match ISO 7380-1 Table 1.)",
   "iso10642": "https://cdn.standards.iteh.ai/samples/34454/32dec7e84d974361b85f744935ab2175/ISO-10642-2004.pdf (ISO 10642:2004 Table 1: dk theor. max, k, s, t, b, lengths, ls/lg)",
   "iso4017": "https://cdn.standards.iteh.ai/samples/72585/1179998ddd594550a909d6e13c416f3e/ISO-4017-2022.pdf (ISO 4017:2022 Table 1: s max, k nom)",
   "iso4026": "https://cdn.standards.iteh.ai/samples/36431/f53ced64ab1946679bd80f0a0e6cac63/ISO-4026-2003.pdf (ISO 4026:2003 Table 1: s, dp max, t min short/long, lengths)",
@@ -55,7 +56,8 @@
   "mcm_split_bo": "https://www.mcmaster.com/products/split-lock-washers/finish~black-oxide/material~18-8-stainless-steel/ (McMaster black-oxide 18-8 split lock washers: inch #2 to 1/2, metric M3 and M5 to M20)",
   "mcm_tooth_m": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/system-of-measurement~metric/tooth-lock-washers-2~~/ (McMaster 18-8 metric tooth lock washers, DIN 6797 A and J: ID, OD, thk)",
   "iso4161": "https://cdn.standards.iteh.ai/samples/61523/6933d05d5928493fa0aaa091527bed78/ISO-4161-2012.pdf (ISO 4161:2012 Table 1: s, m max, dc max, c min)",
-  "iso4032": "https://cdn.standards.iteh.ai/samples/26382/0f8d850e82f741f5b13e5ed78b236426/ISO-4032-1999.pdf (ISO 4032:1999 Table 1, for comparison with DIN 934)",
+  "iso4032": "https://cdn.standards.iteh.ai/samples/26382/0f8d850e82f741f5b13e5ed78b236426/ISO-4032-1999.pdf (ISO 4032:1999 Table 1 style 1: s max, m max)",
+  "iso10511": "https://preview.sist.si/sist-preview/61369/9332a361b820448895a2594727485014/ISO-10511-2012.pdf (ISO 10511:2012 Table 1: s max, h max)",
   "iso4035": "https://cdn.standards.iteh.ai/samples/61671/80e6085c74a64e5bb25f5198a1356852/ISO-4035-2012.pdf (ISO 4035:2012 Table 1: s, m max)",
   "iso7089": "https://cdn.standards.iteh.ai/samples/13666/bd926567c06846afbe5fef5c514ba406/ISO-7089-2000.pdf (ISO 7089:2000 Table 1: d1, d2, h)",
   "iso7093": "https://cdn.standards.iteh.ai/samples/13677/a0dc4c7265a048bcb627747f4d7cadf2/ISO-7093-1-2000.pdf (ISO 7093-1:2000 Table 1: d1, d2, h)",
@@ -590,7 +592,8 @@
      "hk_m_bhcs"
     ],
     "lengths": [
-     "iso7380"
+     "iso7380",
+     "wasi_7380"
     ],
     "thread": [
      "iso7380"
@@ -613,6 +616,8 @@
       "rf": 3.5
      },
      "lengths": [
+      4,
+      5,
       6,
       8,
       10,
@@ -9353,7 +9358,7 @@
      "mcm_hexnut_bo"
     ]
    },
-   "notes": "McMaster stocks DIN 934. ISO 4032 is taller from M5 (M5 m 4.7, M6 5.2, M8 6.8, M10 8.4, M12 10.8, M16 14.8, M20 18.0) and narrower at M10 (s 16) and M12 (s 18).",
+   "notes": "McMaster stocks DIN 934. M3 and M4 match ISO 4032 style 1 (s max and m max), so they are not repeated. M2 and the sizes that differ are the regular hex nut.",
    "mcmaster": "Hex Nuts",
    "mcmaster_url": "https://www.mcmaster.com/products/hex-nuts/material~18-8-stainless-steel/system-of-measurement~metric/hex-nuts-3~~/"
   },
@@ -9656,7 +9661,7 @@
      "mcm_nylon_m"
     ]
    },
-   "notes": "DIN 985 (McMaster and Brighton-Best agree). ISO 10511 is lower and narrower at M10/M12.",
+   "notes": "DIN 985 overall height (McMaster and Brighton-Best agree). ISO 10511 is the thin nylon-insert family: same width and overall height at M4, M5 and M6, 0.1 mm shorter at M3, shorter from M8, and narrower at M10 and M12.",
    "mcmaster": "Nylon-Insert Locknuts",
    "mcmaster_url": "https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/system-of-measurement~metric/nylon-insert-locknuts-2~~/"
   },
@@ -9805,6 +9810,275 @@
    "notes": "M5 to M12 are ISO 4161 (c = flange thickness min); M3 and M4 are not in ISO 4161 and come from McMaster.",
    "mcmaster": "Flange Nuts",
    "mcmaster_url": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~metric/flange-nuts-1~~/"
+  },
+  {
+   "code": "NHR-M",
+   "kind": "nut",
+   "shape": "hex",
+   "name": "Regular Hex Nut",
+   "standard": "ISO 4032",
+   "system": "metric",
+   "sizes": [
+    {
+     "size": "M2",
+     "d": 2.0,
+     "pitch": 0.4,
+     "dims": {
+      "s": 4.0,
+      "m": 1.6
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M5",
+     "d": 5.0,
+     "pitch": 0.8,
+     "dims": {
+      "s": 8.0,
+      "m": 4.7
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M6",
+     "d": 6.0,
+     "pitch": 1.0,
+     "dims": {
+      "s": 10.0,
+      "m": 5.2
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M8",
+     "d": 8.0,
+     "pitch": 1.25,
+     "dims": {
+      "s": 13.0,
+      "m": 6.8
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M10",
+     "d": 10.0,
+     "pitch": 1.5,
+     "dims": {
+      "s": 16.0,
+      "m": 8.4
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M12",
+     "d": 12.0,
+     "pitch": 1.75,
+     "dims": {
+      "s": 18.0,
+      "m": 10.8
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M16",
+     "d": 16.0,
+     "pitch": 2.0,
+     "dims": {
+      "s": 24.0,
+      "m": 14.8
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M20",
+     "d": 20.0,
+     "pitch": 2.5,
+     "dims": {
+      "s": 30.0,
+      "m": 18.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS",
+    "SS-BO"
+   ],
+   "source": "https://cdn.standards.iteh.ai/samples/26382/0f8d850e82f741f5b13e5ed78b236426/ISO-4032-1999.pdf (ISO 4032:1999 Table 1 style 1: s max, m max)",
+   "sources": {
+    "dims": [
+     "iso4032"
+    ],
+    "finish": []
+   },
+   "notes": "ISO 4032:1999 Table 1 style 1, width s max and height m max. M3 is 5.5 by 2.4 and M4 is 7 by 3.2, the same as DIN 934, so those sizes stay on the hex nut. M2 is the same width and height as DIN 934 and is listed here because that family starts at M3. M2.5 is in Table 1 and is not offered.",
+   "mcmaster": "Regular Hex Nuts",
+   "mcmaster_url": "https://cdn.standards.iteh.ai/samples/26382/0f8d850e82f741f5b13e5ed78b236426/ISO-4032-1999.pdf"
+  },
+  {
+   "code": "NTN-M",
+   "kind": "nut",
+   "shape": "nylon",
+   "name": "Thin-Profile Nylon-Insert Locknut",
+   "standard": "ISO 10511",
+   "system": "metric",
+   "sizes": [
+    {
+     "size": "M3",
+     "d": 3.0,
+     "pitch": 0.5,
+     "dims": {
+      "s": 5.5,
+      "m": 3.9
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M4",
+     "d": 4.0,
+     "pitch": 0.7,
+     "dims": {
+      "s": 7.0,
+      "m": 5.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M5",
+     "d": 5.0,
+     "pitch": 0.8,
+     "dims": {
+      "s": 8.0,
+      "m": 5.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M6",
+     "d": 6.0,
+     "pitch": 1.0,
+     "dims": {
+      "s": 10.0,
+      "m": 6.0
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M8",
+     "d": 8.0,
+     "pitch": 1.25,
+     "dims": {
+      "s": 13.0,
+      "m": 6.76
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M10",
+     "d": 10.0,
+     "pitch": 1.5,
+     "dims": {
+      "s": 16.0,
+      "m": 8.56
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M12",
+     "d": 12.0,
+     "pitch": 1.75,
+     "dims": {
+      "s": 18.0,
+      "m": 10.23
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M16",
+     "d": 16.0,
+     "pitch": 2.0,
+     "dims": {
+      "s": 24.0,
+      "m": 12.42
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    },
+    {
+     "size": "M20",
+     "d": 20.0,
+     "pitch": 2.5,
+     "dims": {
+      "s": 30.0,
+      "m": 14.9
+     },
+     "finishes": [
+      "SS",
+      "SS-BO"
+     ]
+    }
+   ],
+   "finishes": [
+    "SS",
+    "SS-BO"
+   ],
+   "source": "https://preview.sist.si/sist-preview/61369/9332a361b820448895a2594727485014/ISO-10511-2012.pdf (ISO 10511:2012 Table 1: s max, h max)",
+   "sources": {
+    "dims": [
+     "iso10511"
+    ],
+    "finish": []
+   },
+   "notes": "ISO 10511:2012 Table 1, width s max and overall height h max. The insert is drawn as part of the hex. M4, M5 and M6 match the DIN 985 width and overall height. M3 is 3.9 versus 4.0. From M8 the nut is shorter, and M10 and M12 are also narrower. The table starts at M3.",
+   "mcmaster": "Thin-Profile Nylon-Insert Locknuts",
+   "mcmaster_url": "https://preview.sist.si/sist-preview/61369/9332a361b820448895a2594727485014/ISO-10511-2012.pdf"
   },
   {
    "code": "NSF-M",
@@ -10288,6 +10562,20 @@
    "system": "metric",
    "sizes": [
     {
+     "size": "M2",
+     "d": 2.0,
+     "dims": {
+      "d1": 2.4,
+      "d2": 4.4,
+      "t": 0.5
+     },
+     "finishes": [
+      "SS",
+      "SS-BO",
+      "ZN"
+     ]
+    },
+    {
      "size": "M3",
      "d": 3.0,
      "dims": {
@@ -10429,7 +10717,7 @@
      "mcm_split_bo"
     ]
    },
-   "notes": "ID is McMaster (DIN 127 B d1 max); OD and thickness agree with Brighton-Best.",
+   "notes": "Inside diameter is d1 max and outside diameter is d2 max. Thickness is the middle of the Brighton-Best range. M3 and up match McMaster. M2 is Brighton-Best only: d1 max 2.4, d2 max 4.4, thickness middle of 0.4 to 0.6.",
    "mcmaster": "Split Lock Washers",
    "mcmaster_url": "https://www.mcmaster.com/products/lock-washers/material~18-8-stainless-steel/split-lock-washers-2~~/"
   },

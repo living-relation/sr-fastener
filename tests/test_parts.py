@@ -22,7 +22,7 @@ def test_kinds_listed_separately():
     assert all(fc.kind(f) == 'screw' for f in screws)
     nuts = {f['code'] for f in fc.families(CAT, kind_='nut')}
     washers = {f['code'] for f in fc.families(CAT, kind_='washer')}
-    assert nuts == {'NHX-M', 'NTH-M', 'NNL-M', 'NFL-M', 'NSF-M', 'NHX-I', 'NTH-I', 'NNL-I',
+    assert nuts == {'NHX-M', 'NHR-M', 'NTH-M', 'NNL-M', 'NTN-M', 'NFL-M', 'NSF-M', 'NHX-I', 'NTH-I', 'NNL-I',
                     'NFL-I', 'NSF-I', 'NTL-M', 'NTL-I', 'NTN-I', 'NCP-M', 'NCP-I', 'NCA-M', 'NCA-I',
                     'NWG-M', 'NWG-I', 'NSQ-M', 'NSQ-I'}
     assert washers == {'WGP-M', 'WOV-M', 'WSL-M', 'WTE-M', 'WTI-M', 'WSA-I', 'WUS-I', 'WSL-I',
@@ -46,6 +46,8 @@ def test_hex_nut_din934_mcmaster():  # McMaster 18-8 metric hex nuts (DIN 934): 
     assert d('NHX-M', 'M5') == {'s': 8.0, 'm': 4.0}
     assert d('NHX-M', 'M10') == {'s': 17.0, 'm': 8.0}
     assert d('NHX-M', 'M20') == {'s': 30.0, 'm': 16.0}
+    assert d('NHR-M', 'M2') == {'s': 4.0, 'm': 1.6}
+    assert d('NHR-M', 'M6') == {'s': 10.0, 'm': 5.2}
 
 
 def test_hex_nut_inch_mcmaster():  # McMaster 18-8 hex nuts: 4-40 1/4 x 3/32, 1/4-20 7/16 x 7/32, 1/2-13 3/4 x 7/16
@@ -64,6 +66,7 @@ def test_thin_nut():  # McMaster DIN 439 B / ISO 4035: M6 10 x 3.2, M12 19 x 6; 
 def test_nylon_locknut():  # McMaster and Brighton-Best DIN 985: M8 13 x 8, M10 17 x 10; 1/4-20 7/16 x 5/16
     assert d('NNL-M', 'M8') == {'s': 13.0, 'm': 8.0}
     assert d('NNL-M', 'M10') == {'s': 17.0, 'm': 10.0}
+    assert d('NTN-M', 'M8') == {'s': 13.0, 'm': 6.76}
     assert d('NNL-I', '1/4') == {'s': round(7 / 16, 4), 'm': round(5 / 16, 4)}
     assert d('NNL-I', '#8') == {'s': round(11 / 32, 4), 'm': round(15 / 64, 4)}
 
@@ -78,6 +81,7 @@ def test_flange_nuts():  # ISO 4161 Table 1 M8: s 13, m 8, dc 17.9, c 1.2; McMas
 def test_washers_metric():  # ISO 7089 M6 6.4/12/1.6; ISO 7093-1 M8 8.4/24/2; McMaster split M5 5.4/9.2/1.1-1.3
     assert d('WGP-M', 'M6') == {'d1': 6.4, 'd2': 12.0, 't': 1.6}
     assert d('WOV-M', 'M8') == {'d1': 8.4, 'd2': 24.0, 't': 2.0}
+    assert d('WSL-M', 'M2') == {'d1': 2.4, 'd2': 4.4, 't': 0.5}
     assert d('WSL-M', 'M5') == {'d1': 5.4, 'd2': 9.2, 't': 1.2}
     assert d('WTE-M', 'M4') == {'d1': 4.3, 'd2': 8.0, 't': 0.5}  # DIN 6797 A, s 0.4-0.6
     assert d('WTI-M', 'M10') == {'d1': 10.5, 'd2': 18.0, 't': 0.9}
@@ -96,6 +100,9 @@ def test_black_oxide_only_where_stocked():
     assert fin('NHX-M', 'M8')[:2] == ['SS', 'SS-BO']
     assert fin('NHX-I', '#4-48')[:2] == ['SS', 'SS-BO']
     assert fin('WSL-M', 'M4')[:2] == ['SS', 'SS-BO']
+    assert fin('NHR-M', 'M6') == ['SS', 'SS-BO']
+    assert 'ZN' not in fin('NTN-M', 'M8')
+    assert 'ZN' in fin('NTN-I', '1/4')
     for p in CAT['parts']:
         assert p['finishes'][:2] == ['SS', 'SS-BO'], p['code']
         for r in p['sizes']:
@@ -115,6 +122,12 @@ def test_part_numbers_and_descriptions():
     assert bom('NHX-M', 'M5')['description'] == 'Hex Nut, M5 x 0.8, 18-8 Stainless Steel'
     assert bom('WSL-M', 'M6')['description'] == 'Split Lock Washer, M6, 18-8 Stainless Steel'
     assert bom('WSL-M', 'M6')['part_number'] == 'WSL-M6 x 11.8 18-8 SS'
+    assert bom('WSL-M', 'M2')['part_number'] == 'WSL-M2 x 4.4 18-8 SS'
+    assert bom('WSL-M', 'M2')['description'] == 'Split Lock Washer, M2, 18-8 Stainless Steel'
+    assert bom('NHR-M', 'M2')['part_number'] == 'NHR-M2-0.4 18-8 SS'
+    assert bom('NHR-M', 'M5')['description'] == 'Regular Hex Nut, M5 x 0.8, 18-8 Stainless Steel'
+    assert bom('NTN-M', 'M3')['part_number'] == 'NTN-M3-0.5 18-8 SS'
+    assert bom('NTN-M', 'M8')['description'] == 'Thin-Profile Nylon-Insert Locknut, M8 x 1.25, 18-8 Stainless Steel'
     assert bom('NHX-I', '1/4', 'GR8')['description'] == 'Hex Nut, 1/4-20, GR-8 Steel'
     assert bom('NHX-I', '1/4', 'GR8')['material'] == 'Grade 8 Steel'
     assert bom('NHX-M', 'M6', 'CL10')['description'] == 'Hex Nut, M6 x 1, CL-10 Steel'
