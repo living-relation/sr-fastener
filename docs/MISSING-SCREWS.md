@@ -23,5 +23,6 @@ Daniel approves new types automatically once their data is checked against McMas
 | Extreme-Vibration-Resistant Wedge Lock Washers | Only 316 stainless, black-oxide 316 or zinc-flake steel, not 18-8 or alloy black oxide |
 | Disc Springs (Belleville) | 302 stainless, 17-7 PH or steel, picked by load rating, not by screw size and finish |
 | Serrated flange nut 1/2-20, wing nut 3/8-24 and 1/2-20 | McMaster's dimensions differ from the coarse-thread size, not added yet |
+| Female-female hex standoffs | A new type. Daniel (2026-11-24): no new types for now, only new sizes of types that already exist |
 
 The work hub's Standard Components > Fasteners folder was not reachable live, so its list could not be rechecked.

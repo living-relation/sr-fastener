@@ -158,16 +158,13 @@ def _refresh(inputs, level):
     if level == 'size':
         screw = _st.is_screw()
         press = _st.kind == 'press-in'
-        stand = _st.kind == 'standoff'
-        inputs.itemById('length').isVisible = screw or press or stand
+        inputs.itemById('length').isVisible = screw or press
         inputs.itemById('thread').isVisible = screw or (press and fam.get('shape') == 'stud')
-        if screw or press or stand:
+        if screw or press:
             _st.items['length'] = _length_items(fam, row)
             cur = fc.length_key(row, _st.length)
             picked = _fill(inputs.itemById('length'), _st.items['length'], cur)
             if screw:
-                _st.length = float(picked)
-            elif stand:
                 _st.length = float(picked)
             else:
                 _st.length = picked

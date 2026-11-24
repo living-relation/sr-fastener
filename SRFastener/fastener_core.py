@@ -19,8 +19,7 @@ def load_catalog(path=CATALOG_PATH):
         return json.load(f)
 
 
-KINDS = (('screw', 'Screws'), ('nut', 'Nuts'), ('washer', 'Washers'), ('standoff', 'Standoffs'),
-         ('press-in', 'Press-in'))
+KINDS = (('screw', 'Screws'), ('nut', 'Nuts'), ('washer', 'Washers'), ('press-in', 'Press-in'))
 
 
 def kind(fam):
@@ -154,8 +153,7 @@ def part_number(fam, row, length, finish_key):
     Press-in parts use the PEM designation (FHS-M5-12, S-M3-1ZI) instead of the shop finish code.
     Screws: 'SSH-M3-0.5 x 10 18-8 SS', 'SSH-1/4-20 x 1.5 18-8 SS-BO', 'SSH-4-40 x 0.25 18-8 SS'.
     Nuts: screw diameter and thread only: 'NHX-M5-0.8 18-8 SS', 'NHX-1/4-20 ZN'.
-    Washers: screw size and outside diameter: 'WGP-M5 x 10 18-8 SS', 'WSA-1/4 x 0.734 18-8 SS'.
-    Female-female standoffs: size, thread and length: 'HFF-M3-0.5 x 6 18-8 SS'."""
+    Washers: screw size and outside diameter: 'WGP-M5 x 10 18-8 SS', 'WSA-1/4 x 0.734 18-8 SS'."""
     if kind(fam) == 'press-in':
         return '%s-%s-%s%s' % (fam['code'], row['thread_code'], _pem_token(row, length), fam.get('pem_suffix', ''))
     code = fam['code'].rsplit('-', 1)[0]
@@ -165,11 +163,6 @@ def part_number(fam, row, length, finish_key):
             body = '%s x %s' % (nominal(row).lstrip('#'), _num(washer_od(fam, row)))
         else:
             body = '%s x %g' % (row['size'], washer_od(fam, row))
-        return '%s-%s %s' % (code, body, fin)
-    if kind(fam) == 'standoff':
-        if length is None:
-            length = row['lengths'][0]
-        body = '%s-%g x %s' % (row['size'], row['pitch'], fmt_mm(length))
         return '%s-%s %s' % (code, body, fin)
     if kind(fam) == 'nut':
         if fam['system'] == 'inch':
@@ -288,17 +281,11 @@ def bom_fields(cat, fam, row, length, finish_key):
 
 
 def part_geometry(fam, row, length=None):
-    """Nuts, washers and female-female standoffs, in cm. z=0 is the face that sits on the part;
-    the body goes +z. bore_r: nut and standoff bore = nominal diameter (threads cosmetic), washer bore = ID.
-    A standoff's height is the chosen length."""
+    """Nuts and washers, in cm. z=0 is the face that sits on the part (or on the washer/nut below);
+    the body goes +z. bore_r: nut bore = nominal diameter (threads cosmetic), washer bore = ID."""
     c = lambda v: to_cm(fam, v)  # noqa: E731
     d = row['dims']
     g = {'kind': kind(fam), 'shape': fam['shape']}
-    if kind(fam) == 'standoff':
-        body = float(row['lengths'][0] if length is None else length)
-        g.update(bore_r=c(row['d']) / 2.0, height=c(body), across_flats=c(d['s']))
-        g['thickness'] = g['height']
-        return g
     if kind(fam) == 'nut':
         g.update(bore_r=c(row['d']) / 2.0, height=c(d['m']))
         if d.get('s'):
