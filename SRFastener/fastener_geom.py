@@ -173,3 +173,70 @@ def build_part_body(fam, row):
         cx = (g['outer_r'] + g['bore_r']) / 2.0
         tbm.booleanOperation(body, _box(tbm, cx, 0, g['height'] / 2.0, span, g['gap'], g['height'] + 2 * _EPS), diff)
     return body, g
+
+
+# Not a published shank length. Standoff clinch length is not in the bulletin, so this only
+# gives the joint a round edge at the published clinch diameter C.
+_SEAT = 0.01  # cm
+
+
+def _union_profile(tbm, pts):
+    """Solid of revolution from (z, r) points. A point at the same z only steps the radius."""
+    union = adsk.fusion.BooleanTypes.UnionBooleanType
+    body = None
+    z0, r0 = pts[0]
+    for z1, r1 in pts[1:]:
+        if abs(z1 - z0) < 1e-9:
+            z0, r0 = z1, r1
+            continue
+        seg = _cyl(tbm, z0, max(r0, 1e-5), z1, max(r1, 1e-5))
+        if body is None:
+            body = seg
+        else:
+            tbm.booleanOperation(body, seg, union)
+        z0, r0 = z1, r1
+    return body
+
+
+def build_press_body(fam, row, length):
+    """Press-in part. z=0 is the install face (see fastener_core.press_geometry).
+    A flush stud is the measured head profile revolved to the length code.
+    A floating nut keeps the catalog body and leaves the bulletin float gap around the captive nut.
+    Returns one body, or a list of bodies when the captive nut is separate."""
+    tbm = adsk.fusion.TemporaryBRepManager.get()
+    g = fc.press_geometry(fam, row, length)
+    union = adsk.fusion.BooleanTypes.UnionBooleanType
+    diff = adsk.fusion.BooleanTypes.DifferenceBooleanType
+    if g['shape'] == 'clinch-nut':
+        body = _cyl(tbm, 0.0, g['head_r'], g['head_h'], g['head_r'])
+        tbm.booleanOperation(body, _cyl(tbm, 0.0, g['shank_r'], -g['shank_l'], g['shank_r']), union)
+        tbm.booleanOperation(body, _cyl(tbm, -g['shank_l'] - _EPS, g['bore_r'], g['head_h'] + _EPS, g['bore_r']), diff)
+    elif g['shape'] == 'floating':
+        retainer = _cyl(tbm, 0.0, g['head_r'], g['head_h'], g['head_r'])
+        tbm.booleanOperation(retainer, _cyl(tbm, 0.0, g['shank_r'], -g['shank_l'], g['shank_r']), union)
+        tbm.booleanOperation(retainer, _cyl(tbm, -_EPS, g['bore_r'], -g['shank_l'] - _EPS, g['bore_r']), diff)
+        # Widen only the body so the captive nut has 0.38 mm radial clearance. The shank hole stays the thread minor.
+        tbm.booleanOperation(retainer, _cyl(tbm, -_EPS, g['retainer_bore_r'], g['head_h'] + _EPS, g['retainer_bore_r']), diff)
+        nut = _cyl(tbm, 0.0, g['nut_r'], g['head_h'], g['nut_r'])
+        tbm.booleanOperation(nut, _cyl(tbm, -_EPS, g['bore_r'], g['head_h'] + _EPS, g['bore_r']), diff)
+        return [retainer, nut]
+    elif g['shape'] == 'stud':
+        body = _union_profile(tbm, fc.stud_profile(fam, row, length))
+        # Tip recess: 60 deg from the axis (120 deg included), opening radius 0.075 x major.
+        depth = g['tip_recess_r'] / math.sqrt(3.0)
+        recess = _cyl(tbm, -g['L'] - _EPS, g['tip_recess_r'], -g['L'] + depth, _TIP_R)
+        tbm.booleanOperation(body, recess, diff)
+    elif g['shape'] == 'standoff':
+        # SO datasheet pages SO-3 and SO-4 draw H across a hex that runs the length L,
+        # with a short clinch end of diameter C. The viewer mesh is a 0.50 mm hex cap
+        # on a round body. The datasheet figure is what is modeled.
+        body = _hex_prism(tbm, g['across'], -g['L'], 0.0)
+        tbm.booleanOperation(body, _cyl(tbm, 0.0, g['seat_r'], -_SEAT, g['seat_r']), union)
+        if g.get('blind'):
+            # F on page SO-4 is a minimum full-thread depth. The hole is cut to F, which meets that minimum.
+            tbm.booleanOperation(body, _cyl(tbm, -g['L'] - _EPS, g['bore_r'], -g['L'] + g['blind'], g['bore_r']), diff)
+        else:
+            tbm.booleanOperation(body, _cyl(tbm, -g['L'] - _EPS, g['bore_r'], _EPS, g['bore_r']), diff)
+    else:
+        raise ValueError(g['shape'])
+    return body
