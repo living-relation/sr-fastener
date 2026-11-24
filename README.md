@@ -5,6 +5,8 @@ the hole edges, and SR Fastener builds the part, puts it on the hole with a rigi
 BOM part number, description and material. One insert can place a screw with any number of nuts and washers
 on both sides of every picked hole.
 
+Team install and toolbar buttons for every SR Fusion add-in: [docs/TEAM-FUSION-ADDINS.md](docs/TEAM-FUSION-ADDINS.md).
+
 ![SR Fastener button in the Insert panel](docs/screenshots/button.png)
 
 ![SR Fastener dialog](docs/screenshots/dialog.png) ![SR Fastener dialog for a nut](docs/screenshots/dialog-nut.png)
