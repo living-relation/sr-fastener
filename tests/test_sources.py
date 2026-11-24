@@ -16,9 +16,11 @@ def dims(code, size):
 
 
 def _fam(code):
-    for f in CAT['families'] + CAT.get('pending_approval', []):
-        if f['code'] == code:
-            return f
+    pools = [CAT['families'], CAT.get('pending_approval', []), CAT.get('parts', []), CAT.get('press_in', [])]
+    for pool in pools:
+        for f in pool:
+            if f['code'] == code:
+                return f
     raise KeyError(code)
 
 
@@ -39,7 +41,13 @@ def test_iso7380():  # ISO 7380-1:2011 and :2022 Table 1
     assert (d['dk'], d['k'], d['s'], d['t']) == (28.0, 8.8, 10.0, 5.2) and 14.5 <= d['rf'] <= 15.3
     d = dims('SBH-M', 'M5')
     assert (d['dk'], d['k'], d['s'], d['t']) == (9.5, 2.75, 3.0, 1.56) and 5.25 <= d['rf'] <= 5.75
-    assert lengths('SBH-M', 'M3') == (6, 30) and lengths('SBH-M', 'M16') == (25, 90)
+    # M3 lengths 4 and 5 are on the WASI ISO 7380-1 length grid (step before M5 at 4 mm, before M6 at 5 mm).
+    # ISO 7380-1:2011 starts M3 at 6 mm. M4 is unchanged and still starts at 8 mm.
+    assert lengths('SBH-M', 'M3') == (4, 30) and lengths('SBH-M', 'M4') == (8, 40)
+    assert lengths('SBH-M', 'M16') == (25, 90)
+    row = fc.size_row(_fam('SBH-M'), 'M3')
+    assert row['lengths'][:3] == [4, 5, 6]
+    assert fc.thread_length(_fam('SBH-M'), row, 4) == 4
 
 
 def test_iso10642():  # ISO 10642:2004 Table 1 (dk theoretical max, k max, s nom, t min)
@@ -67,6 +75,24 @@ def test_iso4026():  # ISO 4026:2003 Table 1 (dp max, s nom, t min below / in th
     d = dims('SSF-M', 'M3')
     assert (d['dp'], d['s'], d['t'], d['t_short']) == (2.0, 1.5, 2.0, 1.2)
     assert lengths('SSF-M', 'M3') == (3, 16) and lengths('SSF-M', 'M12') == (12, 60)
+
+
+def test_iso4032_and_10511_and_din127_m2():
+    # ISO 4032:1999 Table 1 style 1, s max and m max. M3 and M4 match DIN 934 and are not repeated.
+    assert dims('NHR-M', 'M2') == {'s': 4.0, 'm': 1.6}
+    assert dims('NHR-M', 'M5') == {'s': 8.0, 'm': 4.7}
+    assert dims('NHR-M', 'M10') == {'s': 16.0, 'm': 8.4}
+    assert dims('NHR-M', 'M12') == {'s': 18.0, 'm': 10.8}
+    assert dims('NHR-M', 'M20') == {'s': 30.0, 'm': 18.0}
+    assert 'M3' not in [r['size'] for r in _fam('NHR-M')['sizes']]
+    # ISO 10511:2012 Table 1, s max and h max (stored as the overall height).
+    assert dims('NTN-M', 'M3') == {'s': 5.5, 'm': 3.9}
+    assert dims('NTN-M', 'M6') == {'s': 10.0, 'm': 6.0}
+    assert dims('NTN-M', 'M8') == {'s': 13.0, 'm': 6.76}
+    assert dims('NTN-M', 'M10') == {'s': 16.0, 'm': 8.56}
+    assert dims('NTN-M', 'M12') == {'s': 18.0, 'm': 10.23}
+    # Brighton-Best DIN 127 B M2: d1 max 2.4, d2 max 4.4, thickness middle of 0.4 to 0.6.
+    assert dims('WSL-M', 'M2') == {'d1': 2.4, 'd2': 4.4, 't': 0.5}
 
 
 def test_iso7045():  # pending approval, not offered

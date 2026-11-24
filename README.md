@@ -102,6 +102,9 @@ Names and codes follow McMaster-Carr's category names (checked on mcmaster.com 2
 | Phillips rounded head sheet metal screw, inch | STP | ASME B18.6.3 head | #2 to #12 |
 | Phillips rounded head sheet metal screw, metric | STP | ISO 7049 | M2.2, M2.9, M3.5, M4.2, M4.8, M5.5 |
 
+Button head M3 also includes 4 mm and 5 mm. Those two lengths are on the WASI ISO 7380-1 length grid.
+ISO 7380-1:2011 starts M3 at 6 mm, and that is still the first length for every larger button head.
+
 The newer types (SSN, SSE, SSO, SBF, STP) have no alloy black oxide. Their lengths are exactly the lengths
 McMaster stocks. Short inch set screws that Holo-Krome's key engagement tables do not cover use the size's
 standard socket depth, cut back where needed to leave a quarter diameter of metal above the point (listed in
@@ -128,13 +131,15 @@ materials per type are listed under [Materials](#materials).
 | Type (McMaster name) | Code | Standard | Sizes |
 |---|---|---|---|
 | Hex nut, metric | NHX | DIN 934 | M3 to M20 |
+| Regular hex nut, metric | NHR | ISO 4032 | M2, M5 to M20 (not M3, M4) |
 | Thin-profile hex nut, metric | NTH | DIN 439 B | M3 to M16 |
 | Nylon-insert locknut, metric | NNL | DIN 985 | M3 to M20 |
+| Thin-profile nylon-insert locknut, metric | NTN | ISO 10511 | M3 to M20 |
 | Flange nut, metric | NFL | ISO 4161 (M5 to M12), McMaster (M3, M4) | M3 to M12 |
 | Serrated flange nut, metric | NSF | ISO 4161 / DIN 6923 | M3 to M12 |
 | General purpose washer, metric | WGP | ISO 7089 | M3 to M20 |
 | Oversized washer, metric | WOV | ISO 7093-1 | M3 to M20 |
-| Split lock washer, metric | WSL | DIN 127 B | M3 to M20 |
+| Split lock washer, metric | WSL | DIN 127 B | M2 to M20 |
 | External-tooth lock washer, metric | WTE | DIN 6797 A | M3 to M20 |
 | Internal-tooth lock washer, metric | WTI | DIN 6797 J | M3 to M10 |
 | Hex nut, inch | NHX | ASME B18.2.2 | #2 to 1/2, UNC and UNF |
@@ -172,7 +177,8 @@ cap nuts are a hex with a half-sphere dome and a blind bore, wing nuts are a rou
 washer is thick and flat (not helical).
 
 Where McMaster and the standard differ, McMaster wins and the difference is listed in SOURCES.md, e.g. McMaster's
-metric hex nuts are DIN 934 (ISO 4032 is taller from M5 and narrower at M10/M12), and its 1/4 USS washer is
+metric hex nuts are DIN 934. ISO 4032 style 1 is the regular hex nut: M3 and M4 match DIN 934, and the other
+common sizes are taller (narrower at M10 and M12). Its 1/4 USS washer is
 0.750 in OD (Brighton-Best's B18.21.1 table says 0.734).
 
 ![Live test: washers and nuts stacked on screws and holes](docs/screenshots/nuts-washers.png)

@@ -18,7 +18,8 @@ SRC = {
     # Standards (official ISO preview pages, which carry the full dimension tables)
     'iso4762': ITEH + '34460/06335046afaf46fb8e84d91a3eda001d/ISO-4762-2004.pdf (ISO 4762:2004 Table 1: dk, k, s, t, b, lengths, ls/lg)',
     'iso7380': ITEH + '53671/84df01c5fcce4a91896ac3b0c55ca128/ISO-7380-1-2011.pdf (ISO 7380-1:2011 Table 1: dk, k, rf, s, t, b, lengths, ls/lg)',
-    'iso7380_22': ITEH + '78699/a175805085534f98983d6c8aa583a5b0/ISO-7380-1-2022.pdf (ISO 7380-1:2022 Table 1: same dk, k, rf, s; t min)',
+    'iso7380_22': ITEH + '78699/a175805085534f98983d6c8aa583a5b0/ISO-7380-1-2022.pdf (ISO 7380-1:2022 Table 1: same dk, k, rf, s; t min. The preview ends before Table 2.)',
+    'wasi_7380': 'https://www.wasishop.de/pdf_datenblatt/iso7380_en.pdf (WASI ISO 7380-1 datasheet, PDF dated 2020-12-14: length grid. M3 lengths 4 and 5 sit left of the step. Length 4 is 3.80 to 4.20. Head numbers match ISO 7380-1 Table 1.)',
     'iso10642': ITEH + '34454/32dec7e84d974361b85f744935ab2175/ISO-10642-2004.pdf (ISO 10642:2004 Table 1: dk theor. max, k, s, t, b, lengths, ls/lg)',
     'iso4017': ITEH + '72585/1179998ddd594550a909d6e13c416f3e/ISO-4017-2022.pdf (ISO 4017:2022 Table 1: s max, k nom)',
     'iso4026': ITEH + '36431/f53ced64ab1946679bd80f0a0e6cac63/ISO-4026-2003.pdf (ISO 4026:2003 Table 1: s, dp max, t min short/long, lengths)',
@@ -119,7 +120,12 @@ UNF = {'#2': 64, '#4': 48, '#6': 40, '#8': 36, '#10': 32, '1/4': 28, '5/16': 24,
 # Length ranges per size, (min, max), each from the cited table's preferred/standard lengths.
 R_4762 = {'M2': (3, 20), 'M2.5': (4, 25), 'M3': (5, 30), 'M4': (6, 40), 'M5': (8, 50), 'M6': (10, 60),
           'M8': (12, 80), 'M10': (16, 100), 'M12': (20, 100), 'M16': (20, 100)}  # M16: TBD (not in preview)
-R_7380 = {'M3': (6, 30), 'M4': (8, 40), 'M5': (10, 50), 'M6': (10, 60), 'M8': (12, 80), 'M10': (16, 90),
+# M3 starts at 4 mm. ISO 7380-1:2011 Table 1 starts M3 at 6 mm. WASI's length grid (wasi_7380)
+# puts 4 mm on M3 and M4 (the step is before M5) and 5 mm on M3 to M5 (the step is before M6).
+# The 2022 edition says the shortest lengths changed, but the public preview ends before Table 2,
+# so the two short M3 lengths are cited from that datasheet. M4 stays at 8 mm: its 4 mm and 5 mm
+# rows were not asked for.
+R_7380 = {'M3': (4, 30), 'M4': (8, 40), 'M5': (10, 50), 'M6': (10, 60), 'M8': (12, 80), 'M10': (16, 90),
           'M12': (20, 90), 'M16': (25, 90)}
 R_10642 = {'M3': (8, 30), 'M4': (8, 40), 'M5': (8, 50), 'M6': (8, 60), 'M8': (10, 80), 'M10': (12, 100),
            'M12': (20, 100), 'M16': (30, 100), 'M20': (35, 100)}
@@ -255,7 +261,8 @@ FAMILIES = [
              ('M16', cap(24.0, 16.0, 14.0, 8.0))], R_4762, T_4762, every(M_ALL, 'class 12.9'))),
     dict(code='SBH-M', name='Button head hex-drive screw', standard='ISO 7380-1', system='metric', head='button',
          drive='hex', finishes=ALL, source=SRC['iso7380'],
-         sources={'dims': ['iso7380', 'iso7380_22', 'hk_m_bhcs'], 'lengths': ['iso7380'], 'thread': ['iso7380'],
+         sources={'dims': ['iso7380', 'iso7380_22', 'hk_m_bhcs'], 'lengths': ['iso7380', 'wasi_7380'],
+                  'thread': ['iso7380'],
                   'alloy': ['hk_m_bhcs', 'av_m_bhcs16']},
          sizes=mm_sizes([
              ('M3', cap(5.7, 1.65, 2.0, 1.04, rf=3.5)), ('M4', cap(7.6, 2.2, 2.5, 1.3, rf=4.4)),
@@ -758,7 +765,8 @@ SRC.update({
     'mcm_split_bo': MCMP + 'split-lock-washers/finish~black-oxide/material~18-8-stainless-steel/ (McMaster black-oxide 18-8 split lock washers: inch #2 to 1/2, metric M3 and M5 to M20)',
     'mcm_tooth_m': MCMP + 'lock-washers/material~18-8-stainless-steel/system-of-measurement~metric/tooth-lock-washers-2~~/ (McMaster 18-8 metric tooth lock washers, DIN 6797 A and J: ID, OD, thk)',
     'iso4161': ITEH + '61523/6933d05d5928493fa0aaa091527bed78/ISO-4161-2012.pdf (ISO 4161:2012 Table 1: s, m max, dc max, c min)',
-    'iso4032': ITEH + '26382/0f8d850e82f741f5b13e5ed78b236426/ISO-4032-1999.pdf (ISO 4032:1999 Table 1, for comparison with DIN 934)',
+    'iso4032': ITEH + '26382/0f8d850e82f741f5b13e5ed78b236426/ISO-4032-1999.pdf (ISO 4032:1999 Table 1 style 1: s max, m max)',
+    'iso10511': 'https://preview.sist.si/sist-preview/61369/9332a361b820448895a2594727485014/ISO-10511-2012.pdf (ISO 10511:2012 Table 1: s max, h max)',
     'iso4035': ITEH + '61671/80e6085c74a64e5bb25f5198a1356852/ISO-4035-2012.pdf (ISO 4035:2012 Table 1: s, m max)',
     'iso7089': ITEH + '13666/bd926567c06846afbe5fef5c514ba406/ISO-7089-2000.pdf (ISO 7089:2000 Table 1: d1, d2, h)',
     'iso7093': ITEH + '13677/a0dc4c7265a048bcb627747f4d7cadf2/ISO-7093-1-2000.pdf (ISO 7093-1:2000 Table 1: d1, d2, h)',
@@ -843,8 +851,8 @@ PARTS = [
                   ('M8', nut(13.0, 6.5)), ('M10', nut(17.0, 8.0)), ('M12', nut(19.0, 10.0)),
                   ('M16', nut(24.0, 13.0)), ('M20', nut(30.0, 16.0))], bo=('M3', 'M4', 'M5', 'M6')),
          ['mcm_hexnut_m'], ['mcm_hexnut_bo'],
-         'McMaster stocks DIN 934. ISO 4032 is taller from M5 (M5 m 4.7, M6 5.2, M8 6.8, M10 8.4, M12 10.8, '
-         'M16 14.8, M20 18.0) and narrower at M10 (s 16) and M12 (s 18).'),
+         'McMaster stocks DIN 934. M3 and M4 match ISO 4032 style 1 (s max and m max), so they are not repeated. '
+         'M2 and the sizes that differ are the regular hex nut.'),
     part('NTH-M', 'nut', 'hex', 'Thin-profile hex nut', 'DIN 439 B', 'metric',
          part_mm([('M3', nut(5.5, 1.8)), ('M4', nut(7.0, 2.2)), ('M5', nut(8.0, 2.7)), ('M6', nut(10.0, 3.2)),
                   ('M8', nut(13.0, 4.0)), ('M10', nut(17.0, 5.0)), ('M12', nut(19.0, 6.0)), ('M16', nut(24.0, 8.0))],
@@ -857,11 +865,28 @@ PARTS = [
                   ('M16', nut(24.0, 16.0)), ('M20', nut(30.0, 20.0))],
                  bo=('M3', 'M4', 'M5', 'M6', 'M8', 'M10', 'M12')),
          ['mcm_nylon_m', 'bbi_985'], ['mcm_nylon_m'],
-         'DIN 985 (McMaster and Brighton-Best agree). ISO 10511 is lower and narrower at M10/M12.'),
+         'DIN 985 overall height (McMaster and Brighton-Best agree). ISO 10511 is the thin nylon-insert family: '
+         'same width and overall height at M4, M5 and M6, 0.1 mm shorter at M3, shorter from M8, and narrower at M10 and M12.'),
     part('NFL-M', 'nut', 'flange', 'Flange nut', 'ISO 4161 (DIN 6923)', 'metric',
          part_mm([('M3', nut(5.5, 4.0, dc=8.0, c=1.0)), ('M4', nut(7.0, 4.0, dc=10.0, c=0.9))] + ISO4161),
          ['mcm_flange_m', 'iso4161'], [],
          'M5 to M12 are ISO 4161 (c = flange thickness min); M3 and M4 are not in ISO 4161 and come from McMaster.'),
+    part('NHR-M', 'nut', 'hex', 'Regular hex nut', 'ISO 4032', 'metric',
+         part_mm([('M2', nut(4.0, 1.6)), ('M5', nut(8.0, 4.7)), ('M6', nut(10.0, 5.2)),
+                  ('M8', nut(13.0, 6.8)), ('M10', nut(16.0, 8.4)), ('M12', nut(18.0, 10.8)),
+                  ('M16', nut(24.0, 14.8)), ('M20', nut(30.0, 18.0))]),
+         ['iso4032'], [],
+         'ISO 4032:1999 Table 1 style 1, width s max and height m max. M3 is 5.5 by 2.4 and M4 is 7 by 3.2, '
+         'the same as DIN 934, so those sizes stay on the hex nut. M2 is the same width and height as DIN 934 '
+         'and is listed here because that family starts at M3. M2.5 is in Table 1 and is not offered.'),
+    part('NTN-M', 'nut', 'nylon', 'Thin-profile nylon-insert locknut', 'ISO 10511', 'metric',
+         part_mm([('M3', nut(5.5, 3.9)), ('M4', nut(7.0, 5.0)), ('M5', nut(8.0, 5.0)),
+                  ('M6', nut(10.0, 6.0)), ('M8', nut(13.0, 6.76)), ('M10', nut(16.0, 8.56)),
+                  ('M12', nut(18.0, 10.23)), ('M16', nut(24.0, 12.42)), ('M20', nut(30.0, 14.9))]),
+         ['iso10511'], [],
+         'ISO 10511:2012 Table 1, width s max and overall height h max. The insert is drawn as part of the hex. '
+         'M4, M5 and M6 match the DIN 985 width and overall height. M3 is 3.9 versus 4.0. From M8 the nut is shorter, '
+         'and M10 and M12 are also narrower. The table starts at M3.'),
     part('NSF-M', 'nut', 'flange', 'Serrated flange nut', 'ISO 4161 (DIN 6923)', 'metric',
          part_mm([('M3', nut(5.5, 4.0, dc=8.0, c=0.7)), ('M4', nut(7.0, 4.65, dc=10.0, c=1.0))] + ISO4161),
          ['mcm_serr', 'iso4161', 'bbi_6923'], [],
@@ -879,11 +904,14 @@ PARTS = [
          ['iso7093', 'mcm_over_m'], [],
          'ISO 7093-1 values. McMaster lists M5 thk 1.0-1.4 and M20 ID 22.'),
     part('WSL-M', 'washer', 'split', 'Split lock washer', 'DIN 127 B', 'metric',
-         washer_mm([('M3', wash(3.4, 6.2, 0.8)), ('M4', wash(4.4, 7.6, 0.9)), ('M5', wash(5.4, 9.2, 1.2)),
+         washer_mm([('M2', wash(2.4, 4.4, 0.5)), ('M3', wash(3.4, 6.2, 0.8)), ('M4', wash(4.4, 7.6, 0.9)),
+                    ('M5', wash(5.4, 9.2, 1.2)),
                     ('M6', wash(6.5, 11.8, 1.6)), ('M8', wash(8.5, 14.8, 2.0)), ('M10', wash(10.7, 18.1, 2.2)),
                     ('M12', wash(12.7, 21.1, 2.5)), ('M16', wash(17.0, 27.4, 3.5)), ('M20', wash(21.2, 33.6, 4.0))],
                    bo=('M3', 'M5', 'M6', 'M8', 'M10', 'M12', 'M16', 'M20')),
-         ['mcm_split', 'bbi_127'], ['mcm_split_bo'], 'ID is McMaster (DIN 127 B d1 max); OD and thickness agree with Brighton-Best.'),
+         ['mcm_split', 'bbi_127'], ['mcm_split_bo'],
+         'Inside diameter is d1 max and outside diameter is d2 max. Thickness is the middle of the Brighton-Best range. '
+         'M3 and up match McMaster. M2 is Brighton-Best only: d1 max 2.4, d2 max 4.4, thickness middle of 0.4 to 0.6.'),
     part('WTE-M', 'washer', 'tooth', 'External-tooth lock washer', 'DIN 6797 A', 'metric', washer_mm(TOOTH_M),
          ['mcm_tooth_m', 'bbi_6797a'], [], 'Teeth are not modelled (flat ring at the washer thickness).'),
     part('WTI-M', 'washer', 'tooth', 'Internal-tooth lock washer', 'DIN 6797 J', 'metric', washer_mm(TOOTH_M[:6]),
@@ -1043,7 +1071,8 @@ PARTS += [
          'Thickness is the middle of McMaster\'s range.'),
 ]
 PART_MCMASTER = {
-    'NHX': 'Hex Nuts', 'NTH': 'Thin-Profile Hex Nuts', 'NNL': 'Nylon-Insert Locknuts', 'NFL': 'Flange Nuts',
+    'NHX': 'Hex Nuts', 'NHR': 'Regular Hex Nuts', 'NTH': 'Thin-Profile Hex Nuts', 'NNL': 'Nylon-Insert Locknuts',
+    'NFL': 'Flange Nuts',
     'NSF': 'Serrated Flange Nuts', 'WGP': 'General Purpose Washers', 'WSA': 'SAE Washers', 'WUS': 'USS Washers',
     'WOV': 'Oversized Washers', 'WSL': 'Split Lock Washers', 'WTE': 'Tooth Lock Washers (external)',
     'WTI': 'Tooth Lock Washers (internal)', 'NTL': 'Top-Lock Distorted-Thread Locknuts',
@@ -1111,6 +1140,10 @@ LEFT_OFF = [
     ('Zinc Plated on thick washers (DIN 7349)', 'Not checked on McMaster.'),
     ('Grade 8 on thin hex nuts and top-lock nuts', 'Not listed under the McMaster Grade 8 filter.'),
     ('Plain Steel on locknuts, flange, coupling, cap, wing and square nuts, lock washers', 'Not checked on McMaster.'),
+    ('Plain steel, zinc, Grade 8 and Class 10 on regular hex nuts',
+     'McMaster hex-nut finish and class pages are the DIN 934 nuts already offered. The regular hex nut is ISO 4032 style 1.'),
+    ('Zinc plated on metric thin nylon-insert locknuts',
+     'McMaster zinc-plated thin nylon-insert locknuts are the inch family. The metric sizes are ISO 10511 and were not on that page.'),
 ]
 
 
@@ -1135,7 +1168,21 @@ def title_name(name):
     return ' '.join(out)
 
 
+def _drop_finishes(code, keys):
+    """Take finishes off one family after the per-type list is applied."""
+    for fam in PARTS:
+        if fam['code'] != code:
+            continue
+        fam['finishes'] = [k for k in fam['finishes'] if k not in keys]
+        for row in fam['sizes']:
+            if 'finishes' in row:
+                row['finishes'] = [k for k in row['finishes'] if k not in keys]
+
+
 _apply_extra_finishes()
+# NTN is shared with the inch thin nylon-insert nut, which McMaster sells in zinc. The metric
+# sizes are ISO 10511 and were not on that zinc page, so zinc is not offered on them.
+_drop_finishes('NTN-M', ('ZN',))
 _TOOLS = os.path.dirname(os.path.abspath(__file__))
 if _TOOLS not in sys.path:
     sys.path.insert(0, _TOOLS)
