@@ -94,6 +94,23 @@ The ALA drawing says: **Float – .015 in / 0.38 mm minimum, in all directions f
 
 LAS uses the same body and the same gap as AS at that thread. Its STEP pages are `las-m3-1md`, `las-m4-1md`, `las-m5-1md` and `las-m6-2md` on the same viewer.
 
-### Not downloaded here
+### Standoffs SO, SOS, BSO, BSOS
 
-Standoff STEPs are still on the other measurement branch. Distributor pages (Bossard) had no STEP link. TraceParts itself returned a CloudFront challenge. No account was created.
+Forty viewer meshes (two lengths, 6 mm and 16 mm, for each metric thread). A STEP file was not saved: the download form asks for a name, company, and phone, and it was not filled in. The page still draws the part. The mesh header says it was made from the ACIS model. Hex across flats, length, body diameter C, and thread major all pass within 0.05 mm. The full table is [data/pem_step_checks/standoffs.md](pem_step_checks/standoffs.md).
+
+**Blind depth.** Page SO-4 labels the column **F Min.** and the length chart **F Dimension Min.** F is a minimum full-thread depth. The viewer holes are deeper than F (about 5.3–5.8 mm on a 6 mm part where F is 3.2 mm, and about 11.9–12.4 mm on a 16 mm part where F is 6.5 mm). Deeper than the minimum is in spec. The model is cut to F, which meets the minimum. The measured depths are reference only. They are not catalog numbers.
+
+**Hex length.** Pages SO-3 and SO-4 each show the same figure: dimension H is across the flats of a hex body that runs with length L, and C is a short clinch end. The product photo on those pages is a long hex with a short round end. The model keeps that full-length hex. The viewer mesh is different: a hex cap about 0.50 mm thick and a round body of diameter C for the rest of the length. That difference is open. It is not a change to the model.
+
+**Pitch and counterbore B.** Page SO-3 gives the pitch in the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8) and counterbore B in the metric table (M3 is 3.2 mm, 3.5M3 is 3.2 mm, M3.5 is 3.9 mm, M4 is 4.8 mm, M5 is 5.35 mm). The mesh has no helix and no counterbore cylinder, so those two datasheet numbers were not checked against it. Blind standoffs have no B column (page SO-4).
+
+| Part family | Viewer page example | H, L, C, major | Blind vs F | Pitch | B |
+|---|---|---|---|---|---|
+| SO | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=so-m3-6zi | pass | thru-hole | datasheet only | datasheet only |
+| SOS | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=sos-m3-6 | pass | thru-hole | datasheet only | datasheet only |
+| BSO | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=bso-m3-6zi | pass | deeper than F min, model stays at F | datasheet only | no B on SO-4 |
+| BSOS | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=bsos-m3-6 | pass | deeper than F min, model stays at F | datasheet only | no B on SO-4 |
+
+### Not downloaded
+
+Bossard pages have no STEP link. traceparts.com returned HTTP 403. KVT and 3Dfindit were blocked. 3D ContentCentral asks for a login. No account was created. McMaster builds its own CAD, so those files were not used.

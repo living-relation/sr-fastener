@@ -38,11 +38,13 @@ FH4_CITE = (
     'PEM FH datasheet page 6 (metric FH4 table). Sheet thickness is the published range. '
     'Hole +0.08 mm. H is the head diameter. ' + FH_URL)
 SO_CITE = (
-    'PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). '
-    'Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. ' + SO_URL)
+    'PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, '
+    'a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). '
+    'Hole +0.08 mm. ' + SO_URL)
 BSO_CITE = (
-    'PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, '
-    'mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). ' + SO_URL)
+    'PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, '
+    'and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. '
+    'The F values by length are the single F row on that page, mapped with the catalog BSO listing. ' + SO_URL)
 ALA_CITE = (
     'PEM ALA datasheet drawing note: "Float - .015 in / 0.38 mm minimum, in all directions from center, '
     '.030 in / 0.76 mm total." 0.76 mm is the total travel. 0.38 mm is the minimum from center to each side. '
@@ -149,8 +151,8 @@ OMITTED = (
     ('Optional finishes (ZC yellow zinc, NC nickel)', 'Only the standard finish on each datasheet is included.'),
     ('Install force, pushout and torque-out',
      'The datasheets give those as tables by test sheet, not one number per part. The extract was not clean enough to copy a whole table without a wrong cell, so those figures are not stored.'),
-    ('STEP cross-check for nuts, standoffs and floating nuts',
-     'FH, FHS and FH4 studs were checked against official STEP files (data/pem_step_checks/fh.md). The other families are still waiting on their measurement reports.'),
+    ('Standoff pitch and counterbore against the viewer mesh',
+     'Pitch and counterbore B are the SO datasheet page SO-3 values. The viewer mesh has no helix and no counterbore surface, so those two were not checked against the mesh.'),
 )
 
 

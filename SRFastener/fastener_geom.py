@@ -227,9 +227,13 @@ def build_press_body(fam, row, length):
         recess = _cyl(tbm, -g['L'] - _EPS, g['tip_recess_r'], -g['L'] + depth, _TIP_R)
         tbm.booleanOperation(body, recess, diff)
     elif g['shape'] == 'standoff':
+        # SO datasheet pages SO-3 and SO-4 draw H across a hex that runs the length L,
+        # with a short clinch end of diameter C. The viewer mesh is a 0.50 mm hex cap
+        # on a round body. The datasheet figure is what is modeled.
         body = _hex_prism(tbm, g['across'], -g['L'], 0.0)
         tbm.booleanOperation(body, _cyl(tbm, 0.0, g['seat_r'], -_SEAT, g['seat_r']), union)
         if g.get('blind'):
+            # F on page SO-4 is a minimum full-thread depth. The hole is cut to F, which meets that minimum.
             tbm.booleanOperation(body, _cyl(tbm, -g['L'] - _EPS, g['bore_r'], -g['L'] + g['blind'], g['bore_r']), diff)
         else:
             tbm.booleanOperation(body, _cyl(tbm, -g['L'] - _EPS, g['bore_r'], _EPS, g['bore_r']), diff)

@@ -211,6 +211,20 @@ def test_floating_nut_float_follows_the_bulletin():
     assert row('AS', 'M6')['dims']['float_total'] == 0.76
 
 
+def test_standoff_keeps_the_datasheet_hex_and_minimum_blind_depth():
+    """SO-3 and SO-4 draw a full-length hex. F on SO-4 is a minimum, so the hole is cut to F."""
+    so = fc.press_geometry(fam('SO'), row('SO', 'M3'), 16)
+    assert abs(so['across'] * 10 - 4.8) < 1e-9
+    assert abs(so['L'] * 10 - 16) < 1e-9
+    assert so['L'] * 10 > 0.50
+    assert row('SO', 'M4')['dims']['B'] == 4.8
+    assert row('SO', 'M5')['pitch'] == 0.8
+    bso = fc.press_geometry(fam('BSO'), row('BSO', 'M3'), 6)
+    assert abs(bso['blind'] * 10 - row('BSO', 'M3')['dims']['F']['6']) < 1e-9
+    assert bso['blind'] * 10 >= 3.2
+    assert abs(fc.press_geometry(fam('BSOS'), row('BSOS', 'M4'), 16)['blind'] * 10 - 6.5) < 1e-9
+
+
 def test_sources_cover_every_press_family():
     for part in press_parts():
         assert part['source'].startswith('https://')

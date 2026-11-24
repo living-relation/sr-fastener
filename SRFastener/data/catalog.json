@@ -16674,7 +16674,7 @@
       "length_minus": 0.13,
       "B": 3.2
      },
-     "citation": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M3 x 0.5"
     },
     {
@@ -16707,7 +16707,7 @@
       "length_minus": 0.13,
       "B": 3.2
      },
-     "citation": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M3 x 0.5"
     },
     {
@@ -16743,7 +16743,7 @@
       "length_minus": 0.13,
       "B": 3.9
      },
-     "citation": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M3.5 x 0.6"
     },
     {
@@ -16779,7 +16779,7 @@
       "length_minus": 0.13,
       "B": 4.8
      },
-     "citation": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M4 x 0.7"
     },
     {
@@ -16815,7 +16815,7 @@
       "length_minus": 0.13,
       "B": 5.35
      },
-     "citation": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M5 x 0.8"
     }
    ],
@@ -16834,8 +16834,8 @@
      "pem_so"
     ]
    },
-   "citation": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
-   "notes": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf"
+   "citation": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+   "notes": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf"
   },
   {
    "code": "SOS",
@@ -16879,7 +16879,7 @@
       "length_minus": 0.13,
       "B": 3.2
      },
-     "citation": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M3 x 0.5"
     },
     {
@@ -16912,7 +16912,7 @@
       "length_minus": 0.13,
       "B": 3.2
      },
-     "citation": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M3 x 0.5"
     },
     {
@@ -16948,7 +16948,7 @@
       "length_minus": 0.13,
       "B": 3.9
      },
-     "citation": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M3.5 x 0.6"
     },
     {
@@ -16984,7 +16984,7 @@
       "length_minus": 0.13,
       "B": 4.8
      },
-     "citation": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M4 x 0.7"
     },
     {
@@ -17020,7 +17020,7 @@
       "length_minus": 0.13,
       "B": 5.35
      },
-     "citation": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M5 x 0.8"
     }
    ],
@@ -17039,8 +17039,8 @@
      "pem_so"
     ]
    },
-   "citation": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
-   "notes": "PEM SO datasheet page 3 (metric SO/SOS thru-hole table and length chart). Hole +0.08 mm. C is the clinch diameter, H is the hex across flats. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf"
+   "citation": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+   "notes": "PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf"
   },
   {
    "code": "BSO",
@@ -17096,7 +17096,7 @@
        "25": 9.5
       }
      },
-     "citation": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M3 x 0.5"
     },
     {
@@ -17141,7 +17141,7 @@
        "25": 9.5
       }
      },
-     "citation": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M3 x 0.5"
     },
     {
@@ -17186,7 +17186,7 @@
        "25": 9.5
       }
      },
-     "citation": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M3.5 x 0.6"
     },
     {
@@ -17231,7 +17231,7 @@
        "25": 9.5
       }
      },
-     "citation": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M4 x 0.7"
     },
     {
@@ -17276,7 +17276,7 @@
        "25": 9.5
       }
      },
-     "citation": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M5 x 0.8"
     }
    ],
@@ -17295,8 +17295,8 @@
      "pem_so"
     ]
    },
-   "citation": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
-   "notes": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf"
+   "citation": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+   "notes": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf"
   },
   {
    "code": "BSOS",
@@ -17352,7 +17352,7 @@
        "25": 9.5
       }
      },
-     "citation": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M3 x 0.5"
     },
     {
@@ -17397,7 +17397,7 @@
        "25": 9.5
       }
      },
-     "citation": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M3 x 0.5"
     },
     {
@@ -17442,7 +17442,7 @@
        "25": 9.5
       }
      },
-     "citation": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M3.5 x 0.6"
     },
     {
@@ -17487,7 +17487,7 @@
        "25": 9.5
       }
      },
-     "citation": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M4 x 0.7"
     },
     {
@@ -17532,7 +17532,7 @@
        "25": 9.5
       }
      },
-     "citation": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+     "citation": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
      "menu": "M5 x 0.8"
     }
    ],
@@ -17551,8 +17551,8 @@
      "pem_so"
     ]
    },
-   "citation": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
-   "notes": "PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf"
+   "citation": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf",
+   "notes": "PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. The F values by length are the single F row on that page, mapped with the catalog BSO listing. https://www.pemnet.com/wp-content/uploads/sites/9/2023/10/sodata.pdf"
   },
   {
    "code": "AS",
