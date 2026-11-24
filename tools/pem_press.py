@@ -44,8 +44,29 @@ BSO_CITE = (
     'PEM SO datasheet page 4 (metric BSO/BSOS table). F minimum by length is the single F row on that page, '
     'mapped with the catalog.pemnet.com BSO metric listing (same F at each length for M3, 3.5M3 and M3.5). ' + SO_URL)
 ALA_CITE = (
-    'PEM ALA datasheet and catalog.pemnet.com metric AS/LAS item pages. '
-    'Hole +0.08 mm. Minimum sheet equals the published shank length A. Hardness HRB 70 / HB 125. ' + ALA_URL)
+    'PEM ALA datasheet drawing note: "Float - .015 in / 0.38 mm minimum, in all directions from center, '
+    '.030 in / 0.76 mm total." 0.76 mm is the total travel. 0.38 mm is the minimum from center to each side. '
+    'The same page also says the part permits a total of .030 in / 0.76 mm adjustment for misalignment. '
+    'E, C, A, T and D are the catalog item pages. The captive nut diameter is the STEP body. '
+    'The model gap is the bulletin total, not the larger or smaller gap in the STEP. ' + ALA_URL)
+# STEP-measured captive-nut body diameter (mm). The radial gap is not this number.
+_NUT_DIA = {'M3': 5.978, 'M4': 7.527, 'M5': 8.346, 'M6': 10.512}
+
+# Flush-stud head, measured from official PEM STEP files (data/pem_step_checks/fh.md).
+# Same solid for FH, FHS and FH4 of one thread. Thickness T = H/10. The edge is a full
+# round of radius T/2, so the crest H is at mid-thickness and each face is diameter H-T.
+# Collar length is T/2. Barrel start is where the plain major-diameter cylinder begins.
+# That start is shorter than catalog S. S is a maximum, so the shorter start is in spec.
+# (thread, head thk, edge r, face dia, collar dia, collar len, neck len, undercut min dia, undercut len, barrel start)
+_STUD_HEAD = {
+    'M2.5': (0.410, 0.205, 3.690, 3.485, 0.205, 0.498, 2.233, 0.188, 1.300),
+    'M3': (0.460, 0.230, 4.140, 3.910, 0.230, 0.485, 2.680, 0.225, 1.400),
+    'M3.5': (0.530, 0.265, 4.770, 4.505, 0.265, 0.443, 3.127, 0.263, 1.500),
+    'M4': (0.590, 0.295, 5.310, 5.015, 0.295, 0.415, 3.573, 0.300, 1.600),
+    'M5': (0.650, 0.325, 5.850, 5.525, 0.325, 0.450, 4.467, 0.375, 1.800),
+    'M6': (0.820, 0.410, 7.380, 6.970, 0.410, 0.320, 5.360, 0.450, 2.000),
+    'M8': (0.960, 0.480, 8.640, 8.160, 0.480, 0.427, 7.146, 0.600, 2.467),
+}
 
 # (shank code, A max mm, minimum sheet mm) from the CL metric table.
 _SHANK_012 = (('0', 0.77, 0.8), ('1', 0.97, 1.0), ('2', 1.38, 1.4))
@@ -117,8 +138,8 @@ OMITTED = (
     ('FH/FHS above M8, and M2', 'The metric FH table runs from M2.5 to M8. No M2 and no M10 row.'),
     ('FH4 outside M3-M6', 'The metric FH4 table has M3, M4, M5 and M6 only.'),
     ('FHA and FHP studs', 'Not the FH/FHS/FH4 families asked for.'),
-    ('Flush-stud head thickness',
-     'Bulletin FH publishes H as the head diameter and S as the unthreaded length. It does not publish a head thickness, so the solid is the stud (length and major diameter) and H is stored but not extruded.'),
+    ('Helical thread on flush studs',
+     'The official STEP is a plain major-diameter cylinder. The solid has no helix. The dialog can still add a cosmetic thread on the barrel.'),
     ('SO/BSO below M3 or above M5', 'The SO datasheet metric table starts at M3 and ends at M5. Micro sizes are bulletin MPF, a different family.'),
     ('SOA, SO4, BSOA, BSO4', 'Not the SO/SOS and BSO/BSOS families asked for.'),
     ('Standoff dimension D',
@@ -128,8 +149,8 @@ OMITTED = (
     ('Optional finishes (ZC yellow zinc, NC nickel)', 'Only the standard finish on each datasheet is included.'),
     ('Install force, pushout and torque-out',
      'The datasheets give those as tables by test sheet, not one number per part. The extract was not clean enough to copy a whole table without a wrong cell, so those figures are not stored.'),
-    ('STEP cross-check',
-     'pemnet.com returned an empty CloudFront challenge (HTTP 202) for the PDF and CAD files, so no STEP was compared.'),
+    ('STEP cross-check for nuts, standoffs and floating nuts',
+     'FH, FHS and FH4 studs were checked against official STEP files (data/pem_step_checks/fh.md). The other families are still waiting on their measurement reports.'),
 )
 
 
@@ -219,7 +240,12 @@ def _studs(code, table, cite, hrb, hb, finish, suffix):
     rows = []
     for size, major, pitch, lengths, sheet, sheet_max, hole, h, s, attached, edge in table:
         dims = _hole_fields(hole, sheet, edge, hrb, hb)
-        dims.update(H=float(h), S=float(s), max_attached=float(attached), length_tol=0.4)
+        # S is the datasheet maximum unthreaded length, not a shoulder in the solid.
+        thk, edge_r, face, collar_d, collar_l, neck, umin, ulen, barrel = _STUD_HEAD[size]
+        dims.update(H=float(h), S=float(s), max_attached=float(attached), length_tol=0.4,
+                    head_thk=float(thk), edge_r=float(edge_r), face_dia=float(face),
+                    collar_dia=float(collar_d), collar_len=float(collar_l), neck_len=float(neck),
+                    undercut_min_dia=float(umin), undercut_len=float(ulen), barrel_start=float(barrel))
         if sheet_max is not None:
             dims['max_sheet'] = float(sheet_max)
         rows.append(_row(size, major, pitch, size, _num_lengths(lengths), dims, cite))
@@ -254,7 +280,8 @@ def _floating(code):
         sheet = {sk: sh for sk, _a, sh in shanks}
         aa = {sk: a for sk, a, _sh in shanks}
         dims = _hole_fields(hole, sheet, edge, 70, 125)
-        dims.update(C=float(c), D=float(d), E=float(e), T1=float(t1), A=aa, float_total=0.76)
+        dims.update(C=float(c), D=float(d), E=float(e), T1=float(t1), A=aa,
+                    float_total=0.76, float_radial=0.38, nut_dia=float(_NUT_DIA[size]))
         if locking:
             dims['T2'] = float(t2)
         rows.append(_row(size, major, pitch, size, [sk for sk, _a, _sh in shanks], dims, ALA_CITE))

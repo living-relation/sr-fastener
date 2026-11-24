@@ -21,6 +21,79 @@ Catalog item pages used to confirm part numbers and the per-length blind depth F
 - https://catalog.pemnet.com/item/floating-self-clinching-fasteners-a4-as-ac/floating-self-clinching-fasteners-a4-as-ac-metric/as-m5-1zi
 - https://catalog.pemnet.com/en-us/item/all-metal-locking-thread-nuts-types-la4-lac-las/metal-locking-thread-nuts-types-la4-lac-las-metric/las-m5-1md
 
-CAD downloads are linked from those catalog pages (CAD supplier: PennEngineering). None could be fetched from this machine, so the 0.05 mm STEP check was not run.
-
 Sizes left out, and why, are listed in `OMITTED` in `tools/pem_press.py`.
+
+## STEP checks
+
+Official PennEngineering STEP models, built by TraceParts and served by the PEM catalog viewer. The files are not in this repo (the header reserves all rights, and `tools/check.py` rejects `.stp` files). The stable link for a part is `https://catalog.pemnet.com/cadviewer/ThreeDim?sn=<slug>`. A dot in the size is a hyphen in the slug.
+
+Full tables: [data/pem_step_checks/fh.md](pem_step_checks/fh.md) and [data/pem_step_checks/nuts.md](pem_step_checks/nuts.md).
+
+### Flush studs FH, FHS, FH4
+
+18 files, one length per thread. Length, head diameter `H` and major diameter all pass within 0.05 mm (the measured deltas are under 0.001 mm). FH, FHS and FH4 of one thread are the same solid.
+
+`S` in the datasheet is a **maximum** unthreaded length. The solid's plain barrel starts 0.65 mm to 1.23 mm before `S`. That is inside the maximum, so `S` was not changed. The head is modeled from the STEP profile: thickness `T = H/10`, full-round edge of radius `T/2`, then the collar, neck, undercut and barrel in the FH report.
+
+| Part | STEP page | L | H | Major | Barrel start | S max |
+|---|---|---:|---:|---:|---:|---:|
+| FH-M2.5-10ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fh-m2-5-10zi | pass | pass | pass | 1.300 | 1.95 |
+| FH-M3-10ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fh-m3-10zi | pass | pass | pass | 1.400 | 2.1 |
+| FH-M3.5-10ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fh-m3-5-10zi | pass | pass | pass | 1.500 | 2.25 |
+| FH-M4-10ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fh-m4-10zi | pass | pass | pass | 1.600 | 2.4 |
+| FH-M5-12ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fh-m5-12zi | pass | pass | pass | 1.800 | 2.7 |
+| FH-M6-12ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fh-m6-12zi | pass | pass | pass | 2.000 | 3.0 |
+| FH-M8-15ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fh-m8-15zi | pass | pass | pass | 2.467 | 3.7 |
+| FHS-M2.5-10 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fhs-m2-5-10 | pass | pass | pass | same as FH | same |
+| FHS-M3-10 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fhs-m3-10 | pass | pass | pass | same as FH | same |
+| FHS-M3.5-10 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fhs-m3-5-10 | pass | pass | pass | same as FH | same |
+| FHS-M4-10 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fhs-m4-10 | pass | pass | pass | same as FH | same |
+| FHS-M5-12 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fhs-m5-12 | pass | pass | pass | same as FH | same |
+| FHS-M6-12 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fhs-m6-12 | pass | pass | pass | same as FH | same |
+| FHS-M8-15 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fhs-m8-15 | pass | pass | pass | same as FH | same |
+| FH4-M3-10 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fh4-m3-10 | pass | pass | pass | same as FH M3 | same |
+| FH4-M4-10 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fh4-m4-10 | pass | pass | pass | same as FH M4 | same |
+| FH4-M5-12 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fh4-m5-12 | pass | pass | pass | same as FH M5 | same |
+| FH4-M6-12 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=fh4-m6-12 | pass | pass | pass | same as FH M6 | same |
+
+### Self-clinching nuts S, SS, CLS, CLSS
+
+All 16 pass within 0.001 mm on E, C, A, T and the thread minor. Those body numbers were not changed.
+
+| Part | STEP page | Result |
+|---|---|---|
+| S-M2.5-1ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=s-m2-5-1zi | pass |
+| S-M3-1ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=s-m3-1zi | pass |
+| S-M3.5-1ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=s-m3-5-1zi | pass |
+| S-M4-1ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=s-m4-1zi | pass |
+| S-M6-1ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=s-m6-1zi | pass |
+| S-M8-1ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=s-m8-1zi | pass |
+| S-M10-1ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=s-m10-1zi | pass |
+| SS-M5-1ZI | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=ss-m5-1zi | pass |
+| CLS-M2.5-1 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=cls-m2-5-1 | pass |
+| CLS-M3-1 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=cls-m3-1 | pass |
+| CLS-M3.5-1 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=cls-m3-5-1 | pass |
+| CLS-M4-1 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=cls-m4-1 | pass |
+| CLS-M6-1 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=cls-m6-1 | pass |
+| CLS-M8-1 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=cls-m8-1 | pass |
+| CLS-M10-1 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=cls-m10-1 | pass |
+| CLSS-M5-1 | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=clss-m5-1 | pass |
+
+### Floating nuts AS and LAS
+
+E, C, A, T, D and the thread minor pass within 0.001 mm. Those body numbers were not changed.
+
+The ALA drawing says: **Float – .015 in / 0.38 mm minimum, in all directions from center, .030 in / 0.76 mm total.** The intro says the part permits **a total of** .030 in / 0.76 mm of adjustment for a misaligned mating hole. So 0.76 mm is the full travel (the diametral gap) and 0.38 mm is the minimum shift from center toward each side. The model uses that gap. The STEP gap is wider or narrower and was not copied.
+
+| Part | STEP page | STEP gap (mm) | Model gap |
+|---|---|---:|---|
+| AS-M3-1ZI and LAS-M3-1MD | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=as-m3-1zi | 0.655 | 0.76 total |
+| AS-M4-1ZI and LAS-M4-1MD | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=as-m4-1zi | 0.825 | 0.76 total |
+| AS-M5-1ZI and LAS-M5-1MD | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=as-m5-1zi | 0.915 | 0.76 total |
+| AS-M6-2ZI and LAS-M6-2MD | https://catalog.pemnet.com/cadviewer/ThreeDim?sn=as-m6-2zi | 1.152 | 0.76 total |
+
+LAS uses the same body and the same gap as AS at that thread. Its STEP pages are `las-m3-1md`, `las-m4-1md`, `las-m5-1md` and `las-m6-2md` on the same viewer.
+
+### Not downloaded here
+
+Standoff STEPs are still on the other measurement branch. Distributor pages (Bossard) had no STEP link. TraceParts itself returned a CloudFront challenge. No account was created.

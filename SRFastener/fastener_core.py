@@ -786,27 +786,53 @@ def press_geometry(fam, row, length):
     """Installed press-in body, centimetres. z=0 is the install face.
     Nuts and floating nuts: head sits on the face (+z), shank goes into the sheet (-z).
     Studs and standoffs: the head is flush at z=0 and the body goes into the sheet (-z).
-    A flush stud's head thickness is not in the bulletin, so the solid is the stud only;
-    head_r is still returned from the published head diameter H."""
+    A flush stud's head is the STEP profile: thickness H/10, full-round edge, collar, undercut,
+    then the plain barrel. Catalog S is the maximum unthreaded length, not the barrel start."""
     dims = row['dims']
 
     def c(v):
         return float(v) / 10.0
 
     g = {'shape': fam['shape'], 'kind': 'press-in'}
-    if fam['shape'] in ('clinch-nut', 'floating'):
-        height_key = 'T2' if fam['shape'] == 'floating' and 'T2' in dims else ('T' if fam['shape'] == 'clinch-nut' else 'T1')
-        width_key = 'E'
-        g.update(head_r=c(_at(dims, width_key, length)) / 2.0,
-                 head_h=c(_at(dims, height_key, length)),
+    if fam['shape'] == 'clinch-nut':
+        g.update(head_r=c(_at(dims, 'E', length)) / 2.0,
+                 head_h=c(_at(dims, 'T', length)),
                  shank_r=c(_at(dims, 'C', length)) / 2.0,
                  shank_l=c(_at(dims, 'A', length)),
                  bore_r=c(row['d']) / 2.0)
+    elif fam['shape'] == 'floating':
+        # Outer envelope stays the catalog body. The captive nut is the STEP body diameter.
+        # The radial gap is the bulletin float: 0.38 mm from center, 0.76 mm total.
+        height_key = 'T2' if 'T2' in dims else 'T1'
+        minor = row['d'] - 1.082532 * row['pitch']
+        nut_r = c(dims['nut_dia']) / 2.0
+        float_r = c(dims['float_radial'])
+        g.update(head_r=c(dims['E']) / 2.0,
+                 head_h=c(_at(dims, height_key, length)),
+                 shank_r=c(_at(dims, 'C', length)) / 2.0,
+                 shank_l=c(_at(dims, 'A', length)),
+                 barrel_r=c(dims['D']) / 2.0,
+                 nut_r=nut_r,
+                 float_r=float_r,
+                 float_total=c(dims['float_total']),
+                 retainer_bore_r=nut_r + float_r,
+                 bore_r=c(minor) / 2.0)
     elif fam['shape'] == 'stud':
         length_cm = c(float(length))
-        unthread = c(_at(dims, 'S', length))
+        barrel = c(_at(dims, 'barrel_start', length))
         g.update(r=c(row['d']) / 2.0, L=length_cm, head_r=c(_at(dims, 'H', length)) / 2.0,
-                 unthread=unthread, thread_len=max(length_cm - unthread, 0.0),
+                 head_h=c(_at(dims, 'head_thk', length)), edge_r=c(_at(dims, 'edge_r', length)),
+                 face_r=c(_at(dims, 'face_dia', length)) / 2.0,
+                 collar_r=c(_at(dims, 'collar_dia', length)) / 2.0,
+                 collar_l=c(_at(dims, 'collar_len', length)),
+                 neck_l=c(_at(dims, 'neck_len', length)),
+                 undercut_r=c(_at(dims, 'undercut_min_dia', length)) / 2.0,
+                 undercut_l=c(_at(dims, 'undercut_len', length)),
+                 barrel_start=barrel, s_max=c(_at(dims, 'S', length)),
+                 # Plain length is the measured barrel start. It is under S max, which the datasheet
+                 # states as a maximum, so the cosmetic thread may start there.
+                 unthread=barrel, thread_len=max(length_cm - barrel, 0.0),
+                 tip_recess_r=c(row['d'] * 0.075),
                  shank=(0.0, -length_cm))
     elif fam['shape'] == 'standoff':
         length_cm = c(float(length))
@@ -817,3 +843,50 @@ def press_geometry(fam, row, length):
     else:
         raise ValueError(fam['shape'])
     return g
+
+
+def stud_profile(fam, row, length):
+    """Revolve points (z, r) in cm for a flush stud. z=0 is the flush face; z decreases toward the tip.
+    The head edge is a full round. The undercut flanks are 63.43 deg from the axis (slope 2) with a
+    round root sized so the groove length and minimum diameter match the STEP."""
+    g = press_geometry(fam, row, length)
+    pts = []
+    steps = 16
+    for i in range(steps + 1):
+        ang = math.pi / 2.0 - i * math.pi / steps
+        z = -g['head_h'] / 2.0 + g['edge_r'] * math.sin(ang)
+        rad = g['face_r'] + g['edge_r'] * math.cos(ang)
+        pts.append((z, rad))
+    z = -g['head_h']
+    pts.append((z, g['collar_r']))
+    z -= g['collar_l']
+    pts.append((z, g['collar_r']))
+    z -= g['neck_l']
+    pts.append((z, g['r']))
+    s0 = -z * 10.0  # mm from the flush face, positive toward the tip
+    # undercut in mm, then converted
+    r_maj = g['r'] * 10.0
+    r_min = g['undercut_r'] * 10.0
+    U = g['undercut_l'] * 10.0
+    h = r_maj - r_min
+    rf = (U - h) / (math.sqrt(5.0) - 1.0)
+    sc = s0 + U / 2.0
+    rc = r_min + rf
+    root = math.sqrt(5.0)
+    # Left tangent point: center minus Rf along the flank normal (2, 1)/sqrt(5).
+    st = sc - rf * 2.0 / root
+    rt = rc - rf / root
+    pts.append((-st / 10.0, rt / 10.0))
+    a_left = math.atan2(-1.0, -2.0)
+    a_right = math.atan2(-1.0, 2.0)
+    arc_n = 8
+    for i in range(1, arc_n):
+        ang = a_left + (a_right - a_left) * i / arc_n
+        ss = sc + rf * math.cos(ang)
+        rr = rc + rf * math.sin(ang)
+        pts.append((-ss / 10.0, rr / 10.0))
+    pts.append((-(s0 + U - (st - s0)) / 10.0, rt / 10.0))
+    z = -(s0 + U) / 10.0
+    pts.append((z, g['r']))
+    pts.append((-g['L'], g['r']))
+    return pts

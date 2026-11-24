@@ -365,28 +365,34 @@ def make_component(app, design, parent, cat, fam, row, length, finish_key, matri
     press = fc.kind(fam) == 'press-in'
     is_part = fc.kind(fam) not in ('screw', 'press-in')
     if press:
-        body = geom.build_press_body(fam, row, length)
+        built = geom.build_press_body(fam, row, length)
     elif is_part:
-        body = geom.build_part_body(fam, row)[0]
+        built = geom.build_part_body(fam, row)[0]
     else:
-        body = geom.build_body(fam, row, length)
+        built = geom.build_body(fam, row, length)
+    bodies = built if isinstance(built, (list, tuple)) else [built]
     if design.designType == adsk.fusion.DesignTypes.ParametricDesignType:
         bf = comp.features.baseFeatures.add()
         bf.startEdit()
-        comp.bRepBodies.add(body, bf)
+        for one in bodies:
+            comp.bRepBodies.add(one, bf)
         bf.finishEdit()
         bf.name = 'SR Fastener'
     else:
-        comp.bRepBodies.add(body)
+        for one in bodies:
+            comp.bRepBodies.add(one)
+    for i in range(comp.bRepBodies.count):
+        comp.bRepBodies.item(i).name = pn if i == 0 else (pn + ' nut')
     b = comp.bRepBodies.item(0)
-    b.name = pn
     mat = _material(app, design, bom['material'], bom['base_material'], notes)
     if mat:
         comp.material = mat
-        b.material = mat
+        for i in range(comp.bRepBodies.count):
+            comp.bRepBodies.item(i).material = mat
     ap = _appearance(app, design, bom['appearance'])
     if ap:
-        b.appearance = ap
+        for i in range(comp.bRepBodies.count):
+            comp.bRepBodies.item(i).appearance = ap
     else:
         notes.append('appearance not found: %s' % bom['appearance'])
     for k in ('part_number', 'description', 'finish', 'finish_key', 'grade'):
