@@ -5,7 +5,8 @@ without the add-in. data/catalog.json is only the size table the add-in builds n
 
 Stacks: place_stack() puts a screw (or a lone nut or washer) plus any number of nuts and washers on the near side
 (the picked edge, under the screw head) and the far side (the other end of a through hole), in the order given,
-each sitting on the one before. Parts already placed at that edge are stacked on too."""
+each sitting on the one before. Parts already placed at that edge are stacked on too. A press-in part uses the
+same stack: a mating screw on an internal thread, or a nut and washer on a stud. A mismatched thread is skipped."""
 import re
 
 import adsk.core
@@ -609,14 +610,52 @@ def _local(design, wm):
     return local
 
 
-def _place_one(app, design, cat, it, hole, off, thread, notes):
+def _place_one(app, design, cat, it, hole, off, thread, notes, join_hole=None, join_off=None):
     parent = design.activeComponent
     wm = world_matrix(hole, off)
     local = _local(design, wm)
     occ, notes = make_component(app, design, parent, cat, it['fam'], it['row'], it.get('length'), it['finish'],
                                 local, thread and it['kind'] == 'screw', notes)
-    join(design, parent, occ, hole, wm, local, notes, off)
+    join(design, parent, occ, join_hole or hole, wm, local, notes, off if join_off is None else join_off)
     return occ
+
+
+def _hole_along(hole, distance_cm):
+    """Same hole edge, with the seat moved `distance_cm` along `into` and the part's head pointing that way."""
+    centre = hole.centre.copy()
+    step = hole.into.copy()
+    step.scaleBy(distance_cm)
+    centre.translateBy(step)
+    into = hole.into.copy()
+    into.scaleBy(-1)
+    return Hole(hole.edge, centre, into, hole.radius, hole.thread)
+
+
+def _place_press(app, design, cat, main, rows, hole, thread, notes, occs):
+    """The PEM sits on the install face. Allowed mates then sit on the end the rule names."""
+    occs.append(_place_one(app, design, cat, main, hole, 0.0, thread, notes))
+    issues = fc.press_stack_issues(cat, main, rows)
+    for _, msg in issues:
+        notes.append(msg)
+    far_hole = None
+    far_base = 0.0
+    for place in fc.press_mate_places(main, rows):
+        mate = rows[place['index']]
+        end = place['end']
+        if end == 'out':
+            occs.append(_place_one(app, design, cat, mate, hole, place['offset_cm'], thread, notes))
+        elif end == 'tip':
+            dist = place['distance_cm']
+            occs.append(_place_one(app, design, cat, mate, _hole_along(hole, dist), 0.0, thread, notes,
+                                   join_hole=hole, join_off=dist))
+        else:
+            if far_hole is None:
+                far_hole = far_side(hole)
+                far_base = stack_offset(design, far_hole) if far_hole is not None else 0.0
+            if far_hole is None:
+                notes.append('nut or washer skipped: no far side found (blind hole?)')
+                continue
+            occs.append(_place_one(app, design, cat, mate, far_hole, far_base + place['offset_cm'], thread, notes))
 
 
 def _thickness(it):
@@ -634,8 +673,7 @@ def place_stack(app, design, cat, main, rows, edges, flip=False, thread=True):
             notes.append('skipped a non-circular edge')
             continue
         if main is not None and main['kind'] == 'press-in':
-            # One press-in part in the hole. No nut, no stack, seated on the picked face.
-            occs.append(_place_one(app, design, cat, main, hole, 0.0, thread, notes))
+            _place_press(app, design, cat, main, rows, hole, thread, notes, occs)
             continue
         near = [r for r in rows if r.get('side', 'near') == 'near']
         far = [r for r in rows if r.get('side') == 'far']

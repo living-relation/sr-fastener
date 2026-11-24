@@ -225,6 +225,164 @@ def test_standoff_keeps_the_datasheet_hex_and_minimum_blind_depth():
     assert abs(fc.press_geometry(fam('BSOS'), row('BSOS', 'M4'), 16)['blind'] * 10 - 6.5) < 1e-9
 
 
+_SCREW_PEM = ('S', 'SS', 'CLS', 'CLSS', 'SO', 'SOS', 'BSO', 'BSOS', 'AS', 'LAS')
+_STUD_PEM = ('FH', 'FHS', 'FH4')
+
+
+def _pem(code, size, length):
+    return fc.item(CAT, code, size, fam(code)['finishes'][0], length)
+
+
+def _screw(size, length):
+    return fc.item(CAT, 'SSH-M', size, 'SS', length)
+
+
+def _nut(size):
+    return fc.item(CAT, 'NHX-M', size, 'ZN')
+
+
+def _washer(size):
+    return fc.item(CAT, 'WGP-M', size, 'SS')
+
+
+def _msgs(pem, mates):
+    return [m for _, m in fc.press_stack_issues(CAT, pem, mates)]
+
+
+def test_material_check_skips_pem():
+    """PEM is ignored as the new part and as the part already in the hole."""
+    pem = _pem('S', 'M4', '1')
+    screw = _screw('M4', 12)
+    zinc = _nut('M4')
+    assert pem['finish'] == 'PEM-ZI'
+    assert fc.match_group(CAT, 'PEM-ZI') != fc.match_group(CAT, 'SS')
+    assert fc.material_mismatch(CAT, [pem, screw]) == []
+    assert fc.material_mismatch(CAT, [screw, pem]) == []
+    assert fc.material_mismatch(CAT, [pem]) == []
+    odd = fc.material_mismatch(CAT, [pem, screw, zinc])
+    assert odd == [zinc]
+    assert fc.should_ask_material(CAT, [pem], [screw]) is False
+    assert fc.should_ask_material(CAT, [screw], [pem]) is False
+    assert fc.should_ask_material(CAT, [screw], [pem, zinc]) is True
+    switched, kept = fc.match_finishes(CAT, [pem, zinc], 'SS')
+    assert switched[0]['finish'] == 'PEM-ZI'
+    assert switched[1]['finish'] == 'SS'
+    assert kept == []
+    src = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'SRFastener',
+                            'SRFastener.py'), encoding='utf-8').read()
+    start = src.index('def _material_prompt(')
+    body = src[start:src.index('\n# ---------- event handlers')]
+    assert 'should_ask_material(' in body and 'match_finishes(' in body
+
+
+def test_each_pem_family_stacks_only_its_mate():
+    codes = {p['code'] for p in press_parts()}
+    assert codes == set(_SCREW_PEM + _STUD_PEM)
+    for code in _SCREW_PEM:
+        part = fam(code)
+        assert fc.press_stack_kinds(part) == ('screw',)
+        assert 'nut' not in fc.press_stack_kinds(part)
+        assert 'washer' not in fc.press_stack_kinds(part)
+    for code in _STUD_PEM:
+        part = fam(code)
+        assert fc.press_stack_kinds(part) == ('nut', 'washer')
+    assert fc.press_stack_sides(fam('SO')) == ('near', 'far')
+    assert fc.press_stack_sides(fam('SOS')) == ('near', 'far')
+    for code in ('BSO', 'BSOS', 'FH', 'FHS', 'FH4'):
+        assert fc.press_stack_sides(fam(code)) == ('far',)
+    for code in ('S', 'SS', 'CLS', 'CLSS', 'AS', 'LAS'):
+        assert fc.press_stack_sides(fam(code)) == ('near',)
+
+
+def test_pem_stack_accepts_the_same_thread_only():
+    nut = _pem('CLS', 'M4', '1')
+    ok = _screw('M4', 10)
+    ok['side'] = 'near'
+    assert _msgs(nut, [ok]) == []
+    wrong = _screw('M5', 10)
+    wrong['side'] = 'near'
+    assert any('thread does not match' in m for m in _msgs(nut, [wrong]))
+    # Same nominal, different pitch, is still a mismatch.
+    off_pitch = _screw('M4', 10)
+    off_pitch['side'] = 'near'
+    off_pitch['row'] = dict(off_pitch['row'])
+    off_pitch['row']['pitch'] = 0.5
+    assert any('thread does not match' in m for m in _msgs(nut, [off_pitch]))
+    stud = _pem('FHS', 'M5', 12)
+    good_nut = _nut('M5')
+    good_nut['side'] = 'far'
+    washer = _washer('M5')
+    washer['side'] = 'far'
+    assert _msgs(stud, [washer, good_nut]) == []
+    bad_nut = _nut('M4')
+    bad_nut['side'] = 'far'
+    assert any('thread does not match' in m for m in _msgs(stud, [bad_nut]))
+    bad_washer = _washer('M4')
+    bad_washer['side'] = 'far'
+    assert any('thread does not match' in m for m in _msgs(stud, [bad_washer]))
+    # A thick-wall standoff is still an M3 thread.
+    thick = _pem('SO', '3.5M3', 8)
+    m3 = _screw('M3', 6)
+    m3['side'] = 'near'
+    assert _msgs(thick, [m3]) == []
+    m35 = _screw('M3.5', 8) if any(r['size'] == 'M3.5' for r in fam('SSH-M')['sizes']) else None
+    if m35 is None:
+        m35 = _screw('M4', 8)
+    m35['side'] = 'near'
+    assert any('thread does not match' in m for m in _msgs(thick, [m35]))
+
+
+def test_pem_stack_ends_and_blind_depth():
+    clinch = _pem('S', 'M4', '1')
+    screw = _screw('M4', 10)
+    screw['side'] = 'far'
+    assert any('end' in m for m in _msgs(clinch, [screw]))
+    screw['side'] = 'near'
+    other = _nut('M4')
+    other['side'] = 'near'
+    assert any('screw' in m for m in _msgs(clinch, [other]))
+    so = _pem('SO', 'M4', 10)
+    near, far = _screw('M4', 8), _screw('M4', 8)
+    near['side'], far['side'] = 'near', 'far'
+    assert _msgs(so, [near, far]) == []
+    extra = _screw('M4', 8)
+    extra['side'] = 'near'
+    assert any('one screw' in m for m in _msgs(so, [near, extra]))
+    blind = _pem('BSO', 'M4', 16)
+    assert fc.press_thread_depth(blind['fam'], blind['row'], 16) == 6.5
+    short = _screw('M4', 6)
+    short['side'] = 'far'
+    long = _screw('M4', 8)
+    long['side'] = 'far'
+    assert _msgs(blind, [short]) == []
+    assert any('blind thread' in m for m in _msgs(blind, [long]))
+    short['side'] = 'near'
+    assert any('end' in m for m in _msgs(blind, [short]))
+    stud = _pem('FH', 'M4', 12)
+    on_head = _nut('M4')
+    on_head['side'] = 'near'
+    assert any('end' in m for m in _msgs(stud, [on_head]))
+    on_thread = _nut('M4')
+    on_thread['side'] = 'far'
+    assert _msgs(stud, [on_thread]) == []
+    # Where the accepted parts sit.
+    placed = fc.press_mate_places(clinch, [dict(screw, side='near')])
+    assert placed[0]['end'] == 'out'
+    assert abs(placed[0]['offset_cm'] - fc.press_geometry(clinch['fam'], clinch['row'], '1')['head_h']) < 1e-9
+    ends = fc.press_mate_places(so, [near, far])
+    assert [p['end'] for p in ends] == ['out', 'tip']
+    assert ends[0]['offset_cm'] == 0
+    assert abs(ends[1]['distance_cm'] - 1.0) < 1e-9
+    washer = _washer('M4')
+    washer['side'] = 'far'
+    nut = _nut('M4')
+    nut['side'] = 'far'
+    stack = fc.press_mate_places(stud, [washer, nut])
+    assert [p['end'] for p in stack] == ['sheet-far', 'sheet-far']
+    assert stack[0]['offset_cm'] == 0
+    assert abs(stack[1]['offset_cm'] - fc.part_geometry(washer['fam'], washer['row'])['thickness']) < 1e-9
+
+
 def test_sources_cover_every_press_family():
     for part in press_parts():
         assert part['source'].startswith('https://')

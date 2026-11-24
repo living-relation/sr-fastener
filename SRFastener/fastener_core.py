@@ -605,13 +605,47 @@ def item_label(cat, it):
     return '%s %s (%s)' % (it['fam']['name'], desc_thread(it['fam'], it['row']), finish(cat, it['finish'])['name'])
 
 
+def material_items(items):
+    """Parts a material check may look at. Press-in hardware is left out, as the new part or as a part already
+    in the hole."""
+    return [i for i in items if i.get('kind') != 'press-in']
+
+
 def material_mismatch(cat, items):
-    """Items whose material differs from the screw's (or, with no screw, from the first item's)."""
+    """Items whose material differs from the screw's (or, with no screw, from the first item's).
+    Press-in parts are ignored on both sides of the comparison."""
+    items = material_items(items)
     if not items:
         return []
     ref = next((i for i in items if i['kind'] == 'screw'), items[0])
     g = match_group(cat, ref['finish'])
     return [i for i in items if match_group(cat, i['finish']) != g]
+
+
+def should_ask_material(cat, existing, new):
+    """True when the material-match prompt should open. A press-in part never causes the prompt."""
+    new = material_items(new)
+    if not new:
+        return False
+    return bool(material_mismatch(cat, list(existing) + new))
+
+
+def match_finishes(cat, items, target):
+    """Finish keys after a Yes on the material prompt. Press-in finishes are not changed.
+    Returns (items, labels left as picked because that finish is not sold)."""
+    out, kept = [], []
+    for it in items:
+        it = dict(it)
+        if it.get('kind') == 'press-in':
+            out.append(it)
+            continue
+        k = matching_finish(cat, it['fam'], it['row'], target)
+        if k:
+            it['finish'] = k
+        else:
+            kept.append(item_label(cat, it))
+        out.append(it)
+    return out, kept
 
 
 def _hole_text(fam, hole_diameter_cm):
@@ -890,3 +924,124 @@ def stud_profile(fam, row, length):
     pts.append((z, g['r']))
     pts.append((-g['L'], g['r']))
     return pts
+
+
+# What the +/- stack may add on a PEM. Internal threads take one mating screw.
+# Thru standoffs take a screw on each end. Blind standoffs take one screw on the
+# open end, no longer than F. Studs take nuts and washers on the threaded end.
+_PEM_SCREW = ('S', 'SS', 'CLS', 'CLSS', 'AS', 'LAS', 'SO', 'SOS', 'BSO', 'BSOS')
+_PEM_STUD = ('FH', 'FHS', 'FH4')
+
+
+def mate_thread(fam, row):
+    """Thread a mating part must match. A press-in size key such as 3.5M3 is still an M3 thread."""
+    if kind(fam) == 'press-in':
+        return {'system': 'metric', 'nominal': 'M%g' % float(row['d']), 'pitch': float(row['pitch']),
+                'tpi': None, 'label': desc_thread(fam, row)}
+    return thread_ref(fam, row)
+
+
+def press_stack_kinds(fam):
+    """Catalog kinds the stack may add on this PEM, in dropdown order."""
+    if kind(fam) != 'press-in':
+        return ()
+    if fam['code'] in _PEM_SCREW:
+        return ('screw',)
+    if fam['code'] in _PEM_STUD:
+        return ('nut', 'washer')
+    return ()
+
+
+def press_stack_sides(fam):
+    """'near' is the install face. 'far' is the other end (stud thread, or the open end of a standoff)."""
+    if kind(fam) != 'press-in':
+        return ()
+    if fam['code'] in ('SO', 'SOS'):
+        return ('near', 'far')
+    if fam['code'] in ('BSO', 'BSOS', 'FH', 'FHS', 'FH4'):
+        return ('far',)
+    if fam['code'] in _PEM_SCREW:
+        return ('near',)
+    return ()
+
+
+def press_thread_depth(fam, row, length):
+    """Blind full-thread depth F in mm, or None when the mating screw is not limited by a blind hole."""
+    if fam.get('code') not in ('BSO', 'BSOS'):
+        return None
+    return float(_at(row['dims'], 'F', length))
+
+
+def fitting_screw_length(pem_fam, pem_row, pem_length, screw_row):
+    """A catalog screw length that fits this PEM. Blind holes use the longest length that stays within F."""
+    lengths = [L for L in screw_row['lengths'] if not isinstance(L, str)]
+    if not lengths:
+        return screw_row['lengths'][0]
+    limit = press_thread_depth(pem_fam, pem_row, pem_length)
+    if limit is None:
+        return lengths[0]
+    fit = [L for L in lengths if float(L) <= float(limit) + 1e-9]
+    return fit[-1] if fit else lengths[0]
+
+
+def press_stack_issues(cat, pem, mates):
+    """(index, reason) for mates that cannot stack on this PEM. An empty list means every mate is allowed.
+    Thread size and pitch must match. A washer matches the diameter only, the same as the rest of the tool."""
+    fam, row = pem['fam'], pem['row']
+    kinds = press_stack_kinds(fam)
+    sides = press_stack_sides(fam)
+    limit = press_thread_depth(fam, row, pem.get('length'))
+    seen = set()
+    out = []
+    pref = mate_thread(fam, row)
+    for i, mate in enumerate(mates):
+        side = mate.get('side') or 'near'
+        mk = mate.get('kind')
+        if mk not in kinds:
+            if kinds == ('screw',):
+                out.append((i, 'only a mating screw stacks on this PEM'))
+            else:
+                out.append((i, 'only a nut or washer stacks on this stud'))
+            continue
+        if side not in sides:
+            out.append((i, 'that end does not take a stacked part'))
+            continue
+        if not same_thread(pref, mate_thread(mate['fam'], mate['row'])):
+            out.append((i, 'thread does not match'))
+            continue
+        if mk == 'screw':
+            if side in seen:
+                out.append((i, 'only one screw on that end'))
+                continue
+            seen.add(side)
+            if limit is not None:
+                length = mate.get('length')
+                if length is None or float(length) > float(limit) + 1e-9:
+                    out.append((i, 'screw is longer than the blind thread depth'))
+    return out
+
+
+def press_mate_places(pem, mates):
+    """Where each allowed mate sits. offset_cm and distance_cm are centimetres.
+    end 'out': on the install face, this far out from that face.
+    end 'tip': at the far end of the standoff body (distance_cm from the install face).
+    end 'sheet-far': on the far face of the sheet; offset_cm stacks the nut or washer outward."""
+    fam, row, length = pem['fam'], pem['row'], pem.get('length')
+    bad = {i for i, _ in press_stack_issues(None, pem, mates)}
+    g = press_geometry(fam, row, length)
+    out_base = g.get('head_h', 0.0) if fam['shape'] in ('clinch-nut', 'floating') else 0.0
+    far_at = 0.0
+    places = []
+    for i, mate in enumerate(mates):
+        if i in bad:
+            continue
+        side = mate.get('side') or 'near'
+        if side == 'near':
+            places.append({'index': i, 'end': 'out', 'offset_cm': out_base})
+        elif fam['code'] in _PEM_STUD:
+            places.append({'index': i, 'end': 'sheet-far', 'offset_cm': far_at})
+            if mate['kind'] in ('nut', 'washer'):
+                far_at += part_geometry(mate['fam'], mate['row'])['thickness']
+        else:
+            places.append({'index': i, 'end': 'tip', 'distance_cm': g['L']})
+    return places

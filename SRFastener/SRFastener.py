@@ -179,11 +179,25 @@ def _refresh(inputs, level):
                 box.isVisible = press
         stack = inputs.itemById('stack')
         if stack is not None:
-            stack.isVisible = not press
-            if press:
-                stack.value = False
+            if press and fc.press_stack_kinds(fam) == ('screw',):
+                stack.name = 'Stack a mating screw'
+            else:
+                stack.name = 'Stack nuts/washers'
             help_box = inputs.itemById('stk_help')
             if help_box is not None:
+                if press and fc.press_stack_kinds(fam) == ('screw',):
+                    if fam['code'] in ('SO', 'SOS'):
+                        help_box.text = ('Near and far each take one screw of this thread. '
+                                         'Far is the open end away from the sheet.')
+                    elif fam['code'] in ('BSO', 'BSOS'):
+                        help_box.text = 'One screw on the open end. Its length stays within the blind thread depth.'
+                    else:
+                        help_box.text = 'One screw of this thread, on the near side, stacked on the nut.'
+                elif press:
+                    help_box.text = 'Nuts and washers go on the far side, on the stud thread. The thread must match.'
+                else:
+                    help_box.text = ('Near side = the picked edge (under the screw head). Far side = the other end of '
+                                     'the hole. Each side stacks from the part out, top row first.')
                 help_box.isVisible = bool(stack.value)
     _bom_preview(inputs)
     _resize_stack(inputs)
@@ -253,7 +267,8 @@ def _hole_note(inputs):
     edges = _edges(inputs)
     if not edges:
         if _st.kind == 'press-in':
-            box.text = 'Pick the hole edge on the install face. One press-in part goes in that one hole.'
+            box.text = ('Pick the hole edge on the install face. Tick the stack box to add the mating screw, '
+                        'or a nut and washer on a stud. The thread must match.')
         else:
             box.text = ('Pick circular hole edges on the side the part goes: the top edge (or countersink) for a screw '
                         'or a washer under its head, the bottom edge of a through hole for a nut.')
@@ -297,12 +312,32 @@ def _hole_note(inputs):
 
 SIDES = [('near', 'Near side'), ('far', 'Far side')]
 PARTS = [('nut', 'Nut'), ('washer', 'Washer')]
+_KIND_LABEL = {'screw': 'Screw', 'nut': 'Nut', 'washer': 'Washer'}
+
+
+def _stack_parts():
+    """Part kinds the +/- row may be. A PEM offers only the mate its thread can take."""
+    if _st.kind == 'press-in' and _st.code:
+        kinds = fc.press_stack_kinds(_st.family())
+        if kinds:
+            return [(k, _KIND_LABEL[k]) for k in kinds]
+    return list(PARTS)
+
+
+def _stack_sides():
+    if _st.kind == 'press-in' and _st.code:
+        sides = fc.press_stack_sides(_st.family())
+        if sides:
+            return [(k, n) for k, n in SIDES if k in sides]
+    return list(SIDES)
 
 
 def _stack_ref():
-    """Ref the stack rows size from: the screw (inserted or already in the hole), else the hole's thread, else
-    None (rows then size from the hole diameter)."""
+    """Ref the stack rows size from: the PEM thread when the main part is press-in, else the screw (inserted or
+    already in the hole), else the hole's thread, else None (rows then size from the hole diameter)."""
     h = getattr(_st, 'hole', None) or _Hole()
+    if _st.kind == 'press-in' and _st.code and _st.size:
+        return fc.mate_thread(_st.family(), _st.row()), h
     ref = _screw_ref(h)
     if ref is None and h.thread:
         ref = fc.ref_from_designation(h.thread)
@@ -345,8 +380,19 @@ def _settle_row(r, ref, h):
         fam = fc.family(_catalog(), r['code'])
         row = fc.size_row(fam, r['size'])
         offered = fc.finishes_for(_catalog(), fam, row)
+        # A PEM finish is not a match target for the screw or nut stacked on it.
+        target = _target_finish()
+        if _st.kind == 'press-in':
+            target = 'SS' if 'SS' in offered else (offered[0] if offered else target)
         if r.get('finish') not in offered:
-            r['finish'] = fc.matching_finish(_catalog(), fam, row, _target_finish()) or offered[0]
+            r['finish'] = fc.matching_finish(_catalog(), fam, row, target) or offered[0]
+        if r['kind'] == 'screw':
+            if fc.length_key(row, r.get('length')) is None and _st.kind == 'press-in' and _st.length is not None:
+                r['length'] = fc.fitting_screw_length(_st.family(), _st.row(), _st.length, row)
+            elif fc.length_key(row, r.get('length')) is None:
+                r['length'] = row['lengths'][0]
+            else:
+                r['length'] = next(L for L in row['lengths'] if fc.length_key(row, L) == fc.length_key(row, r['length']))
     return choices
 
 
@@ -378,28 +424,43 @@ def _refresh_stack(inputs):
     ci = table.commandInputs
     _st.gen += 1
     g = _st.gen
-    for c, head in enumerate(('Side', 'Part', 'Type', 'Size', 'Material')):
+    for c, head in enumerate(('Side', 'Part', 'Type', 'Size', 'Length', 'Material')):
         table.addCommandInput(ci.addTextBoxCommandInput('stk%d_h%d' % (g, c), '', '<b>%s</b>' % head, 1, True), 0, c)
+    sides = _stack_sides()
+    parts = _stack_parts()
     for i, r in enumerate(_st.stack):
+        if r.get('side') not in [k for k, _ in sides]:
+            r['side'] = sides[0][0]
+        if r.get('kind') not in [k for k, _ in parts]:
+            r['kind'] = parts[0][0]
         choices = _settle_row(r, ref, h)
         rid = 'stk%d_%d_' % (g, i)
         side = ci.addDropDownCommandInput(rid + 'side', '', adsk.core.DropDownStyles.TextListDropDownStyle)
-        _fill(side, SIDES, r['side'])
+        _fill(side, sides, r['side'])
         part = ci.addDropDownCommandInput(rid + 'kind', '', adsk.core.DropDownStyles.TextListDropDownStyle)
-        _fill(part, PARTS, r['kind'])
+        _fill(part, parts, r['kind'])
         typ = ci.addDropDownCommandInput(rid + 'code', '', adsk.core.DropDownStyles.TextListDropDownStyle)
         _fill(typ, [(c, n) for c, n, _ in choices], r['code'])
         size_txt = '-'
         fin_items = []
+        length_inp = None
         if r['code'] and r['size']:
             fam = fc.family(_catalog(), r['code'])
             row = fc.size_row(fam, r['size'])
             size_txt = fc.desc_thread(fam, row)
             fin_items = _finish_items(fam, row)
+            if r['kind'] == 'screw':
+                length_inp = ci.addDropDownCommandInput(rid + 'length', '',
+                                                        adsk.core.DropDownStyles.TextListDropDownStyle)
+                picked = _fill(length_inp, [(str(L), fc.length_label(fam, L)) for L in row['lengths']],
+                               fc.length_key(row, r.get('length')))
+                r['length'] = next(L for L in row['lengths'] if str(L) == picked)
         size = ci.addTextBoxCommandInput(rid + 'size', '', size_txt, 1, True)
+        if length_inp is None:
+            length_inp = ci.addTextBoxCommandInput(rid + 'length', '', '-', 1, True)
         fin = ci.addDropDownCommandInput(rid + 'finish', '', adsk.core.DropDownStyles.TextListDropDownStyle)
         _fill(fin, fin_items, r.get('finish'))
-        for c, inp in enumerate((side, part, typ, size, fin)):
+        for c, inp in enumerate((side, part, typ, size, length_inp, fin)):
             table.addCommandInput(inp, i + 1, c)
     _resize_stack(inputs)
     if _st.sel is not None and 0 <= _st.sel < len(_st.stack):
@@ -438,10 +499,13 @@ def _stack_button(inputs, cid):
     sel = _selected_index(inputs)
     if cid == 'stk_add':
         last = _st.stack[-1] if _st.stack else None
+        sides = [k for k, _ in _stack_sides()]
+        kinds = [k for k, _ in _stack_parts()]
+        side = last['side'] if last and last.get('side') in sides else sides[0]
+        kind = last['kind'] if last and last.get('kind') in kinds else kinds[0]
         _st.uid += 1
-        _st.sel = fc.stack_add(_st.stack, {'side': last['side'] if last else 'near',
-                                           'kind': last['kind'] if last else 'washer', 'code': None,
-                                           'finish': _target_finish()}, _st.uid)
+        _st.sel = fc.stack_add(_st.stack, {'side': side, 'kind': kind, 'code': None,
+                                           'finish': None if _st.kind == 'press-in' else _target_finish()}, _st.uid)
     elif cid == 'stk_del':
         fc.stack_remove(_st.stack, sel)
         _st.sel = None
@@ -465,13 +529,17 @@ def _stack_row_changed(inputs, cid):
         return
     label = dd.selectedItem.name
     if field == 'side':
-        r['side'] = next(k for k, n in SIDES if n == label)
+        r['side'] = next(k for k, n in _stack_sides() if n == label)
     elif field == 'kind':
-        r['kind'] = next(k for k, n in PARTS if n == label)
+        r['kind'] = next(k for k, n in _stack_parts() if n == label)
         r['code'] = None
     elif field == 'code':
         ref, h = _stack_ref()
         r['code'] = next((c for c, n, _ in _type_choices(r['kind'], ref, h) if n == label), r['code'])
+    elif field == 'length':
+        fam = fc.family(_catalog(), r['code'])
+        row = fc.size_row(fam, r['size'])
+        r['length'] = next(L for L in row['lengths'] if fc.length_label(fam, L) == label)
     elif field == 'finish':
         fam = fc.family(_catalog(), r['code'])
         r['finish'] = next((k for k, n in _finish_items(fam, fc.size_row(fam, r['size'])) if n == label), r['finish'])
@@ -561,7 +629,8 @@ def _stack_items(inputs):
     out = []
     for r in _st.stack:
         if r.get('code') and r.get('size') and r.get('finish'):
-            it = fc.item(_catalog(), r['code'], r['size'], r['finish'])
+            length = r.get('length') if r.get('kind') == 'screw' else None
+            it = fc.item(_catalog(), r['code'], r['size'], r['finish'], length)
             it['side'] = r['side']
             out.append(it)
     return out
@@ -572,8 +641,13 @@ def _warnings(inputs, h=None):
     if _st.kind == 'press-in' and _st.code and _st.size and _st.length is not None:
         spec = fc.mount_spec(_st.family(), _st.row(), _st.length)
         hole_mm = (h.dia * 10.0) if h and h.dia else None
-        return fc.press_warnings(spec, hole_mm, _read_num(inputs, 'sheet'), _read_num(inputs, 'edge'),
-                                 _read_num(inputs, 'hard'))
+        warns = fc.press_warnings(spec, hole_mm, _read_num(inputs, 'sheet'), _read_num(inputs, 'edge'),
+                                  _read_num(inputs, 'hard'))
+        main = _main_item()
+        rows = _stack_items(inputs)
+        if main and rows:
+            warns += [m for _, m in fc.press_stack_issues(_catalog(), main, rows)]
+        return warns
     main = _main_item()
     items = list(h.existing) + ([main] if main else []) + _stack_items(inputs)
     return fc.compat_warnings(_catalog(), items, h.thread, h.dia) if items else []
@@ -598,19 +672,26 @@ def _run_place(inputs, main=None, rows=None):
 
 def _material_prompt(inputs):
     """If the new parts' materials differ from each other or from parts already in the first hole, ask whether to
-    switch the new parts to match. Returns (main, rows) to place, or None to go back to the dialog."""
+    switch the new parts to match. Press-in parts are ignored, as the new part and as a part already in the hole.
+    Returns (main, rows) to place, or None to go back to the dialog."""
     cat = _catalog()
     h = _first_hole(inputs)
     main, rows = _main_item(), _stack_items(inputs)
     new = ([main] if main else []) + rows
-    items = list(h.existing) + new
-    if not new or not fc.material_mismatch(cat, items):
+    if not fc.should_ask_material(cat, h.existing, new):
         return main, rows
-    target = (h.screw['finish'] if h.screw is not None else
-              (main['finish'] if main and main['kind'] == 'screw' else
-               (h.existing[0]['finish'] if h.existing else new[0]['finish'])))
+    existing = fc.material_items(h.existing)
+    fresh = fc.material_items(new)
+    if h.screw is not None:
+        target = h.screw['finish']
+    elif main and main['kind'] == 'screw':
+        target = main['finish']
+    elif existing:
+        target = existing[0]['finish']
+    else:
+        target = fresh[0]['finish']
     tname = cat['finishes'][target]['name']
-    names = sorted({cat['finishes'][i['finish']]['name'] for i in items})
+    names = sorted({cat['finishes'][i['finish']]['name'] for i in existing + fresh})
     res = _ui().messageBox('These parts are different materials: %s.\n\nYes: switch the new parts to %s where that '
                            'material is sold.\nNo: insert them as picked.\nCancel: back to the dialog.'
                            % (', '.join(names), tname), CMD_NAME,
@@ -619,20 +700,14 @@ def _material_prompt(inputs):
     if res == adsk.core.DialogResults.DialogCancel:
         return None
     if res == adsk.core.DialogResults.DialogYes:
-        kept = []
-        for it in new:
-            k = fc.matching_finish(cat, it['fam'], it['row'], target)
-            if k:
-                it['finish'] = k
-            else:
-                kept.append(fc.item_label(cat, it))
-        # remember the switched materials for next time
-        if main:
+        updated, kept = fc.match_finishes(cat, new, target)
+        for src, dst in zip(updated, new):
+            dst['finish'] = src['finish']
+        if main and main['kind'] != 'press-in':
             _st.finish = main['finish']
-        for r in _st.stack:
-            if r.get('code') and r.get('size'):
-                fam = fc.family(cat, r['code'])
-                r['finish'] = fc.matching_finish(cat, fam, fc.size_row(fam, r['size']), target) or r['finish']
+        usable = [r for r in _st.stack if r.get('code') and r.get('size') and r.get('finish')]
+        for r, it in zip(usable, rows):
+            r['finish'] = it['finish']
         if kept:
             _ui().messageBox('Not sold in %s, left as picked: %s' % (tname, ', '.join(kept)), CMD_NAME)
     return main, rows
@@ -656,7 +731,7 @@ class _Created(adsk.core.CommandCreatedEventHandler):
             _st.finish = s.get('finish', 'SS')
             _st.stack, _st.uid, _st.sel, _st.hole = [], 0, None, None
             for r in s.get('stack_rows') or []:
-                if r.get('side') in ('near', 'far') and r.get('kind') in ('nut', 'washer'):
+                if r.get('side') in ('near', 'far') and r.get('kind') in ('nut', 'washer', 'screw'):
                     _st.uid += 1
                     _st.stack.append({'side': r['side'], 'kind': r['kind'], 'code': r.get('code'),
                                       'finish': r.get('finish', _st.finish), 'uid': _st.uid})
@@ -681,7 +756,7 @@ class _Created(adsk.core.CommandCreatedEventHandler):
             inputs.addBoolValueInput('flip', 'Flip direction', True, '', False)
             inputs.addBoolValueInput('thread', 'Cosmetic thread', True, '', bool(s.get('thread', True)))
             inputs.addBoolValueInput('stack', 'Stack nuts/washers', True, '', bool(s.get('stack_on', False)))
-            table = inputs.addTableCommandInput('stk_tbl', 'Stack', 5, '2:2:4:2:3')
+            table = inputs.addTableCommandInput('stk_tbl', 'Stack', 6, '2:2:3:2:2:3')
             table.tablePresentationStyle = adsk.core.TablePresentationStyles.itemBorderTablePresentationStyle
             ti = table.commandInputs
             for bid, label, tip in (('stk_add', '+', 'Add a nut or washer'),
@@ -807,6 +882,7 @@ class _Execute(adsk.core.CommandEventHandler):
                     spec = fc.mount_spec(main['fam'], main['row'], main['length'])
                     warns += fc.press_warnings(spec, hole.radius * 20.0, _read_num(inputs, 'sheet'),
                                                _read_num(inputs, 'edge'), _read_num(inputs, 'hard'))
+                    warns += [msg for _, msg in fc.press_stack_issues(_catalog(), main, rows)]
                     continue
                 design = adsk.fusion.Design.cast(_app().activeProduct)
                 items = fp.existing_items(_catalog(), design, hole) + ([main] if main else []) + rows
