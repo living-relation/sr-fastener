@@ -161,7 +161,7 @@ def build_part_body(fam, row, length=None):
     elif g['kind'] == 'nut' and g['shape'] == 'wing':
         body = _cyl(tbm, 0.0, g['base_r'], g['base_h'], g['base_r'])
         tbm.booleanOperation(body, _box(tbm, 0, 0, g['height'] / 2.0, g['wing_w'], g['wing_t'], g['height']), union)
-    elif g['kind'] in ('nut', 'standoff'):
+    elif g['kind'] == 'nut':
         body = _hex_prism(tbm, g['across_flats'], 0.0, g['height'])
         if g['shape'] == 'flange':
             tbm.booleanOperation(body, _cyl(tbm, 0.0, g['flange_r'], g['flange_t'], g['flange_r']), union)

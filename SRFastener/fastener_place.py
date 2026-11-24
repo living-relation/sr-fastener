@@ -568,7 +568,7 @@ def hardware_at(design, hole, reach=15.0):
     for occ in design.rootComponent.allOccurrences:
         comp = occ.component
         k = _attr(comp, 'kind')
-        if k not in ('screw', 'nut', 'washer', 'standoff') or _is_preview(occ):
+        if k not in ('screw', 'nut', 'washer') or _is_preview(occ):
             continue
         origin, _, _, z = occ.transform2.getAsCoordinateSystem()
         if abs(z.dotProduct(axis)) < 0.999:

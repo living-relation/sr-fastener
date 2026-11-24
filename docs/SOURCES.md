@@ -74,7 +74,6 @@ Every size is offered in 18-8 SS and 18-8 SS-BO; McMaster is used for dimensions
 | WTE-I | Tooth Lock Washers (external) | ASME B18.21.1 | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 | mcm_tooth_i | Thickness is the middle of McMaster's range. Teeth are not modelled. |
 | WTI-I | Tooth Lock Washers (internal) | ASME B18.21.1 | #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 | mcm_tooth_i | Thickness is the middle of McMaster's range. Teeth are not modelled. |
 | WOV-I | Oversized Washers | inch fender | #6, #8, #10, 1/4, 5/16, 3/8 | mcm_fender_i | No inch standard; one McMaster 90313A1xx (fender) washer per size: 90313A101, A102, A104, A108, A111, A115. Thickness is the middle of McMaster's range. |
-| HFF-M | Female Threaded Hex Standoffs | Keystone 5.5 mm hex | M3 | keystone_standoff | Keystone page 67, 5.5 mm across flats, M3 thread, female both ends. 6 mm and 8 mm are shorter than 19 mm, so the thread runs through. The bore is the nominal diameter, the same simplification as a nut. |
 
 ## Press-in (PEM)
 
@@ -259,7 +258,6 @@ Left off:
 | bbi_sae | https://www.brightonbest.com/download/pds/SAE_Flat_Washers.pdf (Brighton-Best SAE washers, ASME B18.21.1 narrow: ID, OD, thk) |
 | bbi_uss | https://www.brightonbest.com/download/pds/USS_Flat_Washers.pdf (Brighton-Best USS washers: ID, OD, thk) |
 | bbi_split | https://www.brightonbest.com/download/pds/Regular_Spring_Lock_Washers_2019.pdf (Brighton-Best regular split lock washers, ASME B18.21.1: A, B, T) |
-| keystone_standoff | https://static.datasheets.com/doc/25868727-keystone-electronics-24339-ds.pdf (Keystone metric standoffs, page 67: 5.5 mm hex, M3 thread, female-female. Length 6 mm stainless catalog 24481 and length 8 mm stainless catalog 24482. Lengths over 19 mm are tapped from both ends, so 6 mm and 8 mm are tapped through. Pitch 0.5 mm is the M3 coarse pitch.) |
 | mcm_flange_i | https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~inch/flange-nuts-1~~/ (McMaster 18-8 inch flange nuts: width, height, flange dia, flange thk) |
 | mcm_serr_i | https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~inch/serrated-flange-nuts-1~~/ (McMaster 18-8 inch serrated flange nuts: width, height, flange dia, flange thk) |
 | mcm_toplock | https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/top-lock-distorted-thread-locknuts~~/ (McMaster 18-8 top-lock distorted-thread locknuts, inch and metric: width, height) |

@@ -72,7 +72,6 @@
   "bbi_sae": "https://www.brightonbest.com/download/pds/SAE_Flat_Washers.pdf (Brighton-Best SAE washers, ASME B18.21.1 narrow: ID, OD, thk)",
   "bbi_uss": "https://www.brightonbest.com/download/pds/USS_Flat_Washers.pdf (Brighton-Best USS washers: ID, OD, thk)",
   "bbi_split": "https://www.brightonbest.com/download/pds/Regular_Spring_Lock_Washers_2019.pdf (Brighton-Best regular split lock washers, ASME B18.21.1: A, B, T)",
-  "keystone_standoff": "https://static.datasheets.com/doc/25868727-keystone-electronics-24339-ds.pdf (Keystone metric standoffs, page 67: 5.5 mm hex, M3 thread, female-female. Length 6 mm stainless catalog 24481 and length 8 mm stainless catalog 24482. Lengths over 19 mm are tapped from both ends, so 6 mm and 8 mm are tapped through. Pitch 0.5 mm is the M3 coarse pitch.)",
   "mcm_flange_i": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~inch/flange-nuts-1~~/ (McMaster 18-8 inch flange nuts: width, height, flange dia, flange thk)",
   "mcm_serr_i": "https://www.mcmaster.com/products/flange-nuts/material~18-8-stainless-steel/system-of-measurement~inch/serrated-flange-nuts-1~~/ (McMaster 18-8 inch serrated flange nuts: width, height, flange dia, flange thk)",
   "mcm_toplock": "https://www.mcmaster.com/products/locknuts/material~18-8-stainless-steel/top-lock-distorted-thread-locknuts~~/ (McMaster 18-8 top-lock distorted-thread locknuts, inch and metric: width, height)",
@@ -15446,46 +15445,6 @@
    "notes": "No inch standard; one McMaster 90313A1xx (fender) washer per size: 90313A101, A102, A104, A108, A111, A115. Thickness is the middle of McMaster's range.",
    "mcmaster": "Oversized Washers",
    "mcmaster_url": "https://www.mcmaster.com/products/oversized-washers/material~18-8-stainless-steel/system-of-measurement~inch/oversized-washers-2~~/"
-  },
-  {
-   "code": "HFF-M",
-   "kind": "standoff",
-   "shape": "hex",
-   "name": "Female-Female Hex Standoff",
-   "standard": "Keystone 5.5 mm hex",
-   "system": "metric",
-   "sizes": [
-    {
-     "size": "M3",
-     "d": 3.0,
-     "pitch": 0.5,
-     "dims": {
-      "s": 5.5
-     },
-     "lengths": [
-      6,
-      8
-     ],
-     "finishes": [
-      "SS",
-      "SS-BO"
-     ]
-    }
-   ],
-   "finishes": [
-    "SS",
-    "SS-BO"
-   ],
-   "source": "https://static.datasheets.com/doc/25868727-keystone-electronics-24339-ds.pdf (Keystone metric standoffs, page 67: 5.5 mm hex, M3 thread, female-female. Length 6 mm stainless catalog 24481 and length 8 mm stainless catalog 24482. Lengths over 19 mm are tapped from both ends, so 6 mm and 8 mm are tapped through. Pitch 0.5 mm is the M3 coarse pitch.)",
-   "sources": {
-    "dims": [
-     "keystone_standoff"
-    ],
-    "finish": []
-   },
-   "notes": "Keystone page 67, 5.5 mm across flats, M3 thread, female both ends. 6 mm and 8 mm are shorter than 19 mm, so the thread runs through. The bore is the nominal diameter, the same simplification as a nut.",
-   "mcmaster": "Female Threaded Hex Standoffs",
-   "mcmaster_url": "https://static.datasheets.com/doc/25868727-keystone-electronics-24339-ds.pdf"
   }
  ],
  "press_in": [

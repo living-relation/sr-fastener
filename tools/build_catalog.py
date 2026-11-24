@@ -804,7 +804,6 @@ SRC.update({
     'bbi_sae': 'https://www.brightonbest.com/download/pds/SAE_Flat_Washers.pdf (Brighton-Best SAE washers, ASME B18.21.1 narrow: ID, OD, thk)',
     'bbi_uss': 'https://www.brightonbest.com/download/pds/USS_Flat_Washers.pdf (Brighton-Best USS washers: ID, OD, thk)',
     'bbi_split': 'https://www.brightonbest.com/download/pds/Regular_Spring_Lock_Washers_2019.pdf (Brighton-Best regular split lock washers, ASME B18.21.1: A, B, T)',
-    'keystone_standoff': 'https://static.datasheets.com/doc/25868727-keystone-electronics-24339-ds.pdf (Keystone metric standoffs, page 67: 5.5 mm hex, M3 thread, female-female. Length 6 mm stainless catalog 24481 and length 8 mm stainless catalog 24482. Lengths over 19 mm are tapped from both ends, so 6 mm and 8 mm are tapped through. Pitch 0.5 mm is the M3 coarse pitch.)',
 })
 
 
@@ -1095,17 +1094,9 @@ PARTS += [
          ['mcm_fender_i'], [],
          'No inch standard; one McMaster 90313A1xx (fender) washer per size: 90313A101, A102, A104, A108, A111, A115. '
          'Thickness is the middle of McMaster\'s range.'),
-    part('HFF-M', 'standoff', 'hex', 'Female-female hex standoff', 'Keystone 5.5 mm hex', 'metric',
-         [dict(size='M3', d=3.0, pitch=PITCH['M3'], dims={'s': 5.5}, lengths=[6, 8],
-               finishes=['SS', 'SS-BO'])],
-         ['keystone_standoff'], [],
-         'Keystone page 67, 5.5 mm across flats, M3 thread, female both ends. '
-         '6 mm and 8 mm are shorter than 19 mm, so the thread runs through. '
-         'The bore is the nominal diameter, the same simplification as a nut.'),
 ]
 PART_MCMASTER = {
     'NHX': 'Hex Nuts', 'NHR': 'Regular Hex Nuts', 'NTH': 'Thin-Profile Hex Nuts', 'NNL': 'Nylon-Insert Locknuts',
-    'HFF': 'Female Threaded Hex Standoffs',
     'NFL': 'Flange Nuts',
     'NSF': 'Serrated Flange Nuts', 'WGP': 'General Purpose Washers', 'WSA': 'SAE Washers', 'WUS': 'USS Washers',
     'WOV': 'Oversized Washers', 'WSL': 'Split Lock Washers', 'WTE': 'Tooth Lock Washers (external)',

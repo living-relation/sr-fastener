@@ -98,20 +98,18 @@ def test_iso4032_and_10511_and_din127_m2():
     assert dims('WSL-M', 'M2') == {'d1': 2.4, 'd2': 4.4, 't': 0.5}
 
 
-def test_female_hex_standoff():
-    # Keystone metric standoff page: 5.5 mm hex, M3, female-female, 6 mm and 8 mm, tapped through.
-    fam = _fam('HFF-M')
-    assert fam['kind'] == 'standoff'
-    assert [r['size'] for r in fam['sizes']] == ['M3']
-    row = fc.size_row(fam, 'M3')
-    assert row['lengths'] == [6, 8] and row['dims'] == {'s': 5.5} and row['pitch'] == 0.5
-    g = fc.part_geometry(fam, row, 6)
-    assert abs(g['height'] * 10 - 6) < 1e-9 and abs(g['across_flats'] * 10 - 5.5) < 1e-9
-    assert abs(g['bore_r'] * 20 - 3) < 1e-9
-    bom = fc.bom_fields(CAT, fam, row, 6, 'SS')
-    assert bom['part_number'] == 'HFF-M3-0.5 x 6 18-8 SS'
-    assert bom['description'] == 'Female-Female Hex Standoff, M3 x 0.5, 18-8 Stainless Steel'
-    assert fc.bom_fields(CAT, fam, row, 8, 'SS')['part_number'] == 'HFF-M3-0.5 x 8 18-8 SS'
+def test_no_separate_standoff_type():
+    """Female-female hex standoffs are a new type. Daniel: no new types, only new sizes."""
+    codes = {f['code'] for f in CAT['families'] + CAT.get('parts', []) + CAT.get('press_in', [])}
+    assert 'HFF-M' not in codes
+    assert all(f.get('kind') != 'standoff' for f in CAT.get('parts', []))
+    # The sizes and the PEM numbers from the last pass stay.
+    assert 35 in fc.size_row(_fam('SPH-M'), 'M3')['lengths']
+    assert 5 in fc.size_row(_fam('SFH-M'), 'M3')['lengths']
+    fhs = _fam('FHS')
+    assert fc.part_number(fhs, fc.size_row(fhs, 'M3'), 8, 'PEM-SS') == 'FHS-M3-8'
+    so = _fam('SO')
+    assert fc.part_number(so, fc.size_row(so, 'M3'), 6, 'PEM-ZI') == 'SO-M3-6ZI'
 
 
 def test_iso7045():  # pending approval, not offered
