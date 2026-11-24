@@ -25,11 +25,3 @@ Daniel approves new types automatically once their data is checked against McMas
 | Serrated flange nut 1/2-20, wing nut 3/8-24 and 1/2-20 | McMaster's dimensions differ from the coarse-thread size, not added yet |
 
 The work hub's Standard Components > Fasteners folder was not reachable live, so its list could not be rechecked.
-
-## Lengths and parts checked and left out
-
-| Part | Why it is not in the catalog |
-|---|---|
-| ISO 10642 M3 x 5 flat head | ISO 10642:2004 Table 1 starts every size at 8 mm. A shop listing of M3 x 5 uses a 6 mm head, not the 6.72 mm theoretical head already in the catalog. |
-| ISO 7045 M3 x 35 pan head | ISO 7045:2011 Table 1 gives M3 lengths through 30 mm, which are already offered. 35 mm starts at M3.5. |
-| Female-female M3 hex standoffs, 6 mm and 8 mm | PEM SO and BSO include M3 at 6 mm and 8 mm, but those are self-clinching standoffs, not two female threads. No one datasheet gave both lengths with across-flats, thread depth and a material that fits the finish list. |

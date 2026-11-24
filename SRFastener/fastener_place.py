@@ -368,7 +368,7 @@ def make_component(app, design, parent, cat, fam, row, length, finish_key, matri
     if press:
         built = geom.build_press_body(fam, row, length)
     elif is_part:
-        built = geom.build_part_body(fam, row)[0]
+        built = geom.build_part_body(fam, row, length)[0]
     else:
         built = geom.build_body(fam, row, length)
     bodies = built if isinstance(built, (list, tuple)) else [built]
@@ -403,7 +403,7 @@ def make_component(app, design, parent, cat, fam, row, length, finish_key, matri
     comp.attributes.add(ATTR, 'length', str(length) if length is not None else '')
     comp.attributes.add(ATTR, 'kind', fc.kind(fam))
     if is_part:
-        comp.attributes.add(ATTR, 'thickness', repr(fc.part_geometry(fam, row)['thickness']))
+        comp.attributes.add(ATTR, 'thickness', repr(fc.part_geometry(fam, row, length)['thickness']))
     elif press:
         _press_properties(design, comp, fam, row, length, notes)
         if thread and fam.get('shape') == 'stud' and design.designType == adsk.fusion.DesignTypes.ParametricDesignType:
@@ -568,7 +568,7 @@ def hardware_at(design, hole, reach=15.0):
     for occ in design.rootComponent.allOccurrences:
         comp = occ.component
         k = _attr(comp, 'kind')
-        if k not in ('screw', 'nut', 'washer') or _is_preview(occ):
+        if k not in ('screw', 'nut', 'washer', 'standoff') or _is_preview(occ):
             continue
         origin, _, _, z = occ.transform2.getAsCoordinateSystem()
         if abs(z.dotProduct(axis)) < 0.999:
@@ -659,7 +659,7 @@ def _place_press(app, design, cat, main, rows, hole, thread, notes, occs):
 
 
 def _thickness(it):
-    return fc.part_geometry(it['fam'], it['row'])['thickness']
+    return fc.part_geometry(it['fam'], it['row'], it.get('length'))['thickness']
 
 
 def place_stack(app, design, cat, main, rows, edges, flip=False, thread=True):

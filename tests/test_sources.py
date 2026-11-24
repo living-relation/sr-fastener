@@ -55,6 +55,9 @@ def test_iso10642():  # ISO 10642:2004 Table 1 (dk theoretical max, k max, s nom
     assert dims('SFH-M', 'M20') == {'dk': 40.32, 'k': 10.16, 's': 12.0, 't': 5.6}
     assert fc.family(CAT, 'SFH-M')['angle'] == 90.0
     assert lengths('SFH-M', 'M12') == (20, 100)
+    # M3 x 5 is not in ISO 10642:2004 Table 1. Aspen sells that length as ISO 10642, full thread.
+    assert lengths('SFH-M', 'M3') == (5, 30)
+    assert fc.thread_length(_fam('SFH-M'), fc.size_row(_fam('SFH-M'), 'M3'), 5) == 5
 
 
 def test_din7984():  # Brighton-Best DIN 7984 data sheet (t min); Fastener Network agrees on dk, k, s
@@ -95,12 +98,33 @@ def test_iso4032_and_10511_and_din127_m2():
     assert dims('WSL-M', 'M2') == {'d1': 2.4, 'd2': 4.4, 't': 0.5}
 
 
+def test_female_hex_standoff():
+    # Keystone metric standoff page: 5.5 mm hex, M3, female-female, 6 mm and 8 mm, tapped through.
+    fam = _fam('HFF-M')
+    assert fam['kind'] == 'standoff'
+    assert [r['size'] for r in fam['sizes']] == ['M3']
+    row = fc.size_row(fam, 'M3')
+    assert row['lengths'] == [6, 8] and row['dims'] == {'s': 5.5} and row['pitch'] == 0.5
+    g = fc.part_geometry(fam, row, 6)
+    assert abs(g['height'] * 10 - 6) < 1e-9 and abs(g['across_flats'] * 10 - 5.5) < 1e-9
+    assert abs(g['bore_r'] * 20 - 3) < 1e-9
+    bom = fc.bom_fields(CAT, fam, row, 6, 'SS')
+    assert bom['part_number'] == 'HFF-M3-0.5 x 6 18-8 SS'
+    assert bom['description'] == 'Female-Female Hex Standoff, M3 x 0.5, 18-8 Stainless Steel'
+    assert fc.bom_fields(CAT, fam, row, 8, 'SS')['part_number'] == 'HFF-M3-0.5 x 8 18-8 SS'
+
+
 def test_iso7045():  # pending approval, not offered
      # ISO 7045:2011 Table 1 (dk max, k max, rf ref, recess no., m ref, type H penetration mean)
     d = dims('SPH-M', 'M4')
     assert (d['dk'], d['k'], d['rf'], d['recess'], d['m']) == (8.0, 3.1, 6.5, 2, 4.4)
     assert abs(d['pen'] - (2.4 + 1.9) / 2) < 1e-9
     assert lengths('SPH-M', 'M5') == (6, 45)
+    # M3 x 35 is not in the ISO 7045 length table. 3FParts sells that length fully threaded.
+    assert lengths('SPH-M', 'M3') == (4, 35)
+    m3 = fc.size_row(_fam('SPH-M'), 'M3')
+    assert 35 in m3['lengths'] and fc.thread_length(_fam('SPH-M'), m3, 35) == 35
+    assert fc.thread_length(_fam('SPH-M'), m3, 30) == 25
 
 
 def test_iso1207():  # ISO 1207:2011 Table 1 (dk max, k max, n nom, t min)

@@ -21,10 +21,12 @@ SRC = {
     'iso7380_22': ITEH + '78699/a175805085534f98983d6c8aa583a5b0/ISO-7380-1-2022.pdf (ISO 7380-1:2022 Table 1: same dk, k, rf, s; t min. The preview ends before Table 2.)',
     'wasi_7380': 'https://www.wasishop.de/pdf_datenblatt/iso7380_en.pdf (WASI ISO 7380-1 datasheet, PDF dated 2020-12-14: length grid. M3 lengths 4 and 5 sit left of the step. Length 4 is 3.80 to 4.20. Head numbers match ISO 7380-1 Table 1.)',
     'iso10642': ITEH + '34454/32dec7e84d974361b85f744935ab2175/ISO-10642-2004.pdf (ISO 10642:2004 Table 1: dk theor. max, k, s, t, b, lengths, ls/lg)',
+    'aspen_10642': 'https://www.aspenfasteners.com/m3-0-5-x-5mm-din-7991-iso-10642-metric-flat-head-socket-cap-screws-full-thread-a2-stainless-steel/ (Aspen ME126-305X5: M3 x 5 ISO 10642 / DIN 7991, full thread, length 5 mm overall)',
     'iso4017': ITEH + '72585/1179998ddd594550a909d6e13c416f3e/ISO-4017-2022.pdf (ISO 4017:2022 Table 1: s max, k nom)',
     'iso4026': ITEH + '36431/f53ced64ab1946679bd80f0a0e6cac63/ISO-4026-2003.pdf (ISO 4026:2003 Table 1: s, dp max, t min short/long, lengths)',
     'iso4029': ITEH + '36433/631453640d214e7682ed5a23ddee05b5/ISO-4029-2003.pdf (ISO 4029:2003 Table 1: dz, s, t min short/long, lengths)',
     'iso7045': ITEH + '57372/fafe91d8504049fc8953281401736c79/ISO-7045-2011.pdf (ISO 7045:2011 Table 1: dk, k, rf, recess H no., m, penetration, b, lengths)',
+    'pan_m3_35': 'https://3fparts.com/productTechnical/generate/pdf/1662 (3FParts sheet 1662: M3 x 35 mm Phillips pan head, DIN 7985, A2-70, length 35 mm, fully threaded. Their head is 6 mm by 2.52 mm. This family keeps the ISO 7045 head.)',
     'iso1207': ITEH + '54039/15c540b697434b5d85128ca34672939c/ISO-1207-2011.pdf (ISO 1207:2011 Table 1: dk, k, n, t, b, lengths)',
     # Maker documents (Holo-Krome product standards are also Fastenal's product standards)
     'hk_shcs': HK + 'hk.usa.shcs.alloy.bo.pdf (Holo-Krome HK.USA.SHCS.ALLOY.BO: ASTM A574 alloy, black oxide; A, H, J, T, LT)',
@@ -273,7 +275,8 @@ FAMILIES = [
                                   M16='class 10.9'))),
     dict(code='SFH-M', name='Hex-drive flat head screw, 90 deg', standard='ISO 10642', system='metric', head='flat',
          drive='hex', angle=90.0, finishes=ALL, source=SRC['iso10642'],
-         sources={'dims': ['iso10642', 'hk_m_fhcs'], 'lengths': ['iso10642'], 'thread': ['iso10642'],
+         sources={'dims': ['iso10642', 'hk_m_fhcs'], 'lengths': ['iso10642', 'aspen_10642'],
+                  'thread': ['iso10642'],
                   'alloy': ['hk_m_fhcs']},
          sizes=mm_sizes([
              ('M3', cap(6.72, 1.86, 2.0, 1.1)), ('M4', cap(8.96, 2.48, 2.5, 1.5)), ('M5', cap(11.2, 3.1, 3.0, 1.9)),
@@ -323,7 +326,7 @@ FAMILIES = [
              R_4026, None, every(M_ALL, 'class 45H'))),
     dict(code='SPH-M', name='Pan head Phillips screw', standard='ISO 7045', system='metric', head='pan',
          drive='phillips', finishes=STD, source=SRC['iso7045'],
-         sources={'dims': ['iso7045'], 'lengths': ['iso7045'], 'thread': ['iso7045'], 'alloy': []},
+         sources={'dims': ['iso7045'], 'lengths': ['iso7045', 'pan_m3_35'], 'thread': ['iso7045', 'pan_m3_35'], 'alloy': []},
          sizes=mm_sizes([
              ('M2', {'dk': 4.0, 'k': 1.6, 'rf': 3.2, 'recess': 0, 'm': 1.9, 'pen': 1.05}),
              ('M2.5', {'dk': 5.0, 'k': 2.1, 'rf': 4.0, 'recess': 1, 'm': 2.7, 'pen': 1.35}),
@@ -740,6 +743,28 @@ PENDING = [f for f in FAMILIES if f['code'] in PENDING_APPROVAL]
 FAMILIES = [f for f in FAMILIES if f['code'] not in PENDING_APPROVAL]
 
 
+def _extra_length(code, size, length, full_to_head=False):
+    """One length a supplier sells that the product standard's length table does not list."""
+    for fam in FAMILIES:
+        if fam['code'] != code:
+            continue
+        for row in fam['sizes']:
+            if row['size'] != size or length in row['lengths']:
+                continue
+            row['lengths'] = sorted(list(row['lengths']) + [length])
+            if full_to_head:
+                row.setdefault('thread', {})
+                row['thread'].setdefault('full_to_head', []).append(length)
+
+
+# ISO 7045:2011 Table 1 stops M3 at 30 mm. JC Fasteners stocks M3 x 35 as a pan Phillips
+# screw and calls the length fully threaded, so this one length is threaded to the head.
+_extra_length('SPH-M', 'M3', 35, full_to_head=True)
+# ISO 10642:2004 Table 1 starts at 8 mm. Aspen sells M3 x 5 as ISO 10642 / DIN 7991, full thread.
+# The head stays the ISO 10642 head already on this size. 5 mm is overall, head included.
+_extra_length('SFH-M', 'M3', 5)
+
+
 # ---------- Nuts and washers ----------
 # Dimensions are what McMaster-Carr lists for its 18-8 stainless stock (checked 2026-11-16), cross-checked with
 # the standard or a maker data sheet; `notes` records where they differ. Catalog units (mm or in):
@@ -779,6 +804,7 @@ SRC.update({
     'bbi_sae': 'https://www.brightonbest.com/download/pds/SAE_Flat_Washers.pdf (Brighton-Best SAE washers, ASME B18.21.1 narrow: ID, OD, thk)',
     'bbi_uss': 'https://www.brightonbest.com/download/pds/USS_Flat_Washers.pdf (Brighton-Best USS washers: ID, OD, thk)',
     'bbi_split': 'https://www.brightonbest.com/download/pds/Regular_Spring_Lock_Washers_2019.pdf (Brighton-Best regular split lock washers, ASME B18.21.1: A, B, T)',
+    'keystone_standoff': 'https://static.datasheets.com/doc/25868727-keystone-electronics-24339-ds.pdf (Keystone metric standoffs, page 67: 5.5 mm hex, M3 thread, female-female. Length 6 mm stainless catalog 24481 and length 8 mm stainless catalog 24482. Lengths over 19 mm are tapped from both ends, so 6 mm and 8 mm are tapped through. Pitch 0.5 mm is the M3 coarse pitch.)',
 })
 
 
@@ -1069,9 +1095,17 @@ PARTS += [
          ['mcm_fender_i'], [],
          'No inch standard; one McMaster 90313A1xx (fender) washer per size: 90313A101, A102, A104, A108, A111, A115. '
          'Thickness is the middle of McMaster\'s range.'),
+    part('HFF-M', 'standoff', 'hex', 'Female-female hex standoff', 'Keystone 5.5 mm hex', 'metric',
+         [dict(size='M3', d=3.0, pitch=PITCH['M3'], dims={'s': 5.5}, lengths=[6, 8],
+               finishes=['SS', 'SS-BO'])],
+         ['keystone_standoff'], [],
+         'Keystone page 67, 5.5 mm across flats, M3 thread, female both ends. '
+         '6 mm and 8 mm are shorter than 19 mm, so the thread runs through. '
+         'The bore is the nominal diameter, the same simplification as a nut.'),
 ]
 PART_MCMASTER = {
     'NHX': 'Hex Nuts', 'NHR': 'Regular Hex Nuts', 'NTH': 'Thin-Profile Hex Nuts', 'NNL': 'Nylon-Insert Locknuts',
+    'HFF': 'Female Threaded Hex Standoffs',
     'NFL': 'Flange Nuts',
     'NSF': 'Serrated Flange Nuts', 'WGP': 'General Purpose Washers', 'WSA': 'SAE Washers', 'WUS': 'USS Washers',
     'WOV': 'Oversized Washers', 'WSL': 'Split Lock Washers', 'WTE': 'Tooth Lock Washers (external)',

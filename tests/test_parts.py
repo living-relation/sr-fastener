@@ -164,7 +164,7 @@ def test_geometry():
             assert g['thickness'] > 0
             if p['kind'] == 'nut' and p['shape'] == 'wing':
                 assert g['wing_w'] > 2 * g['base_r'] > 2 * g['bore_r'], (p['code'], r['size'])
-            elif p['kind'] == 'nut':  # across flats clears the bore, flange wider than the hex
+            elif p['kind'] in ('nut', 'standoff'):  # across flats clears the bore, flange wider than the hex
                 assert g['across_flats'] > 2 * g['bore_r'], (p['code'], r['size'])
                 if 'flange_r' in g:
                     assert 2 * g['flange_r'] > g['across_flats']
