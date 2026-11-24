@@ -66,7 +66,8 @@ Components project or any shared folder. To use the tool on another PC, install 
   one hole, and mixed materials.
 - **Mixed materials:** if the new parts' materials differ from each other or from parts already in the hole,
   Insert asks: Yes switches the new parts to the screw's material where that material is sold, No inserts them
-  as picked, Cancel goes back to the dialog.
+  as picked, Cancel goes back to the dialog. Press-in parts are left out of this check, whether the new part
+  is a PEM or a PEM is already in the hole.
 
 ## Screw types
 
@@ -268,7 +269,9 @@ empty (other SR add-ins can share the SR Tools panel).
 
 ## Press-in (PEM)
 
-Pick **Press-in**, then a PEM type (self-clinching nut, flush-head stud, standoff or floating nut), size and length or shank. One part goes in one hole, as its own component. The BOM part number is the PEM designation, for example `FHS-M5-12` or `S-M4-1ZI`. The description stays `Type, size and thread, material`.
+Pick **Press-in**, then a PEM type (self-clinching nut, flush-head stud, standoff or floating nut), size and length or shank. One PEM goes in one hole, as its own component. The BOM part number is the PEM designation, for example `FHS-M5-12` or `S-M4-1ZI`. The description stays `Type, size and thread, material`.
+
+The same stack box adds the mating part. A clinch nut, floating nut or standoff takes a screw of the same thread. A thru standoff takes one screw on each end. A blind standoff takes one screw on the open end, no longer than the blind thread depth. A flush stud takes a nut, and a washer, of the same thread on the stud. A different thread is refused.
 
 The mounting hole size, hole tolerance and minimum sheet thickness are shown in the dialog when you pick a size. They are also saved as design user parameters and part attributes. They are not written into the BOM description.
 
