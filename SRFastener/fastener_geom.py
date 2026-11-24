@@ -138,13 +138,13 @@ def build_body(fam, row, length):
     return body
 
 
-def build_part_body(fam, row):
+def build_part_body(fam, row, length=None):
     """Nut or washer as one temporary BRep body. z=0 is the seat face, body goes +z (see fastener_core.part_geometry).
     Simplified where the catalog has no dimension: nylon insert drawn as part of the hex, flange serrations and
     lock-washer teeth not drawn, split-washer gap = thickness and flat (not helical), cap-nut dome a half sphere,
     wing-nut wings a flat plate."""
     tbm = adsk.fusion.TemporaryBRepManager.get()
-    g = fc.part_geometry(fam, row)
+    g = fc.part_geometry(fam, row, length)
     diff = adsk.fusion.BooleanTypes.DifferenceBooleanType
     union = adsk.fusion.BooleanTypes.UnionBooleanType
     inter = adsk.fusion.BooleanTypes.IntersectionBooleanType
@@ -161,7 +161,7 @@ def build_part_body(fam, row):
     elif g['kind'] == 'nut' and g['shape'] == 'wing':
         body = _cyl(tbm, 0.0, g['base_r'], g['base_h'], g['base_r'])
         tbm.booleanOperation(body, _box(tbm, 0, 0, g['height'] / 2.0, g['wing_w'], g['wing_t'], g['height']), union)
-    elif g['kind'] == 'nut':
+    elif g['kind'] in ('nut', 'standoff'):
         body = _hex_prism(tbm, g['across_flats'], 0.0, g['height'])
         if g['shape'] == 'flange':
             tbm.booleanOperation(body, _cyl(tbm, 0.0, g['flange_r'], g['flange_t'], g['flange_r']), union)
@@ -173,11 +173,6 @@ def build_part_body(fam, row):
         cx = (g['outer_r'] + g['bore_r']) / 2.0
         tbm.booleanOperation(body, _box(tbm, cx, 0, g['height'] / 2.0, span, g['gap'], g['height'] + 2 * _EPS), diff)
     return body, g
-
-
-# Not a published shank length. Standoff clinch length is not in the bulletin, so this only
-# gives the joint a round edge at the published clinch diameter C.
-_SEAT = 0.01  # cm
 
 
 def _union_profile(tbm, pts):
@@ -227,16 +222,17 @@ def build_press_body(fam, row, length):
         recess = _cyl(tbm, -g['L'] - _EPS, g['tip_recess_r'], -g['L'] + depth, _TIP_R)
         tbm.booleanOperation(body, recess, diff)
     elif g['shape'] == 'standoff':
-        # SO datasheet pages SO-3 and SO-4 draw H across a hex that runs the length L,
-        # with a short clinch end of diameter C. The viewer mesh is a 0.50 mm hex cap
-        # on a round body. The datasheet figure is what is modeled.
+        # Hex body of length L on the stand-off side of the install face. The clinch is
+        # diameter C and as long as the published minimum sheet, on the sheet side of that face.
+        # The bulletin says the clinch profile may vary and does not print a separate clinch length.
         body = _hex_prism(tbm, g['across'], -g['L'], 0.0)
-        tbm.booleanOperation(body, _cyl(tbm, 0.0, g['seat_r'], -_SEAT, g['seat_r']), union)
+        tbm.booleanOperation(body, _cyl(tbm, 0.0, g['clinch_r'], g['clinch_l'], g['clinch_r']), union)
+        bore_top = g['clinch_l'] + _EPS
         if g.get('blind'):
             # F on page SO-4 is a minimum full-thread depth. The hole is cut to F, which meets that minimum.
             tbm.booleanOperation(body, _cyl(tbm, -g['L'] - _EPS, g['bore_r'], -g['L'] + g['blind'], g['bore_r']), diff)
         else:
-            tbm.booleanOperation(body, _cyl(tbm, -g['L'] - _EPS, g['bore_r'], _EPS, g['bore_r']), diff)
+            tbm.booleanOperation(body, _cyl(tbm, -g['L'] - _EPS, g['bore_r'], bore_top, g['bore_r']), diff)
     else:
         raise ValueError(g['shape'])
     return body

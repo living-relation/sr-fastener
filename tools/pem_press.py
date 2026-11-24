@@ -33,14 +33,17 @@ CL_CITE = (
     'Hole +0.08 mm; inch table on page 4 prints -.000. Hardness notes on page 5; material chart page 9. ' + CL_URL)
 FH_CITE = (
     'PEM FH datasheet page 5 (metric FH/FHS table). Hole +0.08 mm. '
+    'The length code is the shank under the head. The head thickness (H/10, from the PEM head profile) is added beyond it. '
     'H is the head diameter, S Max is the unthreaded length. The table does not publish a separate head thickness. ' + FH_URL)
 FH4_CITE = (
     'PEM FH datasheet page 6 (metric FH4 table). Sheet thickness is the published range. '
-    'Hole +0.08 mm. H is the head diameter. ' + FH_URL)
+    'Hole +0.08 mm. H is the head diameter. The length code is the shank under the head, '
+    'and the head thickness is added beyond it, the same as FH and FHS. ' + FH_URL)
 SO_CITE = (
     'PEM SO datasheet page SO-3 (page 3). The figure shows a hex body of length L, across flats H, '
-    'a short clinch end of diameter C, and counterbore B. Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). '
-    'Hole +0.08 mm. ' + SO_URL)
+    'a clinch end of diameter C, and counterbore B. The bulletin says the clinch profile may vary and does not '
+    'print a clinch length, so the clinch cylinder is diameter C and as long as the published minimum sheet. '
+    'Pitch is the thread column (M3 x 0.5, M3.5 x 0.6, M4 x 0.7, M5 x 0.8). Hole +0.08 mm. ' + SO_URL)
 BSO_CITE = (
     'PEM SO datasheet page SO-4 (page 4). The figure shows a hex body of length L, across flats H, '
     'and a short clinch end of diameter C. Column F is labeled F Min.: a minimum full-thread depth, not a single target. '

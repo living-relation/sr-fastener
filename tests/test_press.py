@@ -161,9 +161,13 @@ def test_coverage_matches_the_datasheets():
     assert row('SOS', 'M3')['dims']['H'] == 4.8
     assert row('SOS', 'M3')['dims']['C'] == 4.2
     g = fc.press_geometry(fam('FHS'), row('FHS', 'M5'), 12)
-    assert abs(g['L'] - 1.2) < 1e-9 and abs(g['r'] - 0.25) < 1e-9
+    # Length code is the shank under the head. The head is added beyond it.
+    assert abs(g['L'] - (1.2 + g['head_h'])) < 1e-9 and abs(g['r'] - 0.25) < 1e-9
     assert abs(g['head_r'] - 0.325) < 1e-9
     assert abs(g['head_h'] * 10 - 0.65) < 1e-9
+    m3 = fc.press_geometry(fam('FHS'), row('FHS', 'M3'), 8)
+    assert abs(m3['head_h'] * 10 - 0.46) < 1e-9
+    assert abs((m3['L'] - m3['head_h']) * 10 - 8) < 1e-9
 
 
 def test_stud_head_matches_the_step_profile():
@@ -187,7 +191,7 @@ def test_stud_head_matches_the_step_profile():
     pts = fc.stud_profile(part, size, 12)
     assert abs(pts[0][0]) < 1e-9
     assert abs(max(r for _z, r in pts) * 20 - 6.5) < 1e-6
-    assert abs(pts[-1][0] * 10 + 12) < 1e-6
+    assert abs(pts[-1][0] * 10 + (12 + size['dims']['head_thk'])) < 1e-6
     g = fc.press_geometry(part, size, 12)
     assert g['unthread'] <= g['s_max'] + 1e-9
     under = [r for z, r in pts if -g['barrel_start'] - 0.02 < z < -g['head_h'] - g['collar_l'] - g['neck_l']]
@@ -217,6 +221,10 @@ def test_standoff_keeps_the_datasheet_hex_and_minimum_blind_depth():
     assert abs(so['across'] * 10 - 4.8) < 1e-9
     assert abs(so['L'] * 10 - 16) < 1e-9
     assert so['L'] * 10 > 0.50
+    short = fc.press_geometry(fam('SO'), row('SO', 'M3'), 6)
+    assert abs(short['L'] * 10 - 6) < 1e-9
+    assert abs(short['clinch_r'] * 20 - 4.2) < 1e-9
+    assert abs(short['clinch_l'] * 10 - 1.0) < 1e-9
     assert row('SO', 'M4')['dims']['B'] == 4.8
     assert row('SO', 'M5')['pitch'] == 0.8
     bso = fc.press_geometry(fam('BSO'), row('BSO', 'M3'), 6)

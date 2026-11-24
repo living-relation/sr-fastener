@@ -104,6 +104,8 @@ Names and codes follow McMaster-Carr's category names (checked on mcmaster.com 2
 
 Button head M3 also includes 4 mm and 5 mm. Those two lengths are on the WASI ISO 7380-1 length grid.
 ISO 7380-1:2011 starts M3 at 6 mm, and that is still the first length for every larger button head.
+Pan head M3 also includes 35 mm, and flat head M3 also includes 5 mm. Those two lengths are sold;
+they are not in the ISO length tables. The heads stay the ISO heads.
 
 The newer types (SSN, SSE, SSO, SBF, STP) have no alloy black oxide. Their lengths are exactly the lengths
 McMaster stocks. Short inch set screws that Holo-Krome's key engagement tables do not cover use the size's
@@ -140,6 +142,7 @@ materials per type are listed under [Materials](#materials).
 | General purpose washer, metric | WGP | ISO 7089 | M3 to M20 |
 | Oversized washer, metric | WOV | ISO 7093-1 | M3 to M20 |
 | Split lock washer, metric | WSL | DIN 127 B | M2 to M20 |
+| Female-female hex standoff, metric | HFF | Keystone 5.5 mm hex | M3 x 6 and M3 x 8 |
 | External-tooth lock washer, metric | WTE | DIN 6797 A | M3 to M20 |
 | Internal-tooth lock washer, metric | WTI | DIN 6797 J | M3 to M10 |
 | Hex nut, inch | NHX | ASME B18.2.2 | #2 to 1/2, UNC and UNF |

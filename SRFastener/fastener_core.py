@@ -19,7 +19,8 @@ def load_catalog(path=CATALOG_PATH):
         return json.load(f)
 
 
-KINDS = (('screw', 'Screws'), ('nut', 'Nuts'), ('washer', 'Washers'), ('press-in', 'Press-in'))
+KINDS = (('screw', 'Screws'), ('nut', 'Nuts'), ('washer', 'Washers'), ('standoff', 'Standoffs'),
+         ('press-in', 'Press-in'))
 
 
 def kind(fam):
@@ -153,7 +154,8 @@ def part_number(fam, row, length, finish_key):
     Press-in parts use the PEM designation (FHS-M5-12, S-M3-1ZI) instead of the shop finish code.
     Screws: 'SSH-M3-0.5 x 10 18-8 SS', 'SSH-1/4-20 x 1.5 18-8 SS-BO', 'SSH-4-40 x 0.25 18-8 SS'.
     Nuts: screw diameter and thread only: 'NHX-M5-0.8 18-8 SS', 'NHX-1/4-20 ZN'.
-    Washers: screw size and outside diameter: 'WGP-M5 x 10 18-8 SS', 'WSA-1/4 x 0.734 18-8 SS'."""
+    Washers: screw size and outside diameter: 'WGP-M5 x 10 18-8 SS', 'WSA-1/4 x 0.734 18-8 SS'.
+    Female-female standoffs: size, thread and length: 'HFF-M3-0.5 x 6 18-8 SS'."""
     if kind(fam) == 'press-in':
         return '%s-%s-%s%s' % (fam['code'], row['thread_code'], _pem_token(row, length), fam.get('pem_suffix', ''))
     code = fam['code'].rsplit('-', 1)[0]
@@ -163,6 +165,11 @@ def part_number(fam, row, length, finish_key):
             body = '%s x %s' % (nominal(row).lstrip('#'), _num(washer_od(fam, row)))
         else:
             body = '%s x %g' % (row['size'], washer_od(fam, row))
+        return '%s-%s %s' % (code, body, fin)
+    if kind(fam) == 'standoff':
+        if length is None:
+            length = row['lengths'][0]
+        body = '%s-%g x %s' % (row['size'], row['pitch'], fmt_mm(length))
         return '%s-%s %s' % (code, body, fin)
     if kind(fam) == 'nut':
         if fam['system'] == 'inch':
@@ -280,12 +287,18 @@ def bom_fields(cat, fam, row, length, finish_key):
     }
 
 
-def part_geometry(fam, row):
-    """Nuts and washers, in cm. z=0 is the face that sits on the part (or on the washer/nut below);
-    the body goes +z. bore_r: nut bore = nominal diameter (threads cosmetic), washer bore = ID."""
+def part_geometry(fam, row, length=None):
+    """Nuts, washers and female-female standoffs, in cm. z=0 is the face that sits on the part;
+    the body goes +z. bore_r: nut and standoff bore = nominal diameter (threads cosmetic), washer bore = ID.
+    A standoff's height is the chosen length."""
     c = lambda v: to_cm(fam, v)  # noqa: E731
     d = row['dims']
     g = {'kind': kind(fam), 'shape': fam['shape']}
+    if kind(fam) == 'standoff':
+        body = float(row['lengths'][0] if length is None else length)
+        g.update(bore_r=c(row['d']) / 2.0, height=c(body), across_flats=c(d['s']))
+        g['thickness'] = g['height']
+        return g
     if kind(fam) == 'nut':
         g.update(bore_r=c(row['d']) / 2.0, height=c(d['m']))
         if d.get('s'):
@@ -315,6 +328,9 @@ def thread_length(fam, row, length):
     shank = length
     t = row.get('thread')
     if not t:
+        return shank
+    # A length a supplier sells fully threaded, past the product standard's length table.
+    if any(abs(float(x) - float(length)) < 1e-9 for x in t.get('full_to_head', ())):
         return shank
     if 'lg' in t:
         lg = t['lg'].get('%g' % length)
@@ -852,10 +868,14 @@ def press_geometry(fam, row, length):
                  retainer_bore_r=nut_r + float_r,
                  bore_r=c(minor) / 2.0)
     elif fam['shape'] == 'stud':
+        # The length code is the shank under the head. The head thickness sits beyond it,
+        # so the solid is longer than the length code by the head.
         length_cm = c(float(length))
+        head_h = c(_at(dims, 'head_thk', length))
+        overall = length_cm + head_h
         barrel = c(_at(dims, 'barrel_start', length))
-        g.update(r=c(row['d']) / 2.0, L=length_cm, head_r=c(_at(dims, 'H', length)) / 2.0,
-                 head_h=c(_at(dims, 'head_thk', length)), edge_r=c(_at(dims, 'edge_r', length)),
+        g.update(r=c(row['d']) / 2.0, L=overall, head_r=c(_at(dims, 'H', length)) / 2.0,
+                 head_h=head_h, edge_r=c(_at(dims, 'edge_r', length)),
                  face_r=c(_at(dims, 'face_dia', length)) / 2.0,
                  collar_r=c(_at(dims, 'collar_dia', length)) / 2.0,
                  collar_l=c(_at(dims, 'collar_len', length)),
@@ -865,13 +885,16 @@ def press_geometry(fam, row, length):
                  barrel_start=barrel, s_max=c(_at(dims, 'S', length)),
                  # Plain length is the measured barrel start. It is under S max, which the datasheet
                  # states as a maximum, so the cosmetic thread may start there.
-                 unthread=barrel, thread_len=max(length_cm - barrel, 0.0),
+                 unthread=barrel, thread_len=max(overall - barrel, 0.0),
                  tip_recess_r=c(row['d'] * 0.075),
-                 shank=(0.0, -length_cm))
+                 shank=(0.0, -overall))
     elif fam['shape'] == 'standoff':
         length_cm = c(float(length))
+        sheet = dims['min_sheet']
+        if isinstance(sheet, dict):
+            sheet = min(float(v) for v in sheet.values())
         g.update(across=c(_at(dims, 'H', length)), L=length_cm, bore_r=c(row['d']) / 2.0,
-                 seat_r=c(_at(dims, 'C', length)) / 2.0)
+                 clinch_r=c(_at(dims, 'C', length)) / 2.0, clinch_l=c(float(sheet)))
         if 'F' in dims:
             g['blind'] = c(_at(dims, 'F', length))
     else:
