@@ -47,7 +47,7 @@ def test_heads_bigger_than_shank_and_key_fits():
             if 'dk' in dims and 's' in dims:
                 assert dims['dk'] > row['d'], (fam['code'], row['size'])
                 assert dims['s'] < row['d'] * 1.2 + (dims['dk'] - row['d']), (fam['code'], row['size'])
-                assert dims['t'] < max(dims['k'], 0.0) * 1.0 + (row['d'] if fam['head'] == 'flat' else 0), (fam['code'], row['size'])
+                assert 't' not in dims and 't_by_length' not in dims, (fam['code'], row['size'])
             if fam['head'] == 'hex':
                 assert dims['s'] > row['d']
             if fam['head'] == 'set':
