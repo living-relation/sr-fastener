@@ -186,7 +186,7 @@ def main(keep=False, out=None):
                  ('SSO-I', '#6', 0.25, 'SS-BO', 0.33), ('SBF-M', 'M5', 10, 'SS-BO', 0.55), ('SBF-M', 'M10', 35, 'SS', 1.1),
                  ('STP-I', '#8', 0.5, 'SS-BO', 0.44), ('STP-I', '#2', 0.125, 'SS-BO', 0.22),
                  ('STP-M', 'M4.2', 13, 'SS-BO', 0.45),
-                 # short inch set screws with the standard socket depth (cut back for the point where needed)
+                 # short inch set screws; the hex pocket is a look and stops short of the point
                  ('SSN-I', '#2', 0.125, 'SS', 0.22), ('SSN-I', '#6', 0.1875, 'SS-BO', 0.37),
                  ('SSN-I', '5/16', 0.375, 'SS', 0.8), ('SSN-I', '5/16-24', 0.375, 'SS-BO', 0.8),
                  ('SSN-I', '3/8', 0.375, 'SS', 0.95), ('SSN-I', '3/8-24', 0.375, 'SS-BO', 0.95),

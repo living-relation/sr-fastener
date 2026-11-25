@@ -108,20 +108,20 @@ Pan head M3 also includes 35 mm, and flat head M3 also includes 5 mm. Those two 
 they are not in the ISO length tables. The heads stay the ISO heads.
 
 The newer types (SSN, SSE, SSO, SBF, STP) have no alloy black oxide. Their lengths are exactly the lengths
-McMaster stocks. Short inch set screws that Holo-Krome's key engagement tables do not cover use the size's
-standard socket depth, cut back where needed to leave a quarter diameter of metal above the point (listed in
-[docs/SOURCES.md](docs/SOURCES.md)). Sheet metal screws get no cosmetic thread (Fusion has no tapping-screw thread), and the inch
+McMaster stocks. Sheet metal screws get no cosmetic thread (Fusion has no tapping-screw thread), and the inch
 tip is drawn one diameter long (its length is not in the sources). Cone and extended tips start at the thread
 root, as the standards specify.
 
 Every family cites its sources in the catalog (dimensions, lengths, thread length and alloy availability
 separately), and `tests/test_sources.py` checks rows against them. See [docs/SOURCES.md](docs/SOURCES.md).
 
-What is modeled from the tables: head diameter and height, socket size and depth (set screws use the
-shallower socket the standard gives for their shortest lengths), countersink angle (90 deg metric, 82 deg
-inch), button and pan crowns (crown radius or side height from the table), slot width and depth, flat-tip and cup-tip
-diameters (the cup recess shape itself is not dimensioned in the standards and is drawn as a 118 deg cone), thread pitch, and the threaded length (partly threaded screws get a cosmetic thread of the
-tabled length from the tip; shorter ones are threaded to the head).
+What is modeled from the tables: head diameter and height, the hex across the flats, countersink angle (90 deg
+metric, 82 deg inch), button and pan crowns (crown radius or side height from the table), slot width and depth,
+flat-tip and cup-tip diameters (the cup recess shape itself is not dimensioned in the standards and is drawn as
+a 118 deg cone), thread pitch, and the threaded length (partly threaded screws get a cosmetic thread of the
+tabled length from the tip; shorter ones are threaded to the head). The hex pocket is only for looks. It is
+about half the head, or half the metal above a set-screw point, so it does not come out the bottom. That depth
+is not a spec and is not in the part number, the description, or the source tables.
 
 ## Nuts and washers
 

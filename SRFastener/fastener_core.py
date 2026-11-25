@@ -329,15 +329,17 @@ def thread_length(fam, row, length):
     return shank
 
 
-def key_depth(row, length):
-    """Socket depth for this length: set screws use a shallower socket at their shortest lengths."""
-    dims = row['dims']
-    tbl = dims.get('t_by_length', {})
-    if '%g' % length in tbl:
-        return tbl['%g' % length]
-    if 'short_max' in dims and length <= dims['short_max'] + 1e-9:
-        return dims['t_short']
-    return dims['t']
+def key_depth(row, length, point_h=0.0):
+    """How deep the hex looks. Not a spec, and not used in a part number or description.
+
+    The across-flats size stays dims['s']. A headed screw gets half its head height, so the
+    hex stops inside the head. A set screw gets half the metal above the point (point_h is
+    in the same units as length), so the hex does not come out the tip."""
+    k = row['dims'].get('k')
+    if k:
+        return 0.5 * k
+    room = length - point_h
+    return 0.5 * room if room > 0 else 0.0
 
 
 def to_cm(fam, value):
@@ -396,7 +398,7 @@ def geometry(fam, row, length):
         g['shank'] = (0.0, -g['L'])
     elif fam['head'] == 'set':
         g['point'] = fam.get('point', 'flat')
-        g.update(key=c(dims['s']), key_depth=c(key_depth(row, length)))
+        g['key'] = c(dims['s'])
         lk = '%g' % length
         # cone and dog points start at the thread root (ISO 4027/4028: the point angle applies below the root
         # diameter); root = basic minor diameter d - 1.082532 P (ISO 68-1 / ASME B1.1)
@@ -426,6 +428,8 @@ def geometry(fam, row, length):
             # rim 0.1 x dz wide (shape not dimensioned in ISO 4029 / ASME B18.3, so simplified).
             g['cup_r'] = g['point_r'] * 0.8
             g['cup_depth'] = g['cup_r'] / math.tan(math.radians(59.0))
+        room = g['L'] - g['point_h']
+        g['key_depth'] = 0.5 * room if room > 0 else 0.0
         g['shank'] = (0.0, -g['L'])
     else:
         raise ValueError(fam['head'])

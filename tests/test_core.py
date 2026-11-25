@@ -76,13 +76,44 @@ def test_set_screw_point():
     assert math.isclose(g['point_r'], 0.275) and math.isclose(g['point_h'], 0.125)
 
 
-def test_set_screw_key_depth_short_and_long():
+def test_socket_is_a_look_and_stays_inside():
+    """Hex across the flats stays the sourced size. Depth is half the head, or half the metal above a point."""
+    fam = fc.family(CAT, 'SSH-M')
+    row = fc.size_row(fam, 'M5')
+    g = fc.geometry(fam, row, 16)
+    assert abs(g['key'] - row['dims']['s'] / 10.0) < 1e-9
+    assert abs(g['key_depth'] - 0.5 * g['head_h']) < 1e-9 and g['key_depth'] < g['head_h']
     m = fc.family(CAT, 'SSF-M')
     row = fc.size_row(m, 'M3')
-    assert fc.key_depth(row, 3) == 1.2 and fc.key_depth(row, 4) == 2.0   # ISO 4026 t min, shaded vs below
-    i = fc.family(CAT, 'SSF-I')
-    row = fc.size_row(i, '1/4')
-    assert fc.key_depth(row, 0.1875) == 0.090 and fc.key_depth(row, 0.25) == 0.125  # Holo-Krome Tables 14, 13
+    g = fc.geometry(m, row, 4)
+    assert abs(g['key'] - row['dims']['s'] / 10.0) < 1e-9
+    assert g['point_h'] < g['L'] and abs(g['key_depth'] - 0.5 * (g['L'] - g['point_h'])) < 1e-9
+    desc = fc.description(CAT, fam, fc.size_row(fam, 'M5'), 16, 'SS')
+    assert 'depth' not in desc.lower()
+    pn = fc.part_number(fam, fc.size_row(fam, 'M5'), 16, 'SS')
+    assert pn.startswith('SSH-') and 'depth' not in pn.lower()
+
+
+def test_same_type_shares_one_smart_code_and_pem_uses_pem_numbers():
+    """Inch and metric of one McMaster type share the shop code. Press-in parts use the PEM designation."""
+    groups = {}
+    for fam in CAT['families']:
+        stem = fam['code'].rsplit('-', 1)[0]
+        groups.setdefault(fam['mcmaster'], set()).add(stem)
+        row = fam['sizes'][0]
+        pn = fc.part_number(fam, row, row['lengths'][0], 'SS')
+        assert pn.startswith(stem + '-')
+    for fam in CAT['parts']:
+        stem = fam['code'].rsplit('-', 1)[0]
+        groups.setdefault(fam['mcmaster'], set()).add(stem)
+        pn = fc.part_number(fam, fam['sizes'][0], None, 'SS')
+        assert pn.startswith(stem + '-')
+    for name, stems in groups.items():
+        assert len(stems) == 1, (name, stems)
+    for fam in CAT['press_in']:
+        row = fam['sizes'][0]
+        pn = fc.part_number(fam, row, row['lengths'][0], fam['finishes'][0])
+        assert pn.startswith(fam['code'] + '-') and '18-8' not in pn
 
 
 def test_dome_uses_crown_radius_or_side_height():
