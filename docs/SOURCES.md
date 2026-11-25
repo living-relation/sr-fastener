@@ -16,14 +16,14 @@ have no McMaster column. The hex pocket depth is not listed: it is only for look
 
 | Smart code | Type (McMaster name) | Standard | Manufacturer part number | Dimensions | Lengths | Thread length | Alloy black oxide |
 |---|---|---|---|---|---|---|---|
-| SSH | Socket Head Screw | ASME B18.3 | TBD | hk_shcs |  | hk_tech | hk_shcs |
-| SBH | Button Head Hex-Drive Screw | ASME B18.3 | TBD | hk_bhcs | hk_bhcs | hk_tech | hk_bhcs |
-| SFH | Hex-Drive Flat Head Screw | ASME B18.3 | TBD | hk_fhcs, b183_fhcs |  | hk_tech | hk_fhcs |
+| SSH | Socket Head Screw | ASME B18.3 | 92196A | hk_shcs |  | hk_tech | hk_shcs |
+| SBH | Button Head Hex-Drive Screw | ASME B18.3 | 92949A | hk_bhcs | hk_bhcs | hk_tech | hk_bhcs |
+| SFH | Hex-Drive Flat Head Screw | ASME B18.3 | 92210A | hk_fhcs, b183_fhcs |  | hk_tech | hk_fhcs |
 | SLH | Low-Profile Socket Head Screw | ASME B18.3 | TBD | hk_lhcs, b183_lhcs |  |  | hk_lhcs |
 | HHB | Hex Head Bolt | ASME B18.2.1 | TBD | b1821_hex |  | b1821_hex | av_in_hex |
 | SSF | Flat-Tip Set Screw | ASME B18.3 | TBD | hk_tech | hk_tech |  | av_in_set |
-| SSC | Cup-Tip Set Screw | ASME B18.3 | TBD | hk_tech | hk_tech |  | hk_tech |
-| SSN | Cone-Tip Set Screw | ASME B18.3 | TBD | hk_tech, mcm_cone | mcm_cone |  |  |
+| SSC | Cup-Tip Set Screw | ASME B18.3 | 92311A | hk_tech | hk_tech |  | hk_tech |
+| SSN | Cone-Tip Set Screw | ASME B18.3 | 92785A | hk_tech, mcm_cone | mcm_cone |  |  |
 | SSE | Extended-Tip Set Screw | ASME B18.3 (half dog) | TBD | hk_tech, mcm_ext | mcm_ext |  |  |
 | SSO | Oval-Tip Set Screw | ASME B18.3 | TBD | hk_tech | mcm_oval |  |  |
 | STP | Phillips Rounded Head Sheet Metal Screw | ASME B18.6.3 head | TBD | mcm_tap_pan, b1863_pan | mcm_tap_pan | mcm_tap_pan |  |
@@ -32,7 +32,7 @@ have no McMaster column. The hex pocket depth is not listed: it is only for look
 
 | Smart code | Type (McMaster name) | Standard | Manufacturer part number | Dimensions | Lengths | Thread length | Alloy black oxide |
 |---|---|---|---|---|---|---|---|
-| SSH | Socket Head Screw | ISO 4762 | TBD | iso4762, hk_m_shcs | iso4762 | iso4762 | hk_m_shcs |
+| SSH | Socket Head Screw | ISO 4762 | 91292A | iso4762, hk_m_shcs | iso4762 | iso4762 | hk_m_shcs |
 | SBH | Button Head Hex-Drive Screw | ISO 7380-1 | TBD | iso7380, iso7380_22, hk_m_bhcs | iso7380, wasi_7380 | iso7380 | hk_m_bhcs, av_m_bhcs16 |
 | SFH | Hex-Drive Flat Head Screw | ISO 10642 | TBD | iso10642, hk_m_fhcs | iso10642, aspen_10642 | iso10642 | hk_m_fhcs |
 | SLH | Low-Profile Socket Head Screw | DIN 7984 | TBD | bbi_7984, fn_7984 |  |  | bbi_7984 |
@@ -60,7 +60,7 @@ Every size is offered in 18-8 SS and 18-8 SS-BO; McMaster is used for dimensions
 | NNL | Nylon-Insert Locknuts | IFI 100/107 | TBD | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2, #6-40, #8-36, #10-32, 1/4-28, 5/16-24, 3/8-24, 1/2-20 | mcm_nylon_bo |  |
 | WSA | SAE Washers | ASME B18.21.1 (SAE) | TBD | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 | mcm_sae_bo, bbi_sae | Thickness is the Brighton-Best basic value (inside McMaster's range), except #2: McMaster 0.012-0.018 vs 0.020. |
 | WUS | USS Washers | USS | TBD | 1/4, 5/16, 3/8, 1/2 | mcm_uss_bo, bbi_uss | McMaster 1/4 OD is 0.750; Brighton-Best (B18.21.1 wide) gives 0.734. |
-| WSL | Split Lock Washers | ASME B18.21.1 | TBD | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 | mcm_split, bbi_split | McMaster ID, OD and thickness = B18.21.1 A max, B max, T min. |
+| WSL | Split Lock Washers | ASME B18.21.1 | 92146A | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 | mcm_split, bbi_split | McMaster ID, OD and thickness = B18.21.1 A max, B max, T min. |
 | NFL | Flange Nuts | inch flange | 94758A | #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2, #10-32, 1/4-28, 5/16-24, 3/8-24, 1/2-20 | mcm_flange_i | No ASME standard for inch flange nuts; dimensions from McMaster 94758A 18-8 listing. |
 | NSF | Serrated Flange Nuts | inch serrated flange | 93776A | #6, #8, #10, 1/4, 5/16, 3/8, 1/2, #10-32, 1/4-28, 5/16-24, 3/8-24 | mcm_serr_i | Serrations are not modelled. Dimensions from McMaster 93776A. 1/2-20 left out: McMaster lists a 0.05" flange on it. |
 | NTL | Top-Lock Distorted-Thread Locknuts | inch top-lock | 90045A | #6, #8, #10, 1/4, 5/16, 3/8, 1/2, #10-32, 1/4-28, 5/16-24, 3/8-24, 1/2-20 | mcm_toplock | Distorted thread not modelled. Dimensions from McMaster 90045A. |
@@ -69,24 +69,24 @@ Every size is offered in 18-8 SS and 18-8 SS-BO; McMaster is used for dimensions
 | NCA | Cap Nuts | inch cap | 91855A | #6, #8, #10, 1/4, 5/16, 3/8, 1/2, #10-32, 1/4-28, 5/16-24, 3/8-24, 1/2-20 | mcm_cap | Dome drawn as a half sphere of radius s/2 on the hex; thread depth dp is the blind bore depth. Dimensions from McMaster 91855A. |
 | NWG | Wing Nuts | Style 1 | 92001A | #6, #8, #10, 1/4, 5/16, 3/8, 1/2, #10-32, 1/4-28, 5/16-24 | mcm_wing | Style 1; overall width, height and base dia from McMaster 92001A; wing shape simplified. 3/8-24 and 1/2-20 left out (different McMaster dimensions). |
 | NSQ | Square Nuts | ASME B18.2.2 | 94785A | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2, #10-32, 1/4-28, 5/16-24, 3/8-24 | mcm_square | #2 to #10 are machine screw nuts (McMaster 94785A). |
-| WTE | Tooth Lock Washers (external) | ASME B18.21.1 | TBD | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 | mcm_tooth_i | Thickness is the middle of McMaster's range. Teeth are not modelled. |
-| WTI | Tooth Lock Washers (internal) | ASME B18.21.1 | TBD | #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 | mcm_tooth_i | Thickness is the middle of McMaster's range. Teeth are not modelled. |
+| WTE | Tooth Lock Washers (external) | ASME B18.21.1 | 95584A | #2, #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 | mcm_tooth_i | Thickness is the middle of McMaster's range. Teeth are not modelled. |
+| WTI | Tooth Lock Washers (internal) | ASME B18.21.1 | 91757A | #4, #6, #8, #10, 1/4, 5/16, 3/8, 1/2 | mcm_tooth_i | Thickness is the middle of McMaster's range. Teeth are not modelled. |
 | WOV | Oversized Washers | inch fender | 90313A101, 90313A102, 90313A104, 90313A108, 90313A111, 90313A115 | #6, #8, #10, 1/4, 5/16, 3/8 | mcm_fender_i | No inch standard; one McMaster 90313A1xx (fender) washer per size: 90313A101, A102, A104, A108, A111, A115. Thickness is the middle of McMaster's range. |
 
 ### Metric
 
 | Smart code | McMaster name | Standard | Manufacturer part number | Sizes | Dimension sources | Notes |
 |---|---|---|---|---|---|---|
-| NHX | Hex Nuts | DIN 934 | TBD | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_hexnut_m | McMaster stocks DIN 934. M3 and M4 match ISO 4032 style 1 (s max and m max), so they are not repeated. M2 and the sizes that differ are the regular hex nut. |
+| NHX | Hex Nuts | DIN 934 | 91828A | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_hexnut_m | McMaster stocks DIN 934. M3 and M4 match ISO 4032 style 1 (s max and m max), so they are not repeated. M2 and the sizes that differ are the regular hex nut. |
 | NTH | Thin-Profile Hex Nuts | DIN 439 B | TBD | M3, M4, M5, M6, M8, M10, M12, M16 | mcm_thin_bo, iso4035 | Heights match ISO 4035; McMaster widths at M10 (17) and M12 (19) are DIN 439 B, ISO 4035 says 16 and 18. |
-| NNL | Nylon-Insert Locknuts | DIN 985 | TBD | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_nylon_m, bbi_985 | DIN 985 overall height (McMaster and Brighton-Best agree). ISO 10511 is the thin nylon-insert family: same width and overall height at M4, M5 and M6, 0.1 mm shorter at M3, shorter from M8, and narrower at M10 and M12. |
+| NNL | Nylon-Insert Locknuts | DIN 985 | 93625A | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_nylon_m, bbi_985 | DIN 985 overall height (McMaster and Brighton-Best agree). ISO 10511 is the thin nylon-insert family: same width and overall height at M4, M5 and M6, 0.1 mm shorter at M3, shorter from M8, and narrower at M10 and M12. |
 | NFL | Flange Nuts | ISO 4161 (DIN 6923) | TBD | M3, M4, M5, M6, M8, M10, M12 | mcm_flange_m, iso4161 | M5 to M12 are ISO 4161 (c = flange thickness min); M3 and M4 are not in ISO 4161 and come from McMaster. |
 | NHR | Regular Hex Nuts | ISO 4032 | TBD | M2, M5, M6, M8, M10, M12, M16, M20 | iso4032 | ISO 4032:1999 Table 1 style 1, width s max and height m max. M3 is 5.5 by 2.4 and M4 is 7 by 3.2, the same as DIN 934, so those sizes stay on the hex nut. M2 is the same width and height as DIN 934 and is listed here because that family starts at M3. M2.5 is in Table 1 and is not offered. |
 | NTN | Thin-Profile Nylon-Insert Locknuts | ISO 10511 | TBD | M3, M4, M5, M6, M8, M10, M12, M16, M20 | iso10511 | ISO 10511:2012 Table 1, width s max and overall height h max. The insert is drawn as part of the hex. M4, M5 and M6 match the DIN 985 width and overall height. M3 is 3.9 versus 4.0. From M8 the nut is shorter, and M10 and M12 are also narrower. The table starts at M3. |
 | NSF | Serrated Flange Nuts | ISO 4161 (DIN 6923) | TBD | M3, M4, M5, M6, M8, M10, M12 | mcm_serr, iso4161, bbi_6923 | Serrations are not modelled. McMaster lists M5 flange dia 11 mm; ISO 4161 and Brighton-Best give 11.8 max. |
 | WGP | General Purpose Washers | ISO 7089 | TBD | M3, M4, M5, M6, M8, M10, M12, M16, M20 | iso7089, mcm_gp_bo | McMaster rows read for M3 to M8; M10 to M20 from ISO 7089. |
 | WOV | Oversized Washers | ISO 7093-1 | TBD | M3, M4, M5, M6, M8, M10, M12, M16, M20 | iso7093, mcm_over_m | ISO 7093-1 values. McMaster lists M5 thk 1.0-1.4 and M20 ID 22. |
-| WSL | Split Lock Washers | DIN 127 B | TBD | M2, M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_split, bbi_127 | Inside diameter is d1 max and outside diameter is d2 max. Thickness is the middle of the Brighton-Best range. M3 and up match McMaster. M2 is Brighton-Best only: d1 max 2.4, d2 max 4.4, thickness middle of 0.4 to 0.6. |
+| WSL | Split Lock Washers | DIN 127 B | 92148A | M2, M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_split, bbi_127 | Inside diameter is d1 max and outside diameter is d2 max. Thickness is the middle of the Brighton-Best range. M3 and up match McMaster. M2 is Brighton-Best only: d1 max 2.4, d2 max 4.4, thickness middle of 0.4 to 0.6. |
 | WTE | Tooth Lock Washers (external) | DIN 6797 A | TBD | M3, M4, M5, M6, M8, M10, M12, M16, M20 | mcm_tooth_m, bbi_6797a | Teeth are not modelled (flat ring at the washer thickness). |
 | WTI | Tooth Lock Washers (internal) | DIN 6797 J | TBD | M3, M4, M5, M6, M8, M10 | mcm_tooth_m, bbi_6797j | McMaster stocks 18-8 to M10. Teeth are not modelled. |
 | NTL | Top-Lock Distorted-Thread Locknuts | metric top-lock | 90045A | M4, M5, M6, M8, M10, M12, M16 | mcm_toplock | Distorted thread not modelled. Dimensions from McMaster 90045A (M6 6 mm, M8 6.4 mm as listed). |

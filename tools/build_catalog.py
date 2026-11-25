@@ -517,68 +517,18 @@ OVAL_MCM = {  # McMaster 18-8 oval-tip set screws: lengths
     '3/8': [0.625],
 }
 
-# Holo-Krome Table 13 (hk_tech): socket J, key engagement TH for lengths >= column B, oval point radius R,
-# and column B for 90 deg cone and oval points and for half dog points.
+# Holo-Krome Table 13 (hk_tech): socket across-flats J and oval point radius R.
+# Key-engagement depth is not stored. The model uses a look depth instead.
 _HK13 = {  # nominal: (J, TH, R, B_cone_oval, B_half_dog)
     '#2': (0.035, 0.060, 0.064, 0.19, 0.19), '#4': (0.050, 0.070, 0.084, 0.19, 0.19),
     '#6': (0.062, 0.080, 0.104, 0.25, 0.19), '#8': (0.078, 0.090, 0.123, 0.25, 0.25),
     '#10': (0.094, 0.100, 0.142, 0.25, 0.25), '1/4': (0.125, 0.125, 0.188, 0.31, 0.31),
     '5/16': (0.156, 0.156, 0.234, 0.44, 0.38), '3/8': (0.188, 0.188, 0.281, 0.44, 0.44),
     '1/2': (0.250, 0.250, 0.375, 0.63, 0.63)}
-# Holo-Krome Table 14: minimum key engagement for short set screws, by two-place nominal length:
-# (118 deg cone and oval points, half dog point). None: not made.
-_HK14 = {
-    '#2': {0.06: (0.029, None), 0.09: (0.040, 0.035)},
-    '#4': {0.09: (0.039, None), 0.13: (0.045, 0.045)},
-    '#6': {0.09: (0.039, None), 0.13: (0.045, 0.045), 0.16: (0.065, 0.065)},
-    '#8': {0.13: (0.050, 0.045), 0.16: (0.060, 0.060), 0.19: (0.065, 0.065)},
-    '#10': {0.13: (0.042, 0.042), 0.19: (0.060, 0.060)},
-    '1/4': {0.19: (0.065, 0.055), 0.25: (0.110, 0.090)},
-    '5/16': {0.25: (0.099, 0.090), 0.31: (0.140, 0.105)},
-    '3/8': {0.25: (0.090, 0.075), 0.31: (0.115, 0.105)},
-    '1/2': {0.38: (0.130, 0.130), 0.44: (0.155, 0.155), 0.50: (0.195, 0.195)}}
-_TWO = {0.0625: 0.06, 0.09375: 0.09, 0.125: 0.13, 0.15625: 0.16, 0.1875: 0.19, 0.25: 0.25, 0.3125: 0.31,
-        0.375: 0.38, 0.4375: 0.44, 0.5: 0.50, 0.625: 0.63}
-# ISO 4027 / ISO 4028 / ISO 4026 socket: s nom, t min (short lengths), t min (other lengths)
-_ISO_SET = {'M2': (0.9, 0.8, 1.7), 'M2.5': (1.3, 1.2, 2.0), 'M3': (1.5, 1.2, 2.0), 'M4': (2.0, 1.5, 2.5),
-            'M5': (2.5, 2.0, 3.0), 'M6': (3.0, 2.0, 3.5), 'M8': (4.0, 3.0, 5.0), 'M10': (5.0, 4.0, 6.0),
-            'M12': (6.0, 4.8, 8.0)}
+# ISO 4027 / ISO 4028 / ISO 4026 socket across flats (s nom). Depth is not stored.
+_ISO_SET_S = {'M2': 0.9, 'M2.5': 1.3, 'M3': 1.5, 'M4': 2.0, 'M5': 2.5, 'M6': 3.0, 'M8': 4.0, 'M10': 5.0, 'M12': 6.0}
 _ISO4027_DT = {'M2': 0.5, 'M2.5': 0.65, 'M3': 0.75, 'M4': 1.0, 'M5': 1.25, 'M6': 1.5, 'M8': 2.0, 'M10': 2.5,
                'M12': 3.0}
-
-
-def _inch_t(nom, L, point):
-    """Key engagement for an inch set screw: Table 13 TH at or above column B, else the Table 14 value for this
-    length; None if neither table covers the length (see _short_t)."""
-    j, th, r, b_co, b_hd = _HK13[nom]
-    b = b_hd if point == 'dog' else b_co
-    if _TWO.get(L, round(L, 2)) >= b - 1e-9:
-        return th
-    v = _HK14.get(nom, {}).get(_TWO.get(L))
-    return v and v[1 if point == 'dog' else 0]
-
-
-# Short lengths McMaster stocks that neither Holo-Krome table covers: the socket uses the size's standard depth
-# (Table 13 TH; the socket depth is the same for every length of a size), cut back only where it would leave
-# less than a quarter of the nominal diameter of solid metal above the point (Daniel, 2026-11-16).
-SHORT_T = []  # filled by _set_rows: (point, size, L, TH, depth used)
-
-
-def _point_h(point, d, tpi, it, R):
-    """Point height (in) as fastener_core.geometry draws it: cone and dog points start at the thread root."""
-    root_r = (d - 1.082532 / tpi) / 2.0
-    if point == 'cone':
-        return root_r / math.tan(math.radians(it[1] / 2.0))
-    if point == 'dog':
-        return it[2] + root_r - it[1] / 2.0
-    return R - math.sqrt(R * R - (d / 2.0) ** 2)  # oval
-
-
-def _short_t(point, size, d, tpi, it, th, R):
-    cap = math.floor((it[0] - _point_h(point, d, tpi, it, R) - 0.25 * d) * 1000.0) / 1000.0
-    t = min(th, cap)
-    SHORT_T.append((point, size, it[0], th, t))
-    return t
 
 
 def _key(size):
@@ -590,43 +540,35 @@ def _set_rows(table, point):
     rows = []
     for size, items in table.items():
         if size.startswith('M'):
-            s, t_short, t_long = _ISO_SET[size]
-            row = dict(size=size, d=float(size[1:]), pitch=PITCH[size], dims={'s': s, 't_by_length': {}},
-                       lengths=[])
+            s = _ISO_SET_S[size]
+            row = dict(size=size, d=float(size[1:]), pitch=PITCH[size], dims={'s': s}, lengths=[])
             for it in items:
                 L = it[0]
                 if point == 'cone':
-                    short = it[1] != 90 or L <= row['d']  # McMaster's 118/120 deg lengths are ISO 4027's short ones
                     row['dims'].setdefault('angle_by_length', {})['%g' % L] = it[1]
                     row['dims']['tip_d'] = _ISO4027_DT[size]
                 else:  # dog: McMaster's short tip lengths are ISO 4028's short dog points
                     row['dims']['dp'] = it[1]
                     row['dims'].setdefault('z_by_length', {})['%g' % L] = it[2]
-                    short = it[2] < max(x[2] for x in items)
-                row['dims']['t_by_length']['%g' % L] = t_short if short else t_long
                 row['lengths'].append(float(L))
         else:
             nom, series = _key(size)
             d, tpi = UNC[nom]
             if series == 'UNF':
                 tpi = UNF[nom]
-            j, th, R, _b, _bd = _HK13[nom]
+            j, _th, R, _b, _bd = _HK13[nom]
             row = dict(size=size if series == 'UNC' else '%s-%d' % (nom, tpi), nominal=nom, series=series, d=d,
-                       tpi=tpi, dims={'s': j, 't_by_length': {}}, lengths=[])
+                       tpi=tpi, dims={'s': j}, lengths=[])
             if point == 'oval':
                 row['dims']['R'] = R
             for it in (items if point != 'oval' else [(L,) for L in items]):
                 L = float(it[0])
-                t = _inch_t(nom, L, point)
-                if t is None:
-                    t = _short_t(point, row['size'], d, tpi, (L,) + tuple(it[1:]), th, R)
                 if point == 'cone':
                     row['dims'].setdefault('angle_by_length', {})['%g' % L] = it[1]
                     row['dims']['tip_d'] = 0.0
                 elif point == 'dog':
                     row['dims']['dp'] = it[1]
                     row['dims'].setdefault('z_by_length', {})['%g' % L] = it[2]
-                row['dims']['t_by_length']['%g' % L] = t
                 row['lengths'].append(L)
         if row['lengths']:
             rows.append(row)
@@ -1218,6 +1160,19 @@ for _f in FAMILIES + PENDING + PARTS:
     _f['name'] = title_name(_f['name'])
 
 
+def _drop_published_socket_depth():
+    """Hex pocket depth is a look, not a catalog dimension. Cheese-head slot depth (t) stays."""
+    for fam in FAMILIES + PENDING:
+        if fam.get('head') not in ('cap', 'button', 'flat', 'flbutton', 'set'):
+            continue
+        for row in fam['sizes']:
+            for key in ('t', 't_short', 'short_max', 't_by_length'):
+                row['dims'].pop(key, None)
+
+
+_drop_published_socket_depth()
+
+
 def build():
     press = [p for p in PARTS if p.get('kind') == 'press-in']
     hardware = [p for p in PARTS if p.get('kind') != 'press-in']
@@ -1242,9 +1197,21 @@ def render():
     return json.dumps(build(), indent=1, sort_keys=False) + '\n'
 
 
-# McMaster series already cited in the notes and source lines above. Not one order number per size.
-# A family with no number on file is TBD. Do not invent one.
+# McMaster series confirmed on a product page (2026-11-25) or already cited above.
+# One series for the family, not one order number per size. Unconfirmed stays TBD.
 MFR_PN = {
+    'SSH-M': '91292A',  # 18-8 socket head, ISO 4762, fully threaded (91292A137)
+    'SSH-I': '92196A',  # 18-8 socket head, ASME B18.3, fully threaded (92196A540)
+    'SBH-I': '92949A',  # 18-8 button head hex drive (92949A903)
+    'SFH-I': '92210A',  # 18-8 hex-drive flat head, 82 deg (92210A302)
+    'SSC-I': '92311A',  # 18-8 cup-tip set screw (92311A189)
+    'SSN-I': '92785A',  # 18-8 cone-tip set screw (92785A433)
+    'NHX-M': '91828A',  # 18-8 hex nut, DIN 934 (91828A211)
+    'NNL-M': '93625A',  # 18-8 nylon-insert locknut (93625A300)
+    'WSL-I': '92146A',  # 18-8 split lock washer (92146A623)
+    'WSL-M': '92148A',  # 18-8 metric split lock washer (92148A150)
+    'WTE-I': '95584A',  # cited on the 1/4 inch external tooth washer row (95584A207)
+    'WTI-I': '91757A',  # cited on the #10 internal tooth washer row (91757A107)
     'NFL-I': '94758A',
     'NSF-I': '93776A',
     'NTL-M': '90045A',

@@ -31,20 +31,19 @@ def test_mcmaster_spot_checks():
     assert r['dims']['s'] == 0.125
     # metric cone: ISO 4027 dt M6 = 1.5, socket 3; McMaster M6 x 6 is 120 deg (short socket 2.0, ISO t min)
     m = row('SSN-M', 'M6')
-    assert m['dims']['tip_d'] == 1.5 and m['dims']['s'] == 3.0 and m['dims']['t_by_length']['6'] == 2.0
-    assert m['dims']['t_by_length']['10'] == 3.5
+    assert m['dims']['tip_d'] == 1.5 and m['dims']['s'] == 3.0 and 't_by_length' not in m['dims']
     # extended tip: McMaster #10-32 tip 0.127 x 0.049 (Holo-Krome half dog P, Q max 0.127, 0.049)
     e = row('SSE-I', '#10-32')
     assert e['dims']['dp'] == 0.127 and e['dims']['z_by_length']['0.5'] == 0.049
     # metric extended: M6 x 8 short tip 1.75, M6 x 10 long tip 3.25 (ISO 4028 z max), dp 4
     em = row('SSE-M', 'M6')
     assert em['dims']['z_by_length']['8'] == 1.75 and em['dims']['z_by_length']['10'] == 3.25
-    assert em['dims']['t_by_length']['8'] == 2.0 and em['dims']['t_by_length']['10'] == 3.5
+    assert 't' not in em['dims']
     # oval: Holo-Krome Table 13 R #6 = 0.104
     assert row('SSO-I', '#6')['dims']['R'] == 0.104
     # flanged button: McMaster M5 11.8 flange, 8.8 head, 2.75 high; ISO 7380-2 c 1.0, s 3, t 1.56
     f = row('SBF-M', 'M5')['dims']
-    assert (f['dc'], f['dk'], f['k'], f['c'], f['s'], f['t']) == (11.8, 8.8, 2.75, 1.0, 3.0, 1.56)
+    assert (f['dc'], f['dk'], f['k'], f['c'], f['s']) == (11.8, 8.8, 2.75, 1.0, 3.0) and 't' not in f
     # sheet metal: McMaster No. 8 0.322 x 0.115, 15 threads per inch; B18.6.3 recess M 0.175
     s = row('STP-I', '#8')
     assert (s['dims']['dk'], s['dims']['k'], s['tpi'], s['dims']['m']) == (0.322, 0.115, 15, 0.175)
